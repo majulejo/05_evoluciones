@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registrar Nuevo Usuario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: "Montserrat", sans-serif;
+      background: #e7f5eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .formulario {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2e2925;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #368f3f;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #resultado {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="formulario">
+    <h2>Registrar Usuario</h2>
+    <input type="text" id="usuario" placeholder="Nombre de usuario" />
+    
+    <input type="password" id="clave" placeholder="Contraseña" />
+    <label style="font-size: 13px;">
+      <input type="checkbox" onclick="mostrarClave()"> Mostrar contraseña
+    </label>
+    
+    <button onclick="registrarUsuario()">Registrar</button>
+    <p id="resultado"></p>
+  </div>
+
+  <script>
+    function mostrarClave() {
+      const campo = document.getElementById("clave");
+      campo.type = campo.type === "password" ? "text" : "password";
+    }
+
+    async function registrarUsuario() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const clave = document.getElementById("clave").value.trim();
+      const res = document.getElementById("resultado");
+
+      if (!usuario || !clave) {
+        res.textContent = "Rellene todos los campos.";
+        return;
+      }
+
+      try {
+        const r = await fetch("registro_usuarios.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Key": "faroladmin2024" // Clave de administrador
+          },
+          body: JSON.stringify({ usuario, clave }),
+        });
+
+        const data = await r.json();
+        res.textContent = data.message;
+      } catch (e) {
+        res.textContent = "Error de red al registrar.";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+Array
+(
+    [Host] => jolejuma.es
+    [x-admin-key] => faroladmin2024
+    [sec-ch-ua-platform] => "Android"
+    [User-Agent] => Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36
+    [sec-ch-ua] => "Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"
+    [sec-ch-ua-mobile] => ?1
+    [Accept] => */*
+    [sec-fetch-site] => same-origin
+    [sec-fetch-mode] => cors
+    [sec-fetch-dest] => empty
+    [Referer] => https://jolejuma.es/evolucion-uci/
+    [Accept-Encoding] => gzip, deflate, br, zstd
+    [Accept-Language] => es-ES,es;q=0.9
+    [priority] => u=1, i
+    [Cookie] => _ga=GA1.2.206977478.1748644721; _gid=GA1.2.1575167135.1748644721
+)

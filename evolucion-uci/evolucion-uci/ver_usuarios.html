@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Usuarios registrados</title>
+</head>
+<body>
+  <h2>Lista de usuarios</h2>
+  <ul id="listaUsuarios"></ul>
+
+  <script>
+    fetch("ver_usuarios.php", {
+      headers: { "X-Admin-Key": "faroladmin2024" }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) return alert("Acceso denegado");
+      const lista = document.getElementById("listaUsuarios");
+      data.usuarios.forEach(u => {
+        const li = document.createElement("li");
+        li.textContent = `Usuario: ${u.usuario} | ID: ${u.user_id}`;
+        lista.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>

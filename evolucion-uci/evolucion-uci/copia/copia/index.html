@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" >
+      <link rel="icon" href="img/acceso1.png?v=3" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+  <title>Acceso - Evolución de Enfermería</title>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #d9ebd8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #2e2925;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #368f3f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Botón guía -->
+<a href="guia_usuarios.html" target="_blank" style="
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: #3498db;
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 9999;">
+  📘 Ver guía de uso
+</a>
+
+<div class="login-container">
+  <h2>Acceso a la Aplicación</h2>
+  <form onsubmit="iniciarSesion(event)">
+    <label for="usuario">Usuario:</label>
+    <input type="text" id="usuario" name="usuario" maxlength="8" required >
+    <div style="font-size: 12px; color: #555; margin-bottom: 10px;">
+      Máximo 8 caracteres.
+    </div>
+
+    <label for="clave">Contraseña:</label>
+    <input type="password" id="clave" name="clave" maxlength="8" required >
+    <div style="font-size: 12px; color: #555; margin-bottom: 10px;">
+      Máximo 8 caracteres. Puedes mostrarla con la casilla siguiente.
+    </div>
+
+    <input type="checkbox" onclick="togglePassword()"> Mostrar contraseña<br><br>
+
+    <button type="submit">Entrar</button>
+    <div id="errorMensaje" class="error"></div>
+  </form>
+
+  <!-- Acceso oculto para administrador -->
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="#" onclick="accesoAdmin()" style="font-size: 10px; color: gray;">Administrador</a>
+  </div>
+</div>
+
+<script>
+  // Mostrar clave
+  function togglePassword() {
+    const input = document.getElementById("clave");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  // Autocompletar último usuario
+  document.addEventListener("DOMContentLoaded", () => {
+    const ultimoUsuario = localStorage.getItem("ultimoUsuario");
+    if (ultimoUsuario) {
+      document.getElementById("usuario").value = ultimoUsuario;
+    }
+  });
+
+  // Acceso al panel admin
+  function accesoAdmin() {
+    const pass = prompt("Introduce la clave de administrador:");
+    if (pass === "faroladmin2024") {
+      window.location.href = "registro_usuarios.html";
+    } else {
+      alert("Clave incorrecta.");
+    }
+  }
+
+  /* -------- INICIAR SESIÓN -------- */
+function iniciarSesion(e) {
+  e.preventDefault();
+
+  const usuario = document.getElementById("usuario").value.trim();
+  const clave   = document.getElementById("clave").value.trim();
+  const body = new URLSearchParams({ usuario, clave });
+
+fetch('login2.php', {
+  method : 'POST',
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },  // ←  COMA AQUÍ
+  body
+})
+
+
+  .then(r => r.json())           // recibimos JSON limpio de login2.php
+  .then(data => {
+      if (data.success) {
+          sessionStorage.setItem("currentUserId", data.user_id);
+          localStorage.setItem("ultimoUsuario", usuario);
+          window.location.href = "app.html";
+      } else {
+          document.getElementById("errorMensaje").textContent = data.message;
+      }
+  })
+  .catch(err => {
+      console.error("Error de red:", err);
+      document.getElementById("errorMensaje").textContent =
+        "No se pudo conectar con el servidor.";
+  });
+}
+</script>
+
+</body>
+</html>

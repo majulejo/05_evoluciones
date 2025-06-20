@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guía para Usuarios - Evolución UCI</title>
+  <style>
+    /* Reset básico */
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    /* Variables de color */
+    :root {
+      --bg: #f5f5f5;
+      --accent: #27ae60;
+      --accent-dark: #2980b9;
+      --text: #333;
+      --white: #fff;
+      --radius: 6px;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    /* Botón volver */
+    .btn-back {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      z-index: 1000;
+      transition: background 0.2s;
+    }
+    .btn-back:hover {
+      background: var(--accent-dark);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 28px;
+      color: var(--accent-dark);
+    }
+
+    .paso {
+      background: var(--white);
+      border-left: 5px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .paso ul {
+      margin-top: 8px;
+      padding-left: 20px;
+    }
+
+    .paso code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+
+    /* Impresión */
+    .impresion {
+      background: var(--white);
+      border-left-color: #e67e22;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1rem; }
+      .paso { padding: 12px; }
+      .btn-back { padding: 6px 10px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="btn-back">← Inicio</a>
+
+  <h1>Guía para Usuarios - Evolución UCI</h1>
+
+  <div class="paso">
+    <h2>🔐 Acceso al sistema</h2>
+    <p>Para entrar, ve a <code>https://jolejuma.es/evolucion-uci/</code> e introduce tu usuario y contraseña.</p>
+    <ul>
+      <li>Si ya estás registrado, entras directamente.</li>
+      <li>La sesión recuerda tu usuario para futuros accesos.</li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2>📝 Crear un informe nuevo</h2>
+    <ul>
+      <li>Selecciona el Box (1–12).</li>
+      <li>Rellena los campos marcados.</li>
+      <li>Pulsa <strong>"Generar Informe"</strong>.</li>
+      <li>Se guarda automáticamente con fecha, hora y Box.</li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2>📄 Ver y recuperar informes</h2>
+    <p>En el selector puedes filtrar por Box, fecha y hora. Opciones tras cargar:</p>
+    <ul>
+      <li><strong>"Copiar informe"</strong>: copia con formato.</li>
+      <li><strong>"Imprimir"</strong>: imprime para el turno actual.</li>
+      <li><strong>"Imprimir Turno Alternativo"</strong>: imprime para el turno contrario (por ejemplo, de noche si ahora es día).</li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2>✏️ Editar un informe ya generado</h2>
+    <ul>
+      <li>Modifica los campos deseados.</li>
+      <li>Pulsa <strong>"Generar Informe"</strong> de nuevo.</li>
+      <li>Se guarda como informe <em>nuevo</em> con distinto ID.</li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2>🗑️ Borrar datos o informes</h2>
+    <ul>
+      <li><strong>"Borrar Datos"</strong>: limpia el formulario actual.</li>
+      <li><strong>"Eliminar Informe"</strong>: borra un informe concreto.</li>
+      <li><strong>"Eliminar Informes del Box"</strong>: borra todo lo creado para ese Box.</li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2 class="impresion">🖨️ Impresión</h2>
+    <p>Dispones de dos botones:</p>
+    <ul>
+      <li><strong>Imprimir</strong>: utiliza el turno actual (<em>días</em> 8–20 h o <em>noches</em> 20–8 h).</li>
+      <li><strong>Turno Alternativo</strong>: imprime como si fuera el turno opuesto, útil si necesitas imprimir para guardias distintas.</li>
+    </ul>
+    <p>La salida conserva el estilo compacto de A4 y adapta márgenes según turno.</p>
+  </div>
+
+  <div class="paso">
+    <h2>🔐 Cerrar sesión</h2>
+    <p>Pulsa <strong>"Cerrar Sesión"</strong> para salir y proteger tus datos.</p>
+  </div>
+
+  <div class="paso">
+    <h2>📌 Consideraciones</h2>
+    <ul>
+      <li>Los borradores se guardan localmente por Box hasta generar informe.</li>
+      <li>Los informes permanecen en servidor, accesibles desde cualquier dispositivo.</li>
+      <li>Cada usuario ve solo sus propios informes.</li>
+    </ul>
+  </div>
+<footer>
+    <p>
+      &copy; 2025 Informe Evolución Enfermería. Todos los derechos
+      reservados.
+      <br>C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br>
+    </p>
+
+  </footer>
+</body>
+</html>
