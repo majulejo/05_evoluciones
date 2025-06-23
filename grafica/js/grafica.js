@@ -72,36 +72,6 @@ function showTooltip(cell, index) {
   `;
 
   tooltipContainer.appendChild(tooltip);
-}
-
-// Optimizar la función showTooltip
-function showTooltip(cell, index) {
-  const data = vitalSigns[index];
-  if (!data || Object.keys(data).length === 0) return;
-
-  const tooltipContainer = cell.querySelector(".tooltip-container");
-
-  // Limpiar tooltip existente
-  tooltipContainer.innerHTML = "";
-
-  const tooltip = document.createElement("div");
-  tooltip.className = "vital-signs-tooltip";
-  tooltip.innerHTML = `
-    <div class="tooltip-content">
-      <div class="tooltip-row"><span>FR:</span> ${
-        data.respRate || "--"
-      } rpm</div>
-      <div class="tooltip-row"><span>FC:</span> ${data.pulse || "--"} lpm</div>
-      <div class="tooltip-row"><span>TA:</span> ${data.systolic || "--"}/${
-    data.diastolic || "--"
-  } mmHg</div>
-      <div class="tooltip-row"><span>Tª:</span> ${
-        data.temperature || "--"
-      }°C</div>
-    </div>
-  `;
-
-  tooltipContainer.appendChild(tooltip);
   tooltip.style.opacity = "1";
 }
 
@@ -179,10 +149,8 @@ function saveData() {
 function updateChart() {
   // Limpiar elementos existentes
   document
-    .querySelectorAll(".grid-cell.has-data, .horizontal-line.has-data")
-    .forEach((el) => {
-      el.classList.remove("has-data");
-    });
+    .querySelectorAll(".chart-point, .chart-line, .connection-line")
+    .forEach((el) => el.remove());
 
   const grid = document.getElementById("chartGrid");
   const gridWidth = grid.offsetWidth;
@@ -197,37 +165,21 @@ function updateChart() {
     TA: 18,
   };
 
-  // Variables para almacenar puntos previos y crear conexiones
-  let prevPoints = {
-    FR: null,
-    Temp: null,
-    FC: null,
-    TA: null,
-  };
+  // Variables para puntos previos
+  let prevPoints = { FR: null, Temp: null, FC: null, TA: null };
 
   vitalSigns.forEach((data, index) => {
     if (!data || Object.keys(data).length === 0) {
-      // Resetear puntos previos si no hay datos en esta hora
-      prevPoints = {
-        FR: null,
-        Temp: null,
-        FC: null,
-        TA: null,
-      };
+      prevPoints = { FR: null, Temp: null, FC: null, TA: null };
       return;
     }
 
-    const x = index * cellWidth + cellWidth / 2; // <-- Añadir esta línea
+    const x = index * cellWidth + cellWidth / 2;
     const cell = document.querySelector(`.grid-cell[data-index="${index}"]`);
+
     if (cell) {
       cell.classList.add("has-data");
-
-      // También marcamos la línea horizontal correspondiente
-      const lineIndex = Math.floor((index / 24) * 10); // Aproximación a las líneas
-      const lines = document.querySelectorAll(".horizontal-line");
-      if (lines[lineIndex]) {
-        lines[lineIndex].classList.add("has-data");
-      }
+      updateTooltip(index, data);
     }
 
     // FR (Frecuencia Respiratoria)
@@ -235,7 +187,6 @@ function updateChart() {
       const y = gridHeight - (data.respRate / 50) * gridHeight;
       createPoint(x + offsets.FR, y, "resp-point", "#000");
 
-      // Conectar con punto anterior si existe
       if (prevPoints.FR) {
         createConnectionLine(
           prevPoints.FR.x,

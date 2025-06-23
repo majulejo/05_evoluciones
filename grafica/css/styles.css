@@ -260,7 +260,7 @@
 
       /* Estilos para los puntos del gráfico */
 /* Puntos más pequeños y mejor espaciados */
-/* Estilos para puntos */
+/* Mejorar visibilidad de puntos y líneas */
 .chart-point {
   width: 8px;
   height: 8px;
@@ -271,27 +271,6 @@
   border: 1px solid white !important;
 }
 
-.resp-point {
-  background-color: #000 !important;
-  left: calc(50% - 18px);
-}
-
-.temp-point {
-  background-color: #d63384 !important;
-  left: calc(50% - 6px);
-}
-
-.pulse-point {
-  background-color: #0d6efd !important;
-  left: calc(50% + 6px);
-}
-
-.bp-point {
-  background-color: #198754 !important;
-  left: calc(50% + 18px);
-}
-
-/* Estilos para líneas de conexión */
 .connection-line {
   position: absolute;
   height: 2px;
@@ -299,21 +278,18 @@
   z-index: 1;
 }
 
-.resp-line {
-  background-color: #000;
-}
+/* Colores específicos para cada tipo */
+.resp-point { background-color: #000; left: calc(50% - 18px); }
+.temp-point { background-color: #d63384; left: calc(50% - 6px); }
+.pulse-point { background-color: #0d6efd; left: calc(50% + 6px); }
+.bp-point { background-color: #198754; left: calc(50% + 18px); }
 
-.temp-line {
-  background-color: #d63384;
-}
+.resp-line { background-color: #000; }
+.temp-line { background-color: #d63384; }
+.pulse-line { background-color: #0d6efd; }
+.bp-line { background-color: #198754; }
 
-.pulse-line {
-  background-color: #0d6efd;
-}
 
-.bp-line {
-  background-color: #198754;
-}
 
 /* Línea de TA */
 .chart-line.bp-line {
@@ -465,15 +441,14 @@
   background-color: #2980b9;
 }
 
-/* Tooltip container */
+/* Tooltip mejorado */
 .tooltip-container {
   position: absolute;
-  bottom: 25px; /* Posición relativa a la celda */
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
   pointer-events: none;
-  width: max-content;
   display: none;
 }
 

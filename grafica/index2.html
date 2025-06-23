@@ -2,13 +2,14 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <link
+      rel="shortcut icon"
+      href="images/info_claude.png"
+      type="image/x-icon"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gráfica de Enfermería UCI</title>
+    <title>Claude Gráfica de Enfermería UCI</title>
     <style>
-      /* ========================== */
-      /* styles.css   */
-      /* ========================== */
-
       * {
         margin: 0;
         padding: 0;
@@ -173,6 +174,13 @@
       .hour-cell {
         padding: 5px 0;
         border-right: 1px solid #ccc;
+        transition: background-color 0.2s;
+      }
+
+      /* Fondo diferente para celdas de cabecera con datos */
+      .hour-cell.has-data {
+        background-color: rgba(52, 152, 219, 0.12);
+        font-weight: bold;
       }
 
       /* Cuadrícula de gráfico */
@@ -251,10 +259,10 @@
         background-color: #333;
       }
 
-      /* Puntos del gráfico - CORREGIDOS para estar dentro de cada franja */
+      /* Puntos del gráfico */
       .chart-point {
-        width: 6px !important;
-        height: 6px !important;
+        width: 6px;
+        height: 6px;
         margin: 0;
         position: absolute;
         border-radius: 50%;
@@ -265,19 +273,17 @@
       .resp-point {
         background-color: #000;
       }
-
       .temp-point {
         background-color: #dc3545;
       }
-
       .pulse-point {
         background-color: #0d6efd;
       }
-
       .bp-point {
         background-color: #198754;
       }
 
+      /* Líneas del gráfico */
       .chart-line {
         position: absolute;
         height: 2px;
@@ -290,11 +296,12 @@
         background-color: #000;
       }
       .temp-line {
-        background-color: #d63384;
+        background-color: #dc3545;
       }
       .pulse-line {
         background-color: #0d6efd;
       }
+
       .bp-line {
         background-color: #198754;
         height: 3px;
@@ -302,28 +309,7 @@
         z-index: 1;
       }
 
-      /* TOOLTIP SYSTEM - Centrado en cada franja horaria */
-      .hour-data-indicator {
-        position: absolute;
-        bottom: 2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 4px;
-        height: 8px;
-        background-color: #3498db;
-        border-radius: 2px;
-        opacity: 0;
-        transition: all 0.2s ease;
-        pointer-events: none;
-      }
-
-      .grid-cell.has-data .hour-data-indicator {
-        opacity: 1;
-        height: 12px;
-        background-color: #2980b9;
-      }
-
-      /* Tooltip container - POSICIONADO PARA SER VISIBLE */
+      /* Tooltip container */
       .vital-signs-tooltip {
         position: absolute;
         top: 50%;
@@ -345,12 +331,6 @@
         min-width: 140px;
       }
 
-      /* SIN flecha para evitar problemas de posicionamiento */
-      .vital-signs-tooltip::after {
-        display: none;
-      }
-
-      /* MOSTRAR tooltip solo en hover sobre la franja horaria */
       .grid-cell:hover .vital-signs-tooltip {
         opacity: 1;
         visibility: visible;
@@ -389,6 +369,14 @@
       }
       .value-ta {
         color: #198754;
+        font-weight: bold;
+      }
+      .value-sato2 {
+        color: #6f42c1;
+        font-weight: bold;
+      }
+      .value-glucemia {
+        color: #dc3545;
         font-weight: bold;
       }
 
@@ -440,6 +428,24 @@
         padding: 5px;
         border: 1px solid #ddd;
         border-radius: 3px;
+        transition: all 0.3s ease;
+      }
+
+      .form-field input.invalid {
+        background-color: #ffe6e6;
+        border-color: #dc3545;
+        color: #dc3545;
+      }
+
+      .form-field input.invalid:focus {
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+      }
+
+      .error-message {
+        color: #dc3545;
+        font-size: 11px;
+        margin-top: 3px;
+        display: none;
       }
 
       .button-group {
@@ -639,26 +645,57 @@
         <div class="form-field">
           <label>Frecuencia Respiratoria (rpm):</label>
           <input type="number" id="respRate" step="1" min="0" max="50" />
+          <div class="error-message" id="respRate-error">
+            Valor debe estar entre 0 y 50 rpm
+          </div>
         </div>
 
         <div class="form-field">
           <label>Temperatura (°C):</label>
           <input type="number" id="temperature" step="0.1" min="32" max="42" />
+          <div class="error-message" id="temperature-error">
+            Valor debe estar entre 32 y 42°C
+          </div>
         </div>
 
         <div class="form-field">
           <label>Frecuencia Cardíaca (lpm):</label>
           <input type="number" id="pulse" min="0" max="200" />
+          <div class="error-message" id="pulse-error">
+            Valor debe estar entre 0 y 200 lpm
+          </div>
         </div>
 
         <div class="form-field">
           <label>T.A. Sistólica (mmHg):</label>
           <input type="number" id="systolic" min="0" max="250" />
+          <div class="error-message" id="systolic-error">
+            Valor debe estar entre 0 y 250 mmHg
+          </div>
         </div>
 
         <div class="form-field">
           <label>T.A. Diastólica (mmHg):</label>
           <input type="number" id="diastolic" min="0" max="250" />
+          <div class="error-message" id="diastolic-error">
+            Valor debe estar entre 0 y 250 mmHg
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Sat O2 (%):</label>
+          <input type="number" id="satO2" min="0" max="100" step="1" />
+          <div class="error-message" id="satO2-error">
+            Valor debe estar entre 0 y 100%
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Glucemia (mg/dL):</label>
+          <input type="number" id="glucemia" min="0" max="600" step="1" />
+          <div class="error-message" id="glucemia-error">
+            Valor debe estar entre 0 y 600 mg/dL
+          </div>
         </div>
 
         <div class="button-group">
@@ -702,15 +739,16 @@
           cell.dataset.hour = hour;
           cell.dataset.index = i;
 
-          // Estructura CORREGIDA del tooltip
+          // Estructura del tooltip
           cell.innerHTML = `
-                    <div class="hour-data-indicator"></div>
                     <div class="vital-signs-tooltip">
                         <div class="tooltip-content">
                             <div class="tooltip-row"><span>FR:</span> <span class="value-fr">--</span> rpm</div>
                             <div class="tooltip-row"><span>FC:</span> <span class="value-fc">--</span> lpm</div>
                             <div class="tooltip-row"><span>TA:</span> <span class="value-ta">--/--</span> mmHg</div>
                             <div class="tooltip-row"><span>Tª:</span> <span class="value-temp">--</span>°C</div>
+                            <div class="tooltip-row"><span>SatO2:</span> <span class="value-sato2">--</span>%</div>
+                            <div class="tooltip-row"><span>Gluc:</span> <span class="value-glucemia">--</span> mg/dL</div>
                         </div>
                     </div>
                 `;
@@ -719,6 +757,13 @@
           cell.addEventListener("click", () => openDataModal(hour, i));
           chartGrid.appendChild(cell);
         }
+
+        // Asignar data-hour a las celdas de cabecera
+        const hourCells = document.querySelectorAll(".hour-cell");
+        hourCells.forEach((cell, index) => {
+          const hour = (index + 8) % 24;
+          cell.dataset.hour = hour;
+        });
       }
 
       function initModal() {
@@ -737,30 +782,37 @@
         document
           .getElementById("cancelBtn")
           .addEventListener("click", closeDataModal);
+
+        // Configurar validación en tiempo real para todos los campos
+        setupFieldValidation("respRate", 0, 50);
+        setupFieldValidation("temperature", 32, 42);
+        setupFieldValidation("pulse", 0, 200);
+        setupFieldValidation("systolic", 0, 250);
+        setupFieldValidation("diastolic", 0, 250);
+        setupFieldValidation("satO2", 0, 100);
+        setupFieldValidation("glucemia", 0, 600);
       }
 
       function openDataModal(hour, index) {
         currentIndex = index;
         const modal = document.getElementById("dataModal");
 
-        // Mostrar la hora de forma más clara
+        // Mostrar la hora
         document.getElementById("modalHour").textContent = `${hour
           .toString()
           .padStart(2, "0")}:00`;
 
-        // Cargar datos existentes - asegurándonos de usar el índice correcto
+        // Cargar datos existentes
         const data = vitalSigns[index] || {};
         document.getElementById("respRate").value = data.respRate || "";
         document.getElementById("temperature").value = data.temperature || "";
         document.getElementById("pulse").value = data.pulse || "";
         document.getElementById("systolic").value = data.systolic || "";
         document.getElementById("diastolic").value = data.diastolic || "";
+        document.getElementById("satO2").value = data.satO2 || "";
+        document.getElementById("glucemia").value = data.glucemia || "";
 
         modal.style.display = "block";
-
-        // Debug: Mostrar en consola para verificar
-        console.log(`Abriendo modal para hora ${hour} (índice ${index})`);
-        console.log("Datos actuales:", data);
       }
 
       function closeDataModal() {
@@ -768,12 +820,20 @@
       }
 
       function saveData() {
+        // Verificar que todos los campos son válidos antes de guardar
+        const isValid = validateAllFields();
+        if (!isValid) {
+          alert(
+            "Por favor, corrige los valores fuera de rango antes de guardar."
+          );
+          return;
+        }
+
         const getValue = (id) => {
           const val = parseFloat(document.getElementById(id).value);
           return isNaN(val) ? undefined : val;
         };
 
-        // Verificar que currentIndex es válido
         if (currentIndex === null || currentIndex < 0 || currentIndex >= 24) {
           console.error("Índice inválido:", currentIndex);
           return;
@@ -785,18 +845,11 @@
           pulse: getValue("pulse"),
           systolic: getValue("systolic"),
           diastolic: getValue("diastolic"),
+          satO2: getValue("satO2"),
+          glucemia: getValue("glucemia"),
         };
 
-        // Guardar los datos en el índice correcto
         vitalSigns[currentIndex] = newData;
-
-        // Debug
-        const hour = (currentIndex + 8) % 24;
-        console.log(
-          `Guardando datos para índice ${currentIndex} (hora ${hour}):`,
-          newData
-        );
-
         updateChart();
         updateTooltip(currentIndex, newData);
         closeDataModal();
@@ -805,15 +858,10 @@
       function deleteData() {
         if (currentIndex === null) return;
 
-        // Limpiar completamente los datos
         vitalSigns[currentIndex] = {};
-
-        // Actualizar la visualización
         updateChart();
         updateTooltip(currentIndex, {});
         closeDataModal();
-
-        console.log(`Datos eliminados para índice ${currentIndex}`);
       }
 
       function updateChart() {
@@ -827,66 +875,99 @@
         const gridHeight = grid.offsetHeight;
         const cellWidth = gridWidth / 24;
 
-        // Offsets horizontales MÁS PEQUEÑOS para mantener puntos dentro de la franja
         const offsets = {
-          FR: -8, // Muy cerca del centro-izquierda
-          Temp: -3, // Ligeramente izquierda del centro
-          FC: 3, // Ligeramente derecha del centro
-          TA: 8, // Muy cerca del centro-derecha
+          FR: -8,
+          Temp: -3,
+          FC: 3,
+          TA: 8,
         };
 
-        vitalSigns.forEach((data, index) => {
-          if (!data || Object.keys(data).length === 0) {
-            // Limpiar la clase has-data si no hay datos
-            const cell = document.querySelector(
-              `.grid-cell[data-index="${index}"]`
-            );
-            if (cell) cell.classList.remove("has-data");
-            return;
-          }
+        // Limpiar todas las clases has-data
+        document.querySelectorAll(".grid-cell").forEach((cell) => {
+          cell.classList.remove("has-data");
+        });
 
-          // IMPORTANTE: Usar el índice exacto para calcular la posición
-          const xCenter = index * cellWidth + cellWidth / 2;
+        // Arrays para almacenar puntos de cada tipo para crear líneas
+        const frPoints = [];
+        const tempPoints = [];
+        const fcPoints = [];
+
+        vitalSigns.forEach((data, index) => {
           const cell = document.querySelector(
             `.grid-cell[data-index="${index}"]`
           );
+          if (!cell) return;
 
-          if (!cell) {
-            console.error(`No se encontró celda para índice ${index}`);
+          // Verificar si hay datos válidos
+          const hasValidData =
+            data &&
+            Object.keys(data).some(
+              (key) =>
+                data[key] !== undefined &&
+                data[key] !== null &&
+                data[key] !== ""
+            );
+
+          if (!hasValidData) {
+            cell.classList.remove("has-data");
             return;
           }
 
+          // Marcar la celda como con datos
           cell.classList.add("has-data");
 
+          // Posición X centrada en la franja
+          const xCenter = index * cellWidth + cellWidth / 2;
+
           // FR (Frecuencia Respiratoria) - Escala 0-50
-          if (data.respRate !== undefined && data.respRate !== null) {
+          if (
+            data.respRate !== undefined &&
+            data.respRate !== null &&
+            data.respRate !== ""
+          ) {
             const y = gridHeight - (data.respRate / 50) * gridHeight;
-            createPoint(xCenter + offsets.FR, y, "resp-point");
+            const x = xCenter + offsets.FR;
+            createPoint(x, y, "resp-point");
+            frPoints.push({ x, y, index });
           }
 
           // Temperatura - Escala 32-42°C
-          if (data.temperature !== undefined && data.temperature !== null) {
+          if (
+            data.temperature !== undefined &&
+            data.temperature !== null &&
+            data.temperature !== ""
+          ) {
             const y = gridHeight - ((data.temperature - 32) / 10) * gridHeight;
-            createPoint(xCenter + offsets.Temp, y, "temp-point");
+            const x = xCenter + offsets.Temp;
+            createPoint(x, y, "temp-point");
+            tempPoints.push({ x, y, index });
           }
 
           // FC (Frecuencia Cardíaca) - Escala 0-200
-          if (data.pulse !== undefined && data.pulse !== null) {
+          if (
+            data.pulse !== undefined &&
+            data.pulse !== null &&
+            data.pulse !== ""
+          ) {
             const y = gridHeight - (data.pulse / 200) * gridHeight;
-            createPoint(xCenter + offsets.FC, y, "pulse-point");
+            const x = xCenter + offsets.FC;
+            createPoint(x, y, "pulse-point");
+            fcPoints.push({ x, y, index });
           }
 
           // TA (Tensión Arterial) - Escala 0-250
           if (
             data.systolic !== undefined &&
             data.systolic !== null &&
+            data.systolic !== "" &&
             data.diastolic !== undefined &&
-            data.diastolic !== null
+            data.diastolic !== null &&
+            data.diastolic !== ""
           ) {
             const ySys = gridHeight - (data.systolic / 250) * gridHeight;
             const yDias = gridHeight - (data.diastolic / 250) * gridHeight;
 
-            // Línea vertical para TA - EXACTAMENTE en la franja correspondiente
+            // Línea vertical para TA
             const line = document.createElement("div");
             line.className = "chart-line bp-line";
             line.style.left = `${xCenter + offsets.TA}px`;
@@ -899,6 +980,11 @@
             createPoint(xCenter + offsets.TA, yDias, "bp-point");
           }
         });
+
+        // Crear líneas conectoras entre puntos consecutivos
+        createConnectingLines(frPoints, "resp-line");
+        createConnectingLines(tempPoints, "temp-line");
+        createConnectingLines(fcPoints, "pulse-line");
       }
 
       function createPoint(x, y, className) {
@@ -907,6 +993,34 @@
         point.style.left = `${x}px`;
         point.style.top = `${y}px`;
         document.getElementById("chartGrid").appendChild(point);
+      }
+
+      function createConnectingLines(points, lineClass) {
+        // Ordenar puntos por índice para conectar consecutivos
+        points.sort((a, b) => a.index - b.index);
+
+        for (let i = 0; i < points.length - 1; i++) {
+          const start = points[i];
+          const end = points[i + 1];
+
+          // Calcular distancia y ángulo
+          const dx = end.x - start.x;
+          const dy = end.y - start.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+          // Crear línea
+          const line = document.createElement("div");
+          line.className = `chart-line ${lineClass}`;
+          line.style.left = `${start.x}px`;
+          line.style.top = `${start.y}px`;
+          line.style.width = `${distance}px`;
+          line.style.height = "2px";
+          line.style.transform = `rotate(${angle}deg)`;
+          line.style.transformOrigin = "0 0";
+
+          document.getElementById("chartGrid").appendChild(line);
+        }
       }
 
       function updateTooltip(index, data) {
@@ -922,6 +1036,7 @@
               data[key] !== undefined && data[key] !== null && data[key] !== ""
           );
 
+        // Actualizar celda del gráfico
         if (hasData) {
           cell.classList.add("has-data");
           cell.querySelector(".value-fr").textContent = data.respRate || "--";
@@ -931,13 +1046,114 @@
           }/${data.diastolic || "--"}`;
           cell.querySelector(".value-temp").textContent =
             data.temperature || "--";
+          cell.querySelector(".value-sato2").textContent = data.satO2 || "--";
+          cell.querySelector(".value-glucemia").textContent =
+            data.glucemia || "--";
         } else {
           cell.classList.remove("has-data");
           cell.querySelector(".value-fr").textContent = "--";
           cell.querySelector(".value-fc").textContent = "--";
           cell.querySelector(".value-ta").textContent = "--/--";
           cell.querySelector(".value-temp").textContent = "--";
+          cell.querySelector(".value-sato2").textContent = "--";
+          cell.querySelector(".value-glucemia").textContent = "--";
         }
+
+        // Actualizar también la celda de cabecera correspondiente
+        const hour = (index + 8) % 24;
+        const headerCell = document.querySelector(
+          `.hour-cell[data-hour="${hour}"]`
+        );
+        if (headerCell) {
+          if (hasData) {
+            headerCell.classList.add("has-data");
+          } else {
+            headerCell.classList.remove("has-data");
+          }
+        }
+      }
+
+      function setupFieldValidation(fieldId, min, max) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + "-error");
+
+        function validateField() {
+          const value = parseFloat(field.value);
+          const isEmpty = field.value === "";
+
+          if (isEmpty) {
+            // Campo vacío es válido
+            field.classList.remove("invalid");
+            errorDiv.style.display = "none";
+            return true;
+          }
+
+          if (isNaN(value) || value < min || value > max) {
+            // Valor inválido
+            field.classList.add("invalid");
+            errorDiv.style.display = "block";
+            return false;
+          } else {
+            // Valor válido
+            field.classList.remove("invalid");
+            errorDiv.style.display = "none";
+            return true;
+          }
+        }
+
+        // Validar en tiempo real mientras escribe
+        field.addEventListener("input", validateField);
+        field.addEventListener("blur", validateField);
+
+        // Prevenir valores fuera de rango al escribir
+        field.addEventListener("keydown", function (e) {
+          // Permitir teclas especiales (backspace, delete, arrow keys, etc.)
+          const allowedKeys = [
+            8, 9, 27, 13, 46, 37, 38, 39, 40, 190, 110, 188, 189,
+          ];
+          if (
+            allowedKeys.includes(e.keyCode) ||
+            (e.keyCode >= 48 && e.keyCode <= 57) || // números 0-9
+            (e.keyCode >= 96 && e.keyCode <= 105) || // numpad 0-9
+            (e.ctrlKey === true &&
+              (e.keyCode === 65 ||
+                e.keyCode === 67 ||
+                e.keyCode === 86 ||
+                e.keyCode === 88))
+          ) {
+            return;
+          }
+          e.preventDefault();
+        });
+      }
+
+      function validateAllFields() {
+        const fields = [
+          { id: "respRate", min: 0, max: 50 },
+          { id: "temperature", min: 32, max: 42 },
+          { id: "pulse", min: 0, max: 200 },
+          { id: "systolic", min: 0, max: 250 },
+          { id: "diastolic", min: 0, max: 250 },
+          { id: "satO2", min: 0, max: 100 },
+          { id: "glucemia", min: 0, max: 600 },
+        ];
+
+        let allValid = true;
+
+        fields.forEach((field) => {
+          const input = document.getElementById(field.id);
+          const value = parseFloat(input.value);
+          const isEmpty = input.value === "";
+
+          if (
+            !isEmpty &&
+            (isNaN(value) || value < field.min || value > field.max)
+          ) {
+            allValid = false;
+          }
+        });
+
+        return allValid;
       }
 
       function setupResponsive() {
