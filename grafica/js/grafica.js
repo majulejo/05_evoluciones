@@ -126,6 +126,11 @@ function initModal() {
   document
     .getElementById("cancelBtn")
     .addEventListener("click", closeDataModal);
+
+  // Prevenir el cierre accidental
+  document.querySelector(".modal-content").addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
 }
 
 function openDataModal(hour, index) {
@@ -164,13 +169,11 @@ function saveData() {
   };
 
   updateChart();
-  updateTooltip(currentIndex, vitalSigns[currentIndex]); // Actualizar tooltip
+  updateTooltip(currentIndex, vitalSigns[currentIndex]);
   closeDataModal();
-}
-function deleteData() {
-  vitalSigns[currentIndex] = {};
-  updateChart();
-  closeDataModal();
+
+  // Opcional: Mostrar confirmación en consola
+  console.log("Datos guardados:", vitalSigns[currentIndex]);
 }
 
 function updateChart() {
@@ -214,6 +217,7 @@ function updateChart() {
       return;
     }
 
+    const x = index * cellWidth + cellWidth / 2; // <-- Añadir esta línea
     const cell = document.querySelector(`.grid-cell[data-index="${index}"]`);
     if (cell) {
       cell.classList.add("has-data");
