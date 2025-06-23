@@ -189,10 +189,20 @@
         position: relative;
         cursor: pointer;
         transition: background-color 0.2s;
+        background-color: transparent;
       }
 
       .grid-cell:hover {
         background-color: rgba(0, 102, 204, 0.1);
+      }
+
+      /* Fondo diferente para celdas con datos */
+      .grid-cell.has-data {
+        background-color: rgba(52, 152, 219, 0.08);
+      }
+
+      .grid-cell.has-data:hover {
+        background-color: rgba(52, 152, 219, 0.15);
       }
 
       /* Líneas horizontales de referencia */
@@ -241,7 +251,7 @@
         background-color: #333;
       }
 
-      /* Puntos del gráfico */
+      /* Puntos del gráfico - CORREGIDOS para estar dentro de cada franja */
       .chart-point {
         width: 6px !important;
         height: 6px !important;
@@ -253,22 +263,18 @@
       }
 
       .resp-point {
-        left: calc(50% - 18px) !important;
         background-color: #000;
       }
 
       .temp-point {
-        left: calc(50% - 6px) !important;
         background-color: #dc3545;
       }
 
       .pulse-point {
-        left: calc(50% + 6px) !important;
         background-color: #0d6efd;
       }
 
       .bp-point {
-        left: calc(50% + 18px) !important;
         background-color: #198754;
       }
 
@@ -296,7 +302,7 @@
         z-index: 1;
       }
 
-      /* TOOLTIP SYSTEM - CORREGIDO */
+      /* TOOLTIP SYSTEM - Centrado en cada franja horaria */
       .hour-data-indicator {
         position: absolute;
         bottom: 2px;
@@ -317,12 +323,12 @@
         background-color: #2980b9;
       }
 
-      /* Tooltip container - SOLO visible en hover */
+      /* Tooltip container - POSICIONADO PARA SER VISIBLE */
       .vital-signs-tooltip {
         position: absolute;
-        bottom: 100%;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
         background: white;
         border: 2px solid #3498db;
         border-radius: 8px;
@@ -336,22 +342,15 @@
         visibility: hidden;
         transition: opacity 0.2s ease, visibility 0.2s ease;
         pointer-events: none;
-        margin-bottom: 5px;
+        min-width: 140px;
       }
 
-      /* Flecha del tooltip */
+      /* SIN flecha para evitar problemas de posicionamiento */
       .vital-signs-tooltip::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 6px;
-        border-style: solid;
-        border-color: #3498db transparent transparent transparent;
+        display: none;
       }
 
-      /* MOSTRAR tooltip solo en hover y cuando hay datos */
+      /* MOSTRAR tooltip solo en hover sobre la franja horaria */
       .grid-cell:hover .vital-signs-tooltip {
         opacity: 1;
         visibility: visible;
@@ -743,9 +742,13 @@
       function openDataModal(hour, index) {
         currentIndex = index;
         const modal = document.getElementById("dataModal");
-        document.getElementById("modalHour").textContent = `${hour}:00`;
 
-        // Cargar datos existentes
+        // Mostrar la hora de forma más clara
+        document.getElementById("modalHour").textContent = `${hour
+          .toString()
+          .padStart(2, "0")}:00`;
+
+        // Cargar datos existentes - asegurándonos de usar el índice correcto
         const data = vitalSigns[index] || {};
         document.getElementById("respRate").value = data.respRate || "";
         document.getElementById("temperature").value = data.temperature || "";
@@ -754,6 +757,10 @@
         document.getElementById("diastolic").value = data.diastolic || "";
 
         modal.style.display = "block";
+
+        // Debug: Mostrar en consola para verificar
+        console.log(`Abriendo modal para hora ${hour} (índice ${index})`);
+        console.log("Datos actuales:", data);
       }
 
       function closeDataModal() {
@@ -766,7 +773,13 @@
           return isNaN(val) ? undefined : val;
         };
 
-        vitalSigns[currentIndex] = {
+        // Verificar que currentIndex es válido
+        if (currentIndex === null || currentIndex < 0 || currentIndex >= 24) {
+          console.error("Índice inválido:", currentIndex);
+          return;
+        }
+
+        const newData = {
           respRate: getValue("respRate"),
           temperature: getValue("temperature"),
           pulse: getValue("pulse"),
@@ -774,16 +787,33 @@
           diastolic: getValue("diastolic"),
         };
 
+        // Guardar los datos en el índice correcto
+        vitalSigns[currentIndex] = newData;
+
+        // Debug
+        const hour = (currentIndex + 8) % 24;
+        console.log(
+          `Guardando datos para índice ${currentIndex} (hora ${hour}):`,
+          newData
+        );
+
         updateChart();
-        updateTooltip(currentIndex, vitalSigns[currentIndex]);
+        updateTooltip(currentIndex, newData);
         closeDataModal();
       }
 
       function deleteData() {
+        if (currentIndex === null) return;
+
+        // Limpiar completamente los datos
         vitalSigns[currentIndex] = {};
+
+        // Actualizar la visualización
         updateChart();
         updateTooltip(currentIndex, {});
         closeDataModal();
+
+        console.log(`Datos eliminados para índice ${currentIndex}`);
       }
 
       function updateChart() {
@@ -797,55 +827,76 @@
         const gridHeight = grid.offsetHeight;
         const cellWidth = gridWidth / 24;
 
+        // Offsets horizontales MÁS PEQUEÑOS para mantener puntos dentro de la franja
         const offsets = {
-          FR: -18,
-          Temp: -6,
-          FC: 6,
-          TA: 18,
+          FR: -8, // Muy cerca del centro-izquierda
+          Temp: -3, // Ligeramente izquierda del centro
+          FC: 3, // Ligeramente derecha del centro
+          TA: 8, // Muy cerca del centro-derecha
         };
 
         vitalSigns.forEach((data, index) => {
-          if (!data || Object.keys(data).length === 0) return;
+          if (!data || Object.keys(data).length === 0) {
+            // Limpiar la clase has-data si no hay datos
+            const cell = document.querySelector(
+              `.grid-cell[data-index="${index}"]`
+            );
+            if (cell) cell.classList.remove("has-data");
+            return;
+          }
 
-          const x = index * cellWidth + cellWidth / 2;
+          // IMPORTANTE: Usar el índice exacto para calcular la posición
+          const xCenter = index * cellWidth + cellWidth / 2;
           const cell = document.querySelector(
             `.grid-cell[data-index="${index}"]`
           );
+
+          if (!cell) {
+            console.error(`No se encontró celda para índice ${index}`);
+            return;
+          }
+
           cell.classList.add("has-data");
 
-          // FR (Frecuencia Respiratoria)
-          if (data.respRate !== undefined) {
+          // FR (Frecuencia Respiratoria) - Escala 0-50
+          if (data.respRate !== undefined && data.respRate !== null) {
             const y = gridHeight - (data.respRate / 50) * gridHeight;
-            createPoint(x + offsets.FR, y, "resp-point");
+            createPoint(xCenter + offsets.FR, y, "resp-point");
           }
 
-          // Temperatura
-          if (data.temperature !== undefined) {
+          // Temperatura - Escala 32-42°C
+          if (data.temperature !== undefined && data.temperature !== null) {
             const y = gridHeight - ((data.temperature - 32) / 10) * gridHeight;
-            createPoint(x + offsets.Temp, y, "temp-point");
+            createPoint(xCenter + offsets.Temp, y, "temp-point");
           }
 
-          // FC (Frecuencia Cardíaca)
-          if (data.pulse !== undefined) {
+          // FC (Frecuencia Cardíaca) - Escala 0-200
+          if (data.pulse !== undefined && data.pulse !== null) {
             const y = gridHeight - (data.pulse / 200) * gridHeight;
-            createPoint(x + offsets.FC, y, "pulse-point");
+            createPoint(xCenter + offsets.FC, y, "pulse-point");
           }
 
-          // TA (Tensión Arterial)
-          if (data.systolic !== undefined && data.diastolic !== undefined) {
+          // TA (Tensión Arterial) - Escala 0-250
+          if (
+            data.systolic !== undefined &&
+            data.systolic !== null &&
+            data.diastolic !== undefined &&
+            data.diastolic !== null
+          ) {
             const ySys = gridHeight - (data.systolic / 250) * gridHeight;
             const yDias = gridHeight - (data.diastolic / 250) * gridHeight;
 
-            // Línea vertical para TA
+            // Línea vertical para TA - EXACTAMENTE en la franja correspondiente
             const line = document.createElement("div");
             line.className = "chart-line bp-line";
-            line.style.left = `${x + offsets.TA}px`;
-            line.style.top = `${ySys}px`;
-            line.style.height = `${yDias - ySys}px`;
+            line.style.left = `${xCenter + offsets.TA}px`;
+            line.style.top = `${Math.min(ySys, yDias)}px`;
+            line.style.height = `${Math.abs(yDias - ySys)}px`;
             grid.appendChild(line);
 
-            createPoint(x + offsets.TA, ySys, "bp-point");
-            createPoint(x + offsets.TA, yDias, "bp-point");
+            // Puntos de sistólica y diastólica
+            createPoint(xCenter + offsets.TA, ySys, "bp-point");
+            createPoint(xCenter + offsets.TA, yDias, "bp-point");
           }
         });
       }
@@ -864,7 +915,14 @@
         );
         if (!cell) return;
 
-        if (data && Object.keys(data).length > 0) {
+        const hasData =
+          data &&
+          Object.keys(data).some(
+            (key) =>
+              data[key] !== undefined && data[key] !== null && data[key] !== ""
+          );
+
+        if (hasData) {
           cell.classList.add("has-data");
           cell.querySelector(".value-fr").textContent = data.respRate || "--";
           cell.querySelector(".value-fc").textContent = data.pulse || "--";

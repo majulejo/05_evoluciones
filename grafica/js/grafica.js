@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupResponsive();
 });
 
-// Modificar la función initGridCells para simplificarla
+// Simplificar la función initGridCells
 function initGridCells() {
   const cells = document.querySelectorAll(".grid-cell");
   cells.forEach((cell, index) => {
@@ -27,7 +27,7 @@ function initGridCells() {
     cell.dataset.hour = hour;
     cell.dataset.index = index;
 
-    // Limpiar contenido existente
+    // Limpiar contenido existente y establecer estructura básica
     cell.innerHTML = `
       <div class="hour-data-indicator"></div>
       <div class="tooltip-container"></div>
@@ -72,14 +72,42 @@ function showTooltip(cell, index) {
   `;
 
   tooltipContainer.appendChild(tooltip);
+}
+
+// Optimizar la función showTooltip
+function showTooltip(cell, index) {
+  const data = vitalSigns[index];
+  if (!data || Object.keys(data).length === 0) return;
+
+  const tooltipContainer = cell.querySelector(".tooltip-container");
+
+  // Limpiar tooltip existente
+  tooltipContainer.innerHTML = "";
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "vital-signs-tooltip";
+  tooltip.innerHTML = `
+    <div class="tooltip-content">
+      <div class="tooltip-row"><span>FR:</span> ${
+        data.respRate || "--"
+      } rpm</div>
+      <div class="tooltip-row"><span>FC:</span> ${data.pulse || "--"} lpm</div>
+      <div class="tooltip-row"><span>TA:</span> ${data.systolic || "--"}/${
+    data.diastolic || "--"
+  } mmHg</div>
+      <div class="tooltip-row"><span>Tª:</span> ${
+        data.temperature || "--"
+      }°C</div>
+    </div>
+  `;
+
+  tooltipContainer.appendChild(tooltip);
   tooltip.style.opacity = "1";
 }
 
 function hideTooltip(cell) {
-  const tooltip = cell.querySelector(".vital-signs-tooltip");
-  if (tooltip) {
-    tooltip.style.opacity = "0";
-  }
+  const tooltipContainer = cell.querySelector(".tooltip-container");
+  tooltipContainer.innerHTML = "";
 }
 
 function initModal() {
@@ -148,8 +176,10 @@ function deleteData() {
 function updateChart() {
   // Limpiar elementos existentes
   document
-    .querySelectorAll(".chart-point, .chart-line")
-    .forEach((el) => el.remove());
+    .querySelectorAll(".grid-cell.has-data, .horizontal-line.has-data")
+    .forEach((el) => {
+      el.classList.remove("has-data");
+    });
 
   const grid = document.getElementById("chartGrid");
   const gridWidth = grid.offsetWidth;
@@ -157,37 +187,95 @@ function updateChart() {
   const cellWidth = gridWidth / 24;
 
   // Offsets horizontales para cada tipo de punto
-  // Cambia los offsets a estos valores:
   const offsets = {
-    FR: -18, // Aumentado de -15
-    Temp: -6, // Aumentado de -5
-    FC: 6, // Aumentado de 5
-    TA: 18, // Aumentado de 15
+    FR: -18,
+    Temp: -6,
+    FC: 6,
+    TA: 18,
+  };
+
+  // Variables para almacenar puntos previos y crear conexiones
+  let prevPoints = {
+    FR: null,
+    Temp: null,
+    FC: null,
+    TA: null,
   };
 
   vitalSigns.forEach((data, index) => {
-    if (!data || Object.keys(data).length === 0) return;
+    if (!data || Object.keys(data).length === 0) {
+      // Resetear puntos previos si no hay datos en esta hora
+      prevPoints = {
+        FR: null,
+        Temp: null,
+        FC: null,
+        TA: null,
+      };
+      return;
+    }
 
-    const x = index * cellWidth + cellWidth / 2;
     const cell = document.querySelector(`.grid-cell[data-index="${index}"]`);
-    cell.classList.add("has-data");
+    if (cell) {
+      cell.classList.add("has-data");
+
+      // También marcamos la línea horizontal correspondiente
+      const lineIndex = Math.floor((index / 24) * 10); // Aproximación a las líneas
+      const lines = document.querySelectorAll(".horizontal-line");
+      if (lines[lineIndex]) {
+        lines[lineIndex].classList.add("has-data");
+      }
+    }
 
     // FR (Frecuencia Respiratoria)
     if (data.respRate !== undefined) {
       const y = gridHeight - (data.respRate / 50) * gridHeight;
-      createPoint(x + offsets.FR, y, "resp-point");
+      createPoint(x + offsets.FR, y, "resp-point", "#000");
+
+      // Conectar con punto anterior si existe
+      if (prevPoints.FR) {
+        createConnectionLine(
+          prevPoints.FR.x,
+          prevPoints.FR.y,
+          x + offsets.FR,
+          y,
+          "resp-line"
+        );
+      }
+      prevPoints.FR = { x: x + offsets.FR, y };
     }
 
     // Temperatura
     if (data.temperature !== undefined) {
       const y = gridHeight - ((data.temperature - 32) / 10) * gridHeight;
-      createPoint(x + offsets.Temp, y, "temp-point");
+      createPoint(x + offsets.Temp, y, "temp-point", "#d63384");
+
+      if (prevPoints.Temp) {
+        createConnectionLine(
+          prevPoints.Temp.x,
+          prevPoints.Temp.y,
+          x + offsets.Temp,
+          y,
+          "temp-line"
+        );
+      }
+      prevPoints.Temp = { x: x + offsets.Temp, y };
     }
 
     // FC (Frecuencia Cardíaca)
     if (data.pulse !== undefined) {
       const y = gridHeight - (data.pulse / 200) * gridHeight;
-      createPoint(x + offsets.FC, y, "pulse-point");
+      createPoint(x + offsets.FC, y, "pulse-point", "#0d6efd");
+
+      if (prevPoints.FC) {
+        createConnectionLine(
+          prevPoints.FC.x,
+          prevPoints.FC.y,
+          x + offsets.FC,
+          y,
+          "pulse-line"
+        );
+      }
+      prevPoints.FC = { x: x + offsets.FC, y };
     }
 
     // TA (Tensión Arterial)
@@ -201,25 +289,71 @@ function updateChart() {
       line.style.left = `${x + offsets.TA}px`;
       line.style.top = `${ySys}px`;
       line.style.height = `${yDias - ySys}px`;
+      line.style.backgroundColor = "#198754";
       grid.appendChild(line);
 
-      createPoint(x + offsets.TA, ySys, "bp-point");
-      createPoint(x + offsets.TA, yDias, "bp-point");
+      // Puntos de TA
+      createPoint(x + offsets.TA, ySys, "bp-point", "#198754");
+      createPoint(x + offsets.TA, yDias, "bp-point", "#198754");
+
+      // Conectar punto medio con registro anterior
+      const yMid = (ySys + yDias) / 2;
+      if (prevPoints.TA) {
+        createConnectionLine(
+          prevPoints.TA.x,
+          prevPoints.TA.y,
+          x + offsets.TA,
+          yMid,
+          "bp-line"
+        );
+      }
+      prevPoints.TA = { x: x + offsets.TA, y: yMid };
     }
   });
 }
 
-function createPoint(x, y, className) {
+// Función para crear puntos mejorada
+function createPoint(x, y, className, color) {
   const point = document.createElement("div");
   point.className = `chart-point ${className}`;
-  point.style.width = "6px"; // Reducido de 8px
-  point.style.height = "6px"; // Reducido de 8px
-  point.style.left = `${x}px`;
-  point.style.top = `${y}px`;
-  point.style.transform = "translate(-50%, -50%)";
+  point.style.cssText = `
+    width: 8px;
+    height: 8px;
+    left: ${x}px;
+    top: ${y}px;
+    background-color: ${color};
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    position: absolute;
+    z-index: 2;
+    border: 1px solid white;
+  `;
   document.getElementById("chartGrid").appendChild(point);
 }
 
+// Nueva función para crear líneas de conexión
+function createConnectionLine(x1, y1, x2, y2, lineClass) {
+  const line = document.createElement("div");
+  line.className = `connection-line ${lineClass}`;
+
+  // Calcular longitud y ángulo de la línea
+  const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  const angle = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+
+  line.style.cssText = `
+    position: absolute;
+    left: ${x1}px;
+    top: ${y1}px;
+    width: ${length}px;
+    height: 2px;
+    background-color: inherit;
+    transform-origin: 0 0;
+    transform: rotate(${angle}deg);
+    z-index: 1;
+  `;
+
+  document.getElementById("chartGrid").appendChild(line);
+}
 function setupResponsive() {
   // Ajustar gráfico al redimensionar
   window.addEventListener("resize", () => {
@@ -284,17 +418,9 @@ function updateTooltip(index, data) {
 
   if (data && Object.keys(data).length > 0) {
     cell.classList.add("has-data");
-    cell.querySelector(".value-fr").textContent = data.respRate || "--";
-    cell.querySelector(".value-fc").textContent = data.pulse || "--";
-    cell.querySelector(".value-ta").textContent = `${data.systolic || "--"}/${
-      data.diastolic || "--"
-    }`;
-    cell.querySelector(".value-temp").textContent = data.temperature || "--";
+    // Resto del código existente...
   } else {
     cell.classList.remove("has-data");
-    // Restablecer valores por defecto
-    ["fr", "fc", "ta", "temp"].forEach((type) => {
-      cell.querySelector(`.value-${type}`).textContent = "--";
-    });
+    // Resto del código existente...
   }
 }

@@ -260,38 +260,68 @@
 
       /* Estilos para los puntos del gráfico */
 /* Puntos más pequeños y mejor espaciados */
+/* Estilos para puntos */
 .chart-point {
-  width: 6px !important;
-  height: 6px !important;
-  margin: 0;
-  position: absolute;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  position: absolute;
   transform: translate(-50%, -50%);
   z-index: 2;
+  border: 1px solid white !important;
 }
 
-/* Espacio entre puntos */
-.resp-point { 
-    left: calc(50% - 18px) !important; 
+.resp-point {
+  background-color: #000 !important;
+  left: calc(50% - 18px);
 }
 
-.temp-point { 
-    left: calc(50% - 6px) !important; 
+.temp-point {
+  background-color: #d63384 !important;
+  left: calc(50% - 6px);
 }
 
-.pulse-point { 
-    left: calc(50% + 6px) !important; 
+.pulse-point {
+  background-color: #0d6efd !important;
+  left: calc(50% + 6px);
 }
 
-.bp-point { 
-    left: calc(50% + 18px) !important; 
+.bp-point {
+  background-color: #198754 !important;
+  left: calc(50% + 18px);
 }
 
+/* Estilos para líneas de conexión */
+.connection-line {
+  position: absolute;
+  height: 2px;
+  transform-origin: left center;
+  z-index: 1;
+}
 
-/* Línea de TA más fina */
+.resp-line {
+  background-color: #000;
+}
+
+.temp-line {
+  background-color: #d63384;
+}
+
+.pulse-line {
+  background-color: #0d6efd;
+}
+
+.bp-line {
+  background-color: #198754;
+}
+
+/* Línea de TA */
 .chart-line.bp-line {
-  width: 1px !important;
+  width: 1px;
   transform: translateX(-50%);
+  background-color: #198754;
+  z-index: 1;
+  position: absolute;
 }
 
 /* Tooltip con colores temáticos */
@@ -323,21 +353,7 @@
         z-index: 1;
       }
 
-      .resp-line {
-        background-color: #000;
-      }
-      .temp-line {
-        background-color: #d63384;
-      }
-      .pulse-line {
-        background-color: #0d6efd;
-      }
-      .bp-line {
-        background-color: #198754;
-        height: 3px;
-        width: 1px;
-        z-index: 1;
-      }
+     
 
       /* Modal para introducir datos */
       .data-modal {
@@ -449,15 +465,20 @@
   background-color: #2980b9;
 }
 
-/* Mejorar los estilos del tooltip */
+/* Tooltip container */
 .tooltip-container {
   position: absolute;
-  bottom: 25px;
+  bottom: 25px; /* Posición relativa a la celda */
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
   pointer-events: none;
   width: max-content;
+  display: none;
+}
+
+.grid-cell:hover .tooltip-container {
+  display: block;
 }
 
 .vital-signs-tooltip {
@@ -469,9 +490,7 @@
   font-family: Arial, sans-serif;
   font-size: 12px;
   min-width: 120px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
+  position: relative;
 }
 
 /* Flecha del tooltip */
@@ -486,7 +505,6 @@
   border-color: #3498db transparent transparent transparent;
 }
 
-/* Contenido del tooltip */
 .tooltip-content {
   display: flex;
   flex-direction: column;
@@ -543,4 +561,26 @@
 .grid-cell:hover .vital-signs-tooltip,
 .grid-cell.has-data .vital-signs-tooltip {
   opacity: 1;
+}
+
+/* Estilos para celdas con información */
+
+/* Estilos para celdas con datos */
+.grid-cell.has-data {
+  background-color: rgba(0, 102, 204, 0.05);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+/* Estilos para filas completas con datos */
+.horizontal-line.has-data + .grid-cell {
+  background-color: rgba(0, 102, 204, 0.03); /* Sombreado más sutil */
+}
+
+/* Mejor espaciado para puntos de TA */
+.bp-point {
+  margin: 2px 0; /* Espacio vertical entre puntos */
+}
+
+/* Línea de TA más delgada */
+.chart-line.bp-line {
+  width: 0.5px; /* Más delgada que antes */
 }
