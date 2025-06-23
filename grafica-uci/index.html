@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="shortcut icon"
+      href="images/info_claude.png"
+      type="image/x-icon"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Claude Gráfica de Enfermería UCI</title>
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/extensions.css" />
+  </head>
+
+  <body>
+    <div class="chart-container">
+      <!-- Información del paciente -->
+      <div class="patient-info">
+        <div class="patient-field patient-name">
+          <strong>NOMBRE:</strong>
+          <input type="text" placeholder="" maxlength="50" id="patientName" />
+        </div>
+        <div class="patient-field patient-date">
+          <strong>FECHA:</strong>
+          <input type="date" id="patientDate" />
+        </div>
+        <div class="patient-field patient-age">
+          <strong>EDAD:</strong>
+          <input
+            type="number"
+            id="patientAge"
+            min="0"
+            max="999"
+            maxlength="3"
+          />
+        </div>
+        <div class="patient-field patient-history">
+          <strong>H.C.:</strong>
+          <input
+            type="number"
+            id="patientHistory"
+            min="0"
+            max="9999999"
+            maxlength="7"
+          />
+        </div>
+        <div class="patient-field patient-bed">
+          <strong>CAMA:</strong>
+          <input type="number" id="patientBed" min="1" max="12" />
+        </div>
+        <div class="patient-field patient-sheet">
+          <strong>HOJA:</strong>
+          <input
+            type="number"
+            id="patientSheet"
+            min="1"
+            max="999"
+            maxlength="3"
+          />
+        </div>
+      </div>
+
+      <!-- Sección principal de gráfica -->
+      <div class="chart-main">
+        <!-- Sección de escalas -->
+        <div class="scales-section">
+          <div class="scales-title">ESCALAS</div>
+          <div class="scales-grid">
+            <!-- Frecuencia Respiratoria -->
+            <div class="scale-column resp-scale">
+              <div class="scale-title" style="color: #000">F.R.</div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                50
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                45
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                40
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                35
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                30
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                25
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                20
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                15
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                10
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                5
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="r.p.m."
+                style="color: #000"
+              >
+                0
+              </div>
+            </div>
+
+            <!-- Temperatura -->
+            <div class="scale-column temperature-scale">
+              <div class="scale-title" style="color: #dc3545">°C</div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                42
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                41
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                40
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                39
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                38
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                37
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                36
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                35
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                34
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                33
+              </div>
+              <div class="scale-value" data-tooltip="ºC" style="color: #dc3545">
+                32
+              </div>
+            </div>
+
+            <!-- Frecuencia Cardíaca -->
+            <div class="scale-column pulse-scale">
+              <div class="scale-title" style="color: #0d6efd">F.C.</div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                200
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                180
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                160
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                140
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                120
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                100
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                80
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                60
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                40
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                20
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="l/m"
+                style="color: #0d6efd"
+              >
+                0
+              </div>
+            </div>
+
+            <!-- Tensión Arterial -->
+            <div class="scale-column bp-scale">
+              <div class="scale-title" style="color: #198754">T.A.</div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                250
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                225
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                200
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                175
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                150
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                125
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                100
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                75
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                50
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                25
+              </div>
+              <div
+                class="scale-value"
+                data-tooltip="mmHg"
+                style="color: #198754"
+              >
+                0
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Área de gráfico -->
+        <div class="chart-area">
+          <!-- Cabecera de horas -->
+          <div class="hours-header">
+            <div class="hour-cell">8</div>
+            <div class="hour-cell">9</div>
+            <div class="hour-cell">10</div>
+            <div class="hour-cell">11</div>
+            <div class="hour-cell">12</div>
+            <div class="hour-cell">13</div>
+            <div class="hour-cell">14</div>
+            <div class="hour-cell">15</div>
+            <div class="hour-cell">16</div>
+            <div class="hour-cell">17</div>
+            <div class="hour-cell">18</div>
+            <div class="hour-cell">19</div>
+            <div class="hour-cell">20</div>
+            <div class="hour-cell">21</div>
+            <div class="hour-cell">22</div>
+            <div class="hour-cell">23</div>
+            <div class="hour-cell">0</div>
+            <div class="hour-cell">1</div>
+            <div class="hour-cell">2</div>
+            <div class="hour-cell">3</div>
+            <div class="hour-cell">4</div>
+            <div class="hour-cell">5</div>
+            <div class="hour-cell">6</div>
+            <div class="hour-cell">7</div>
+          </div>
+
+          <!-- Cuadrícula del gráfico -->
+          <div class="chart-grid" id="chartGrid">
+            <!-- Las líneas horizontales y celdas se generarán con JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONA PARA NUEVAS SECCIONES -->
+      <!-- Aquí se añadirán las nuevas zonas (glucemia, medicación, etc.) -->
+      <div id="extensions-area">
+        <!-- Contenido de extensions.html se insertará aquí -->
+      </div>
+    </div>
+
+    <!-- Modal para introducir datos -->
+    <div id="dataModal" class="data-modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeDataModal()">&times;</span>
+        <h3>Introducir Constantes</h3>
+        <p>Hora: <span id="modalHour"></span></p>
+
+        <div class="form-field">
+          <label>Frecuencia Respiratoria (rpm):</label>
+          <input type="number" id="respRate" step="1" min="0" max="50" />
+          <div class="error-message" id="respRate-error">
+            Valor debe estar entre 0 y 50 rpm
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Temperatura (°C):</label>
+          <input type="number" id="temperature" step="0.1" min="32" max="42" />
+          <div class="error-message" id="temperature-error">
+            Valor debe estar entre 32 y 42°C
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Frecuencia Cardíaca (lpm):</label>
+          <input type="number" id="pulse" min="0" max="200" />
+          <div class="error-message" id="pulse-error">
+            Valor debe estar entre 0 y 200 lpm
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>T.A. Sistólica (mmHg):</label>
+          <input type="number" id="systolic" min="0" max="250" />
+          <div class="error-message" id="systolic-error">
+            Valor debe estar entre 0 y 250 mmHg
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>T.A. Diastólica (mmHg):</label>
+          <input type="number" id="diastolic" min="0" max="250" />
+          <div class="error-message" id="diastolic-error">
+            Valor debe estar entre 0 y 250 mmHg
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Sat O2 (%):</label>
+          <input type="number" id="satO2" min="0" max="100" step="1" />
+          <div class="error-message" id="satO2-error">
+            Valor debe estar entre 0 y 100%
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Glucemia (mg/dL):</label>
+          <input type="number" id="glucemia" min="0" max="600" step="1" />
+          <div class="error-message" id="glucemia-error">
+            Valor debe estar entre 0 y 600 mg/dL
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button id="saveDataBtn" class="btn btn-save">Guardar</button>
+          <button id="deleteDataBtn" class="btn btn-delete">Eliminar</button>
+          <button id="cancelBtn" class="btn btn-cancel">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/extensions.js"></script>
+  </body>
+</html>
