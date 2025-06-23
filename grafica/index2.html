@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráfica de Enfermería UCI</title>
+    <style>
+      /* ========================== */
+      /* styles.css   */
+      /* ========================== */
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        background-color: #f5f5f5;
+        padding: 10px;
+      }
+
+      .chart-container {
+        background-color: white;
+        border: 1px solid #333;
+        max-width: 1200px;
+        margin: 0 auto;
+        overflow-x: auto;
+        font-weight: bold;
+      }
+
+      /* Información del paciente */
+      .patient-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+        border-bottom: 1px solid #333;
+        flex-wrap: nowrap;
+        align-items: center;
+        background-color: #f8f8f8;
+        font-size: 11px;
+      }
+
+      .patient-field {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        margin: 0 3px;
+      }
+
+      .patient-field strong {
+        margin-right: 3px;
+        font-weight: bold;
+      }
+
+      .patient-field input {
+        border: none;
+        border-bottom: 1px solid #333;
+        background: transparent;
+        padding: 2px 3px;
+        font-size: 11px;
+        height: 18px;
+        outline: none;
+        font-weight: bold;
+      }
+
+      .patient-name input {
+        width: 220px;
+      }
+      .patient-date input {
+        width: 80px;
+      }
+      .patient-age input {
+        width: 40px;
+        text-align: center;
+      }
+      .patient-history input {
+        width: 80px;
+        text-align: center;
+      }
+      .patient-bed input {
+        width: 40px;
+        text-align: center;
+      }
+      .patient-sheet input {
+        width: 40px;
+        text-align: center;
+      }
+
+      /* Sección principal de gráfica */
+      .chart-main {
+        display: flex;
+      }
+
+      /* Escalas */
+      .scales-section {
+        width: 100px;
+        padding: 10px;
+        border-right: 1px solid #333;
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .scales-title {
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .scales-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        font-size: 10px;
+      }
+
+      .scale-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .scale-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+        font-size: 9px;
+      }
+
+      .scale-value {
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .scale-value:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        left: 50%;
+        bottom: 100%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        white-space: nowrap;
+        z-index: 10;
+      }
+
+      /* Área de gráfico */
+      .chart-area {
+        flex: 1;
+        position: relative;
+      }
+
+      /* Cabecera de horas */
+      .hours-header {
+        display: grid;
+        grid-template-columns: repeat(24, 1fr);
+        border-bottom: 1px solid #333;
+        text-align: center;
+        font-weight: bold;
+        background-color: #f0f0f0;
+      }
+
+      .hour-cell {
+        padding: 5px 0;
+        border-right: 1px solid #ccc;
+      }
+
+      /* Cuadrícula de gráfico */
+      .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(24, 1fr);
+        height: 220px;
+        position: relative;
+      }
+
+      .grid-cell {
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        position: relative;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .grid-cell:hover {
+        background-color: rgba(0, 102, 204, 0.1);
+      }
+
+      /* Líneas horizontales de referencia */
+      .horizontal-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #ddd;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .horizontal-line:nth-child(1) {
+        top: 0%;
+      }
+      .horizontal-line:nth-child(2) {
+        top: 10%;
+      }
+      .horizontal-line:nth-child(3) {
+        top: 20%;
+      }
+      .horizontal-line:nth-child(4) {
+        top: 30%;
+      }
+      .horizontal-line:nth-child(5) {
+        top: 40%;
+      }
+      .horizontal-line:nth-child(6) {
+        top: 50%;
+      }
+      .horizontal-line:nth-child(7) {
+        top: 60%;
+      }
+      .horizontal-line:nth-child(8) {
+        top: 70%;
+      }
+      .horizontal-line:nth-child(9) {
+        top: 80%;
+      }
+      .horizontal-line:nth-child(10) {
+        top: 90%;
+      }
+      .horizontal-line:nth-child(11) {
+        top: 100%;
+        background-color: #333;
+      }
+
+      /* Puntos del gráfico */
+      .chart-point {
+        width: 6px !important;
+        height: 6px !important;
+        margin: 0;
+        position: absolute;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+      }
+
+      .resp-point {
+        left: calc(50% - 18px) !important;
+        background-color: #000;
+      }
+
+      .temp-point {
+        left: calc(50% - 6px) !important;
+        background-color: #dc3545;
+      }
+
+      .pulse-point {
+        left: calc(50% + 6px) !important;
+        background-color: #0d6efd;
+      }
+
+      .bp-point {
+        left: calc(50% + 18px) !important;
+        background-color: #198754;
+      }
+
+      .chart-line {
+        position: absolute;
+        height: 2px;
+        background-color: #000;
+        transform-origin: left center;
+        z-index: 1;
+      }
+
+      .resp-line {
+        background-color: #000;
+      }
+      .temp-line {
+        background-color: #d63384;
+      }
+      .pulse-line {
+        background-color: #0d6efd;
+      }
+      .bp-line {
+        background-color: #198754;
+        height: 3px;
+        width: 1px;
+        z-index: 1;
+      }
+
+      /* TOOLTIP SYSTEM - CORREGIDO */
+      .hour-data-indicator {
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 8px;
+        background-color: #3498db;
+        border-radius: 2px;
+        opacity: 0;
+        transition: all 0.2s ease;
+        pointer-events: none;
+      }
+
+      .grid-cell.has-data .hour-data-indicator {
+        opacity: 1;
+        height: 12px;
+        background-color: #2980b9;
+      }
+
+      /* Tooltip container - SOLO visible en hover */
+      .vital-signs-tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        border: 2px solid #3498db;
+        border-radius: 8px;
+        padding: 8px 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        white-space: nowrap;
+        z-index: 100;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+        pointer-events: none;
+        margin-bottom: 5px;
+      }
+
+      /* Flecha del tooltip */
+      .vital-signs-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: #3498db transparent transparent transparent;
+      }
+
+      /* MOSTRAR tooltip solo en hover y cuando hay datos */
+      .grid-cell:hover .vital-signs-tooltip {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .tooltip-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .tooltip-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 120px;
+      }
+
+      .tooltip-row span:first-child {
+        font-weight: bold;
+        color: #2980b9;
+        margin-right: 8px;
+      }
+
+      .value-fr {
+        color: #000;
+        font-weight: bold;
+      }
+      .value-temp {
+        color: #dc3545;
+        font-weight: bold;
+      }
+      .value-fc {
+        color: #0d6efd;
+        font-weight: bold;
+      }
+      .value-ta {
+        color: #198754;
+        font-weight: bold;
+      }
+
+      /* Modal para introducir datos */
+      .data-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 350px;
+        border-radius: 5px;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: black;
+      }
+
+      .form-field {
+        margin-bottom: 15px;
+      }
+
+      .form-field label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .form-field input {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .btn-save {
+        background-color: #28a745;
+        color: white;
+      }
+      .btn-delete {
+        background-color: #dc3545;
+        color: white;
+      }
+      .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="chart-container">
+      <!-- Información del paciente -->
+      <div class="patient-info">
+        <div class="patient-field patient-name">
+          <strong>NOMBRE:</strong>
+          <input type="text" placeholder="" maxlength="50" id="patientName" />
+        </div>
+        <div class="patient-field patient-date">
+          <strong>FECHA:</strong>
+          <input type="date" id="patientDate" />
+        </div>
+        <div class="patient-field patient-age">
+          <strong>EDAD:</strong>
+          <input
+            type="number"
+            id="patientAge"
+            min="0"
+            max="999"
+            maxlength="3"
+          />
+        </div>
+        <div class="patient-field patient-history">
+          <strong>H.C.:</strong>
+          <input
+            type="number"
+            id="patientHistory"
+            min="0"
+            max="9999999"
+            maxlength="7"
+          />
+        </div>
+        <div class="patient-field patient-bed">
+          <strong>CAMA:</strong>
+          <input type="number" id="patientBed" min="1" max="12" />
+        </div>
+        <div class="patient-field patient-sheet">
+          <strong>HOJA:</strong>
+          <input
+            type="number"
+            id="patientSheet"
+            min="1"
+            max="999"
+            maxlength="3"
+          />
+        </div>
+      </div>
+
+      <!-- Sección principal de gráfica -->
+      <div class="chart-main">
+        <!-- Sección de escalas -->
+        <div class="scales-section">
+          <div class="scales-title">ESCALAS</div>
+          <div class="scales-grid">
+            <!-- Frecuencia Respiratoria -->
+            <div class="scale-column resp-scale">
+              <div class="scale-title">F.R.</div>
+              <div class="scale-value" data-tooltip="r.p.m.">50</div>
+              <div class="scale-value" data-tooltip="r.p.m.">45</div>
+              <div class="scale-value" data-tooltip="r.p.m.">40</div>
+              <div class="scale-value" data-tooltip="r.p.m.">35</div>
+              <div class="scale-value" data-tooltip="r.p.m.">30</div>
+              <div class="scale-value" data-tooltip="r.p.m.">25</div>
+              <div class="scale-value" data-tooltip="r.p.m.">20</div>
+              <div class="scale-value" data-tooltip="r.p.m.">15</div>
+              <div class="scale-value" data-tooltip="r.p.m.">10</div>
+              <div class="scale-value" data-tooltip="r.p.m.">5</div>
+              <div class="scale-value" data-tooltip="r.p.m.">0</div>
+            </div>
+
+            <!-- Temperatura -->
+            <div class="scale-column temperature-scale">
+              <div class="scale-title">°C</div>
+              <div class="scale-value" data-tooltip="ºC">42</div>
+              <div class="scale-value" data-tooltip="ºC">41</div>
+              <div class="scale-value" data-tooltip="ºC">40</div>
+              <div class="scale-value" data-tooltip="ºC">39</div>
+              <div class="scale-value" data-tooltip="ºC">38</div>
+              <div class="scale-value" data-tooltip="ºC">37</div>
+              <div class="scale-value" data-tooltip="ºC">36</div>
+              <div class="scale-value" data-tooltip="ºC">35</div>
+              <div class="scale-value" data-tooltip="ºC">34</div>
+              <div class="scale-value" data-tooltip="ºC">33</div>
+              <div class="scale-value" data-tooltip="ºC">32</div>
+            </div>
+
+            <!-- Frecuencia Cardíaca -->
+            <div class="scale-column pulse-scale">
+              <div class="scale-title">F.C.</div>
+              <div class="scale-value" data-tooltip="l/m">200</div>
+              <div class="scale-value" data-tooltip="l/m">180</div>
+              <div class="scale-value" data-tooltip="l/m">160</div>
+              <div class="scale-value" data-tooltip="l/m">140</div>
+              <div class="scale-value" data-tooltip="l/m">120</div>
+              <div class="scale-value" data-tooltip="l/m">100</div>
+              <div class="scale-value" data-tooltip="l/m">80</div>
+              <div class="scale-value" data-tooltip="l/m">60</div>
+              <div class="scale-value" data-tooltip="l/m">40</div>
+              <div class="scale-value" data-tooltip="l/m">20</div>
+              <div class="scale-value" data-tooltip="l/m">0</div>
+            </div>
+
+            <!-- Tensión Arterial -->
+            <div class="scale-column bp-scale">
+              <div class="scale-title">T.A.</div>
+              <div class="scale-value" data-tooltip="mmHg">250</div>
+              <div class="scale-value" data-tooltip="mmHg">225</div>
+              <div class="scale-value" data-tooltip="mmHg">200</div>
+              <div class="scale-value" data-tooltip="mmHg">175</div>
+              <div class="scale-value" data-tooltip="mmHg">150</div>
+              <div class="scale-value" data-tooltip="mmHg">125</div>
+              <div class="scale-value" data-tooltip="mmHg">100</div>
+              <div class="scale-value" data-tooltip="mmHg">75</div>
+              <div class="scale-value" data-tooltip="mmHg">50</div>
+              <div class="scale-value" data-tooltip="mmHg">25</div>
+              <div class="scale-value" data-tooltip="mmHg">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Área de gráfico -->
+        <div class="chart-area">
+          <!-- Cabecera de horas -->
+          <div class="hours-header">
+            <div class="hour-cell">8</div>
+            <div class="hour-cell">9</div>
+            <div class="hour-cell">10</div>
+            <div class="hour-cell">11</div>
+            <div class="hour-cell">12</div>
+            <div class="hour-cell">13</div>
+            <div class="hour-cell">14</div>
+            <div class="hour-cell">15</div>
+            <div class="hour-cell">16</div>
+            <div class="hour-cell">17</div>
+            <div class="hour-cell">18</div>
+            <div class="hour-cell">19</div>
+            <div class="hour-cell">20</div>
+            <div class="hour-cell">21</div>
+            <div class="hour-cell">22</div>
+            <div class="hour-cell">23</div>
+            <div class="hour-cell">0</div>
+            <div class="hour-cell">1</div>
+            <div class="hour-cell">2</div>
+            <div class="hour-cell">3</div>
+            <div class="hour-cell">4</div>
+            <div class="hour-cell">5</div>
+            <div class="hour-cell">6</div>
+            <div class="hour-cell">7</div>
+          </div>
+
+          <!-- Cuadrícula del gráfico -->
+          <div class="chart-grid" id="chartGrid">
+            <!-- Las líneas horizontales y celdas se generarán con JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para introducir datos -->
+    <div id="dataModal" class="data-modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeDataModal()">&times;</span>
+        <h3>Introducir Constantes</h3>
+        <p>Hora: <span id="modalHour"></span></p>
+
+        <div class="form-field">
+          <label>Frecuencia Respiratoria (rpm):</label>
+          <input type="number" id="respRate" step="1" min="0" max="50" />
+        </div>
+
+        <div class="form-field">
+          <label>Temperatura (°C):</label>
+          <input type="number" id="temperature" step="0.1" min="32" max="42" />
+        </div>
+
+        <div class="form-field">
+          <label>Frecuencia Cardíaca (lpm):</label>
+          <input type="number" id="pulse" min="0" max="200" />
+        </div>
+
+        <div class="form-field">
+          <label>T.A. Sistólica (mmHg):</label>
+          <input type="number" id="systolic" min="0" max="250" />
+        </div>
+
+        <div class="form-field">
+          <label>T.A. Diastólica (mmHg):</label>
+          <input type="number" id="diastolic" min="0" max="250" />
+        </div>
+
+        <div class="button-group">
+          <button id="saveDataBtn" class="btn btn-save">Guardar</button>
+          <button id="deleteDataBtn" class="btn btn-delete">Eliminar</button>
+          <button id="cancelBtn" class="btn btn-cancel">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Datos y estado
+      let vitalSigns = Array(24)
+        .fill()
+        .map(() => ({}));
+      let currentIndex = null;
+
+      // Inicialización
+      document.addEventListener("DOMContentLoaded", function () {
+        setupGridCells();
+        initModal();
+        setupResponsive();
+      });
+
+      function setupGridCells() {
+        const chartGrid = document.getElementById("chartGrid");
+        chartGrid.innerHTML = "";
+
+        // Añadir líneas horizontales
+        for (let i = 0; i <= 10; i++) {
+          const line = document.createElement("div");
+          line.className = "horizontal-line";
+          chartGrid.appendChild(line);
+        }
+
+        // Crear 24 celdas (de 8:00 a 7:00)
+        for (let i = 0; i < 24; i++) {
+          const hour = (i + 8) % 24;
+          const cell = document.createElement("div");
+          cell.className = "grid-cell";
+          cell.dataset.hour = hour;
+          cell.dataset.index = i;
+
+          // Estructura CORREGIDA del tooltip
+          cell.innerHTML = `
+                    <div class="hour-data-indicator"></div>
+                    <div class="vital-signs-tooltip">
+                        <div class="tooltip-content">
+                            <div class="tooltip-row"><span>FR:</span> <span class="value-fr">--</span> rpm</div>
+                            <div class="tooltip-row"><span>FC:</span> <span class="value-fc">--</span> lpm</div>
+                            <div class="tooltip-row"><span>TA:</span> <span class="value-ta">--/--</span> mmHg</div>
+                            <div class="tooltip-row"><span>Tª:</span> <span class="value-temp">--</span>°C</div>
+                        </div>
+                    </div>
+                `;
+
+          // Eventos
+          cell.addEventListener("click", () => openDataModal(hour, i));
+          chartGrid.appendChild(cell);
+        }
+      }
+
+      function initModal() {
+        document.getElementById("dataModal").addEventListener("click", (e) => {
+          if (e.target === document.getElementById("dataModal")) {
+            closeDataModal();
+          }
+        });
+
+        document
+          .getElementById("saveDataBtn")
+          .addEventListener("click", saveData);
+        document
+          .getElementById("deleteDataBtn")
+          .addEventListener("click", deleteData);
+        document
+          .getElementById("cancelBtn")
+          .addEventListener("click", closeDataModal);
+      }
+
+      function openDataModal(hour, index) {
+        currentIndex = index;
+        const modal = document.getElementById("dataModal");
+        document.getElementById("modalHour").textContent = `${hour}:00`;
+
+        // Cargar datos existentes
+        const data = vitalSigns[index] || {};
+        document.getElementById("respRate").value = data.respRate || "";
+        document.getElementById("temperature").value = data.temperature || "";
+        document.getElementById("pulse").value = data.pulse || "";
+        document.getElementById("systolic").value = data.systolic || "";
+        document.getElementById("diastolic").value = data.diastolic || "";
+
+        modal.style.display = "block";
+      }
+
+      function closeDataModal() {
+        document.getElementById("dataModal").style.display = "none";
+      }
+
+      function saveData() {
+        const getValue = (id) => {
+          const val = parseFloat(document.getElementById(id).value);
+          return isNaN(val) ? undefined : val;
+        };
+
+        vitalSigns[currentIndex] = {
+          respRate: getValue("respRate"),
+          temperature: getValue("temperature"),
+          pulse: getValue("pulse"),
+          systolic: getValue("systolic"),
+          diastolic: getValue("diastolic"),
+        };
+
+        updateChart();
+        updateTooltip(currentIndex, vitalSigns[currentIndex]);
+        closeDataModal();
+      }
+
+      function deleteData() {
+        vitalSigns[currentIndex] = {};
+        updateChart();
+        updateTooltip(currentIndex, {});
+        closeDataModal();
+      }
+
+      function updateChart() {
+        // Limpiar elementos existentes
+        document
+          .querySelectorAll(".chart-point, .chart-line")
+          .forEach((el) => el.remove());
+
+        const grid = document.getElementById("chartGrid");
+        const gridWidth = grid.offsetWidth;
+        const gridHeight = grid.offsetHeight;
+        const cellWidth = gridWidth / 24;
+
+        const offsets = {
+          FR: -18,
+          Temp: -6,
+          FC: 6,
+          TA: 18,
+        };
+
+        vitalSigns.forEach((data, index) => {
+          if (!data || Object.keys(data).length === 0) return;
+
+          const x = index * cellWidth + cellWidth / 2;
+          const cell = document.querySelector(
+            `.grid-cell[data-index="${index}"]`
+          );
+          cell.classList.add("has-data");
+
+          // FR (Frecuencia Respiratoria)
+          if (data.respRate !== undefined) {
+            const y = gridHeight - (data.respRate / 50) * gridHeight;
+            createPoint(x + offsets.FR, y, "resp-point");
+          }
+
+          // Temperatura
+          if (data.temperature !== undefined) {
+            const y = gridHeight - ((data.temperature - 32) / 10) * gridHeight;
+            createPoint(x + offsets.Temp, y, "temp-point");
+          }
+
+          // FC (Frecuencia Cardíaca)
+          if (data.pulse !== undefined) {
+            const y = gridHeight - (data.pulse / 200) * gridHeight;
+            createPoint(x + offsets.FC, y, "pulse-point");
+          }
+
+          // TA (Tensión Arterial)
+          if (data.systolic !== undefined && data.diastolic !== undefined) {
+            const ySys = gridHeight - (data.systolic / 250) * gridHeight;
+            const yDias = gridHeight - (data.diastolic / 250) * gridHeight;
+
+            // Línea vertical para TA
+            const line = document.createElement("div");
+            line.className = "chart-line bp-line";
+            line.style.left = `${x + offsets.TA}px`;
+            line.style.top = `${ySys}px`;
+            line.style.height = `${yDias - ySys}px`;
+            grid.appendChild(line);
+
+            createPoint(x + offsets.TA, ySys, "bp-point");
+            createPoint(x + offsets.TA, yDias, "bp-point");
+          }
+        });
+      }
+
+      function createPoint(x, y, className) {
+        const point = document.createElement("div");
+        point.className = `chart-point ${className}`;
+        point.style.left = `${x}px`;
+        point.style.top = `${y}px`;
+        document.getElementById("chartGrid").appendChild(point);
+      }
+
+      function updateTooltip(index, data) {
+        const cell = document.querySelector(
+          `.grid-cell[data-index="${index}"]`
+        );
+        if (!cell) return;
+
+        if (data && Object.keys(data).length > 0) {
+          cell.classList.add("has-data");
+          cell.querySelector(".value-fr").textContent = data.respRate || "--";
+          cell.querySelector(".value-fc").textContent = data.pulse || "--";
+          cell.querySelector(".value-ta").textContent = `${
+            data.systolic || "--"
+          }/${data.diastolic || "--"}`;
+          cell.querySelector(".value-temp").textContent =
+            data.temperature || "--";
+        } else {
+          cell.classList.remove("has-data");
+          cell.querySelector(".value-fr").textContent = "--";
+          cell.querySelector(".value-fc").textContent = "--";
+          cell.querySelector(".value-ta").textContent = "--/--";
+          cell.querySelector(".value-temp").textContent = "--";
+        }
+      }
+
+      function setupResponsive() {
+        window.addEventListener("resize", () => {
+          if (vitalSigns.some((data) => data && Object.keys(data).length > 0)) {
+            setTimeout(updateChart, 100);
+          }
+        });
+
+        document.querySelectorAll(".grid-cell").forEach((cell) => {
+          cell.addEventListener("touchend", (e) => {
+            e.preventDefault();
+            cell.click();
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
