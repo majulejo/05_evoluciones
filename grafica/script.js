@@ -1425,3 +1425,300 @@ function initImageModal() {
 // Añadir las nuevas funciones globales
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
+
+// ========================== //
+// SISTEMA DE ACORDEONES INTEGRADO //
+// ========================== //
+
+// Datos de las escalas médicas
+const scalesData = {
+  insulin: {
+    title: "Pauta de Insulina",
+    sections: [
+      {
+        title: "Protocolo de Insulina Rápida",
+        content: `
+                    <table class="medical-table-accordion insulin-table-accordion">
+                        <thead>
+                            <tr>
+                                <th class="range-col">Glucemia (mg/dl)</th>
+                                <th class="dosage-col">Dosis de Insulina</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="range-col">&lt; 150 mg/dl</td>
+                                <td class="dosage-col">NADA</td>
+                            </tr>
+                            <tr>
+                                <td class="range-col">151-225 mg/dl</td>
+                                <td class="dosage-col">6 U.I. s/c</td>
+                            </tr>
+                            <tr>
+                                <td class="range-col">226-250 mg/dl</td>
+                                <td class="dosage-col">10 U.I. s/c</td>
+                            </tr>
+                            <tr>
+                                <td class="range-col">251-300 mg/dl</td>
+                                <td class="dosage-col">15 U.I. s/c</td>
+                            </tr>
+                            <tr>
+                                <td class="range-col">301-350 mg/dl</td>
+                                <td class="dosage-col">20 U.I. s/c</td>
+                            </tr>
+                            <tr>
+                                <td class="range-col">351-400 mg/dl</td>
+                                <td class="dosage-col" style="background: #ffebee; color: #d32f2f;">
+                                    20 U.I. s/c + 5 U.I. I.V.<br>
+                                    <strong>⚠️ AVISAR AL FACULTATIVO</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+                        <strong>📋 Notas importantes:</strong><br>
+                        • s/c = subcutánea<br>
+                        • I.V. = intravenosa<br>
+                        • Controlar glucemia cada 4-6 horas<br>
+                        • Avisar facultativo si glucemia > 350 mg/dl
+                    </div>
+                `,
+      },
+    ],
+  },
+  "eva-rass": {
+    title: "Escalas EVA/ESCID/RASS",
+    sections: [
+      {
+        title: "Escala ESCID (Evaluación del Dolor)",
+        content: `
+                    <table class="medical-table-accordion escid-table-accordion">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">PARÁMETRO</th>
+                                <th style="width: 25%;">0 PUNTOS</th>
+                                <th style="width: 25%;">1 PUNTO</th>
+                                <th style="width: 25%;">2 PUNTOS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="category-col">MUSCULATURA FACIAL</td>
+                                <td class="score-col">Relajada</td>
+                                <td class="score-col">En tensión, ceño fruncido/gesto de dolor</td>
+                                <td class="score-col">Ceño fruncido de forma habitual, dientes apretados</td>
+                            </tr>
+                            <tr>
+                                <td class="category-col">TRANQUILIDAD</td>
+                                <td class="score-col">Tranquilo, relajado, movimientos normales</td>
+                                <td class="score-col">Movimientos ocasionales, inquietud y/o posición</td>
+                                <td class="score-col">Movimientos frecuentes, incluyendo cabeza o extremidades</td>
+                            </tr>
+                            <tr>
+                                <td class="category-col">TONO MUSCULAR</td>
+                                <td class="score-col">Normal</td>
+                                <td class="score-col">Aumento de la flexión de dedos de manos y/o pies</td>
+                                <td class="score-col">Rígido</td>
+                            </tr>
+                            <tr>
+                                <td class="category-col">ADAPTACIÓN A VM</td>
+                                <td class="score-col">Tolera la ventilación mecánica</td>
+                                <td class="score-col">Tose, pero tolera la ventilación mecánica</td>
+                                <td class="score-col">Lucha con el respirador</td>
+                            </tr>
+                            <tr>
+                                <td class="category-col">CONFORTABILIDAD</td>
+                                <td class="score-col">Confortable, tranquilo</td>
+                                <td class="score-col">Se tranquiliza al tacto y/o a la voz. Fácil de distraer</td>
+                                <td class="score-col">Difícil de controlar al tacto o hablándole</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="score-summary">
+                        <h4>Interpretación ESCID (máximo 10 puntos)</h4>
+                        <div class="score-ranges">
+                            <div class="score-range" style="background: #e8f5e8;">0: No dolor</div>
+                            <div class="score-range" style="background: #fff3e0;">1-3: Dolor leve/moderado</div>
+                            <div class="score-range" style="background: #fce4ec;">4-6: Dolor moderado/grave</div>
+                            <div class="score-range" style="background: #ffebee;">&gt;6: Dolor muy intenso</div>
+                        </div>
+                    </div>
+                `,
+      },
+      {
+        title: "Escala RASS (Richmond Agitation Sedation Scale)",
+        content: `
+                    <table class="medical-table-accordion rass-table-accordion">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">PUNTUACIÓN</th>
+                                <th style="width: 75%;">DESCRIPCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: #ffebee;">
+                                <td class="level-col">+4 Combativo</td>
+                                <td class="description-col">Combativo, violento, peligro inmediato para el grupo</td>
+                            </tr>
+                            <tr style="background: #fff3e0;">
+                                <td class="level-col">+3 Muy agitado</td>
+                                <td class="description-col">Agresivo, se intenta retirar tubos o catéteres</td>
+                            </tr>
+                            <tr style="background: #fff8e1;">
+                                <td class="level-col">+2 Agitado</td>
+                                <td class="description-col">Movimientos frecuentes y sin propósito, lucha con el respirador</td>
+                            </tr>
+                            <tr style="background: #f3e5f5;">
+                                <td class="level-col">+1 Inquieto</td>
+                                <td class="description-col">Ansioso, pero sin movimientos agresivos o violentos</td>
+                            </tr>
+                            <tr style="background: #e8f5e8;">
+                                <td class="level-col">0 Despierto</td>
+                                <td class="description-col">Despierto y tranquilo</td>
+                            </tr>
+                            <tr style="background: #e3f2fd;">
+                                <td class="level-col">-1 Somnoliento</td>
+                                <td class="description-col">No está plenamente alerta, pero se mantiene despierto más de 10 segundos</td>
+                            </tr>
+                            <tr style="background: #e8eaf6;">
+                                <td class="level-col">-2 Sedación leve</td>
+                                <td class="description-col">Despierta brevemente a la voz, mantiene contacto visual de hasta 10 segundos</td>
+                            </tr>
+                            <tr style="background: #f3e5f5;">
+                                <td class="level-col">-3 Sedación moderada</td>
+                                <td class="description-col">Movimiento o apertura ocular a la voz, sin contacto visual</td>
+                            </tr>
+                            <tr style="background: #fce4ec;">
+                                <td class="level-col">-4 Sedación profunda</td>
+                                <td class="description-col">Sin respuesta a la voz, con movimiento o apertura ocular al estímulo físico</td>
+                            </tr>
+                            <tr style="background: #ffebee;">
+                                <td class="level-col">-5 Sin respuesta</td>
+                                <td class="description-col">Sin respuesta a la voz o al estímulo físico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `,
+      },
+    ],
+  },
+};
+
+// Función para mostrar el acordeón
+function showAccordion(scaleType) {
+  const container = document.getElementById("accordionContainer");
+  const overlay = document.getElementById("accordionOverlay");
+  const title = document.getElementById("accordionTitle");
+  const content = document.getElementById("accordionContent");
+
+  const scaleData = scalesData[scaleType];
+  if (!scaleData) return;
+
+  // Establecer título
+  title.textContent = scaleData.title;
+
+  // Generar contenido
+  let htmlContent = "";
+  scaleData.sections.forEach((section, index) => {
+    htmlContent += `
+            <div class="accordion-section">
+                <button class="accordion-button" onclick="toggleAccordionSection(${index})">
+                    <span>${section.title}</span>
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-panel" id="accordion-panel-${index}">
+                    ${section.content}
+                </div>
+            </div>
+        `;
+  });
+
+  content.innerHTML = htmlContent;
+
+  // Mostrar acordeón
+  overlay.classList.add("show");
+  container.classList.add("show");
+
+  // Auto-abrir la primera sección
+  setTimeout(() => {
+    if (document.getElementById("accordion-panel-0")) {
+      toggleAccordionSection(0);
+    }
+  }, 100);
+}
+
+// Función para ocultar el acordeón
+function hideAccordion() {
+  const container = document.getElementById("accordionContainer");
+  const overlay = document.getElementById("accordionOverlay");
+
+  container.classList.remove("show");
+  overlay.classList.remove("show");
+}
+
+// Función para toggle de secciones del acordeón
+function toggleAccordionSection(index) {
+  const button = document.querySelector(
+    `.accordion-section:nth-child(${index + 1}) .accordion-button`
+  );
+  const panel = document.getElementById(`accordion-panel-${index}`);
+
+  if (!button || !panel) return;
+
+  const isActive = button.classList.contains("active");
+
+  // Cerrar todas las secciones
+  document
+    .querySelectorAll(".accordion-button")
+    .forEach((btn) => btn.classList.remove("active"));
+  document.querySelectorAll(".accordion-panel").forEach((p) => {
+    p.classList.remove("active");
+    p.style.maxHeight = "0";
+  });
+
+  // Si no estaba activa, abrirla
+  if (!isActive) {
+    button.classList.add("active");
+    panel.classList.add("active");
+    panel.style.maxHeight = panel.scrollHeight + "px";
+  }
+}
+
+// Cerrar acordeón con ESC
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    hideAccordion();
+  }
+});
+
+// Inicializar acordeones cuando el DOM esté listo
+document.addEventListener("DOMContentLoaded", function () {
+  // Crear el HTML necesario para los acordeones si no existe
+  if (!document.getElementById("accordionContainer")) {
+    const accordionHTML = `
+            <!-- Overlay transparente -->
+            <div class="accordion-overlay" id="accordionOverlay" onclick="hideAccordion()"></div>
+
+            <!-- Contenedor del acordeón -->
+            <div class="accordion-container" id="accordionContainer">
+                <div class="accordion-header">
+                    <h3 class="accordion-title" id="accordionTitle">Escalas Médicas</h3>
+                    <button class="accordion-close" onclick="hideAccordion()">×</button>
+                </div>
+                
+                <div class="accordion-content" id="accordionContent">
+                    <!-- El contenido se cargará dinámicamente -->
+                </div>
+            </div>
+        `;
+
+    document.body.insertAdjacentHTML("beforeend", accordionHTML);
+
+    // Prevenir cierre al hacer clic dentro del acordeón
+    document
+      .getElementById("accordionContainer")
+      .addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+  }
+});

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PAUTA DE INSULINA</title>
+    <style>
+      .accordion {
+        background-color: #f8f9fa;
+        color: #212529;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        border: 1px solid #dee2e6;
+        text-align: left;
+        outline: none;
+        font-size: 16px;
+        transition: 0.4s;
+        margin-top: 10px;
+        border-radius: 4px;
+      }
+
+      .active,
+      .accordion:hover {
+        background-color: #e9ecef;
+      }
+
+      .panel {
+        padding: 0 18px;
+        background-color: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        border-left: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0 0 4px 4px;
+      }
+
+      .medical-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 14px;
+      }
+
+      .medical-table th,
+      .medical-table td {
+        border: 1px solid #dee2e6;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .medical-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+      }
+
+      .medical-table tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      .note {
+        font-style: italic;
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="accordion">PAUTA DE INSULINA</button>
+    <div class="panel">
+      <table class="medical-table">
+        <tr>
+          <th>&lt; 150 mg/dl</th>
+          <td>NADA</td>
+        </tr>
+        <tr>
+          <th>151-225 mg/dl</th>
+          <td>6 U.I. s/c</td>
+        </tr>
+        <tr>
+          <th>226-250 mg/dl</th>
+          <td>10 U.I. s/c</td>
+        </tr>
+        <tr>
+          <th>251-300 mg/dl</th>
+          <td>15 U.I. s/c</td>
+        </tr>
+        <tr>
+          <th>301-350 mg/dl</th>
+          <td>20 U.I. s/c</td>
+        </tr>
+        <tr>
+          <th>351-400 mg/dl</th>
+          <td>20 U.I. s/c + 5 U.I. I.V. AVISAR AL FACULTATIVO</td>
+        </tr>
+      </table>
+    </div>
+
+    <script>
+      var acc = document.getElementsByClassName("accordion");
+      var i;
+
+      for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+          this.classList.toggle("active");
+          var panel = this.nextElementSibling;
+          if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+          } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

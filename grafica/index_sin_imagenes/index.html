@@ -14,7 +14,7 @@
       type="image/x-icon"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Version2 Gráfica de Enfermería UCI</title>
+    <title>Gráfica de Enfermería UCI</title>
     <link rel="stylesheet" href="styles.css?v=1" />
   </head>
 
@@ -565,16 +565,16 @@
               </div>
             </div>
 
-            <!-- Fila 4: EVA/ESCID -->
+            <!-- Fila 4: EVA/ESCID/RASS -->
             <div class="section2-row">
-              <div class="section2-label">
-                <div class="label-text">
-                  EVA/ESCID-RASS<span
-                    class="info-icon"
-                    onclick="openImageModal('../images/tabla1.jpg', 'Tabla EVA/ESCID-RASS')"
-                    >👁️</span
-                  >
-                </div>
+              <div class="section2-label eva-label">
+                <div class="label-text">EVA/ESCID/RASS</div>
+                <span
+                  class="info-icon eva-info subtle"
+                  onclick="showAccordion('eva-rass')"
+                  title="Ver escalas EVA/ESCID/RASS"
+                  >👁️</span
+                >
               </div>
               <div class="section2-data-row" id="eva-cells">
                 <!-- Se generarán 24 celdas editables con JavaScript -->
@@ -584,13 +584,7 @@
             <!-- Fila 5: GLUCEMIA -->
             <div class="section2-row">
               <div class="section2-label glucose-label">
-                <div class="label-text">
-                  GLUCEMIA<span
-                    class="info-icon"
-                    onclick="openImageModal('../images/tabla2.jpg', 'Tabla de Glucemia')"
-                    >👁️</span
-                  >
-                </div>
+                <div class="label-text">GLUCEMIA</div>
               </div>
               <div class="section2-data-row" id="glucose-cells">
                 <!-- Se generarán 24 celdas con valores automáticos con JavaScript -->
@@ -601,11 +595,36 @@
             <div class="section2-row">
               <div class="section2-label insulin-label">
                 <div class="label-text">INSULINA</div>
+                <span
+                  class="info-icon insulin-info subtle"
+                  onclick="showAccordion('insulin')"
+                  title="Ver pauta de insulina"
+                  >👁️</span
+                >
               </div>
               <div class="section2-data-row" id="insulin-cells">
                 <!-- Se generarán 24 celdas con desplegables con JavaScript -->
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Overlay transparente -->
+        <div
+          class="accordion-overlay"
+          id="accordionOverlay"
+          onclick="hideAccordion()"
+        ></div>
+
+        <!-- Contenedor del acordeón -->
+        <div class="accordion-container" id="accordionContainer">
+          <div class="accordion-header">
+            <h3 class="accordion-title" id="accordionTitle">Escalas Médicas</h3>
+            <button class="accordion-close" onclick="hideAccordion()">×</button>
+          </div>
+
+          <div class="accordion-content" id="accordionContent">
+            <!-- El contenido se cargará dinámicamente -->
           </div>
         </div>
       </section>

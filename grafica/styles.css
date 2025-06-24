@@ -573,64 +573,71 @@ body {
 }
 
 /* Filas de datos */
+/* Filas de datos - mantener estructura */
 .section2-row {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  border-bottom: 1px solid #333;
-  min-height: 40px;
+    display: grid;
+    grid-template-columns: 120px 1fr; /* MANTENER las columnas exactas */
+    border-bottom: 1px solid #333;
+    min-height: 40px;
 }
+
+/* Asegurar que los datos no se vean afectados */
+.section2-data-row {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr); /* MANTENER 24 columnas exactas */
+    background: white;
+}
+
+/* Celdas de datos - mantener estructura */
+.data-cell-secondary {
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #ddd;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2px;
+    background: white;
+} 
 
 .section2-row:last-child {
   border-bottom: 2px solid #333;
 }
 
-/* Etiquetas de las filas - ACTUALIZADO para posicionamiento del icono */
+/* Etiquetas de las filas - CORREGIDO para evitar descuadre */
 .section2-label {
-  background-color: #f8f8f8;
-  border-right: 2px solid #333;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  position: relative; /* AÑADIDO: Para posicionamiento absoluto del icono */
+    background-color: #f8f8f8;
+    border-right: 2px solid #333;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    position: relative;
+    min-height: 40px; /* AÑADIDO: altura mínima para consistencia */
+    justify-content: center; /* AÑADIDO: centrar contenido */
 }
 
 .label-text {
-  font-weight: bold;
-  font-size: 11px;
-  color: #333;
-  writing-mode: horizontal-tb;
-  text-align: center;
-  width: 100%;
-  padding-right: 20px; /* AÑADIDO: Espacio para el icono */
+    font-weight: bold;
+    font-size: 11px;
+    color: #333;
+    writing-mode: horizontal-tb;
+    text-align: center;
+    flex: 1; /* CAMBIADO: usar flex en lugar de width 100% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .glucose-label .label-text {
-  color: #dc3545;
+    color: #dc3545;
 }
 
 .insulin-label .label-text {
-  color: #dc3545;
+    color: #dc3545;
 }
 
-/* Filas de datos mejoradas con cuadrícula */
-.section2-data-row {
-  display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  background: white;
-}
 
-/* Celdas de datos mejoradas */
-.data-cell-secondary {
-  border-right: 1px solid #333;
-  border-bottom: 1px solid #ddd;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 2px;
-  background: white;
-}
 
 .data-cell-secondary:last-child {
   border-right: none;
@@ -666,6 +673,61 @@ body {
 .data-cell-secondary select:focus {
   background-color: #e3f2fd;
   outline: 1px solid #2196f3;
+}
+
+
+/* Celdas de datos - mantener estructura */
+.data-cell-secondary {
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #ddd;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2px;
+    background: white;
+}
+
+/* ========================== */
+/* ALTERNATIVA MÁS SUTIL PARA EL ICONO */
+/* ========================== */
+
+/* Si el icono sigue molestando, usar esta versión más sutil */
+.info-icon.subtle {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    font-size: 8px;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    background: transparent;
+    opacity: 0.5;
+}
+
+.info-icon.subtle:hover {
+    opacity: 1;
+    transform: scale(1.3);
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+}
+
+/* ========================== */
+/* RESPONSIVE - OCULTAR ICONOS EN MÓVIL SI ES NECESARIO */
+/* ========================== */
+@media (max-width: 768px) {
+    .info-icon {
+        display: none; /* Ocultar en móvil para evitar problemas */
+    }
+    
+    /* O hacer más pequeño en móvil */
+    .info-icon.mobile-show {
+        display: flex;
+        font-size: 8px;
+        width: 10px;
+        height: 10px;
+    }
 }
 
 /* Células específicas de pneumo - SIN FLECHAS */
@@ -1502,6 +1564,362 @@ body {
 }
 
 
+
+/* ========================== */
+/* ESTILOS PARA ACORDEONES INTEGRADOS */
+/* ========================== */
+.accordion-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3000;
+    max-width: 90vw;
+    max-height: 80vh;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    display: none;
+}
+
+.accordion-container.show {
+    display: block;
+    animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.accordion-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2999;
+    display: none;
+    cursor: pointer;
+}
+
+.accordion-overlay.show {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.accordion-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.accordion-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.accordion-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.accordion-content {
+    padding: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.accordion-section {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.accordion-section:last-child {
+    border-bottom: none;
+}
+
+.accordion-button {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    color: #333;
+    cursor: pointer;
+    padding: 15px 20px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion-button:hover {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+}
+
+.accordion-button.active {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1976d2;
+}
+
+.accordion-arrow {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+}
+
+.accordion-button.active .accordion-arrow {
+    transform: rotate(180deg);
+}
+
+.accordion-panel {
+    padding: 0;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.accordion-panel.active {
+    padding: 20px;
+}
+
+/* ========================== */
+/* ESTILOS DE TABLAS MÉDICAS EN ACORDEONES */
+/* ========================== */
+.medical-table-accordion {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 14px;
+    background: white;
+}
+
+.medical-table-accordion th,
+.medical-table-accordion td {
+    border: 1px solid #dee2e6;
+    padding: 12px 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.medical-table-accordion th {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    font-weight: bold;
+    color: #333;
+}
+
+.medical-table-accordion tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.medical-table-accordion tr:hover {
+    background-color: #e3f2fd;
+}
+
+/* Estilos específicos para tabla de insulina */
+.insulin-table-accordion th {
+    background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+    color: #dc3545;
+}
+
+.insulin-table-accordion .dosage-col {
+    background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+    font-weight: bold;
+    color: #dc3545;
+    text-align: center;
+}
+
+.insulin-table-accordion .range-col {
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Estilos específicos para tabla ESCID */
+.escid-table-accordion th {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3);
+    color: #f57c00;
+    text-align: center;
+    font-size: 12px;
+}
+
+.escid-table-accordion .category-col {
+    background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+    font-weight: bold;
+    color: #333;
+}
+
+.escid-table-accordion .score-col {
+    text-align: center;
+    font-size: 13px;
+}
+
+/* Estilos específicos para tabla RASS */
+.rass-table-accordion th {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    color: #2e7d32;
+    text-align: center;
+}
+
+.rass-table-accordion .level-col {
+    font-weight: bold;
+    text-align: center;
+    color: #1976d2;
+}
+
+.rass-table-accordion .description-col {
+    font-size: 13px;
+}
+
+/* Puntuaciones */
+.score-summary {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 2px solid #2196f3;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.score-summary h4 {
+    margin: 0 0 10px 0;
+    color: #1976d2;
+    font-size: 16px;
+}
+
+.score-ranges {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.score-range {
+    background: white;
+    border: 1px solid #2196f3;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ========================== */
+/* ICONOS DE INFORMACIÓN MEJORADOS */
+/* ========================== */
+/* Icono base - NUEVO POSICIONAMIENTO */
+.info-icon {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    color: #666;
+    font-weight: bold;
+    font-size: 10px; /* REDUCIDO más el tamaño */
+    cursor: pointer;
+    padding: 1px 2px; /* REDUCIDO el padding */
+    border-radius: 50%;
+    background: rgba(102, 102, 102, 0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px; /* REDUCIDO el tamaño */
+    height: 12px; /* REDUCIDO el tamaño */
+    z-index: 10; /* AÑADIDO: asegurar que esté encima */
+    opacity: 0.7; /* AÑADIDO: más sutil */
+}
+
+.info-icon:hover {
+    background: rgba(102, 102, 102, 0.3);
+    color: #444;
+    transform: scale(1.2); /* AUMENTADO el efecto hover */
+    opacity: 1; /* AÑADIDO: opacidad completa en hover */
+}
+
+/* Icono específico para insulina */
+.info-icon.insulin-info {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.15);
+}
+
+.info-icon.insulin-info:hover {
+    background: rgba(220, 53, 69, 0.3);
+    color: #b71c1c;
+}
+
+/* Icono específico para EVA/ESCID */
+.info-icon.eva-info {
+    color: #ff6b35;
+    background: rgba(255, 107, 53, 0.15);
+}
+
+.info-icon.eva-info:hover {
+    background: rgba(255, 107, 53, 0.3);
+    color: #e65100;
+}
+
+/* ========================== */
+/* RESPONSIVE PARA ACORDEONES */
+/* ========================== */
+@media (max-width: 768px) {
+    .accordion-container {
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+
+    .accordion-title {
+        font-size: 16px;
+    }
+
+    .accordion-button {
+        font-size: 14px;
+        padding: 12px 15px;
+    }
+
+    .medical-table-accordion th,
+    .medical-table-accordion td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .score-ranges {
+        grid-template-columns: 1fr;
+    }
+}
 /* ========================== */
 /* SECCIÓN 3: PÉRDIDAS/PÉRDIDAS INSENSIBLES */
 /* ========================== */
