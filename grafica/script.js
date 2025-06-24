@@ -20,7 +20,12 @@ let section2Data = {
   pneumo: Array(24).fill(""),
   oxygen: Array(24).fill(""),
   saturation: Array(24).fill(""),
-  eva: Array(24).fill(""),
+  eva: Array(24)
+    .fill()
+    .map(() => ({
+      eva: "",
+      rass: "",
+    })),
   glucose: Array(24).fill(""),
   insulin: Array(24)
     .fill()
@@ -454,23 +459,61 @@ function createEvaCells() {
     const cell = document.createElement("div");
     cell.className = "data-cell-secondary eva-cell";
 
-    const input = document.createElement("input");
-    input.type = "number";
-    input.min = "-5";
-    input.max = "10";
-    input.step = "1";
-    input.value = section2Data.eva[i] || "";
-    input.addEventListener("input", (e) => {
-      const value = parseInt(e.target.value);
-      if (isNaN(value) || value < -5 || value > 10) {
-        e.target.style.borderColor = "red";
-      } else {
-        e.target.style.borderColor = "";
-        section2Data.eva[i] = value;
-      }
+    // Contenedor para los dos desplegables
+    const evaContainer = document.createElement("div");
+    evaContainer.className = "eva-container";
+
+    // Desplegable EVA (0-10)
+    const evaSelect = document.createElement("select");
+    evaSelect.className = "eva-select";
+
+    // Opción vacía
+    const emptyOptionEva = document.createElement("option");
+    emptyOptionEva.value = "";
+    emptyOptionEva.textContent = "—";
+    evaSelect.appendChild(emptyOptionEva);
+
+    // Opciones 0-10
+    for (let val = 0; val <= 10; val++) {
+      const option = document.createElement("option");
+      option.value = val;
+      option.textContent = val;
+      evaSelect.appendChild(option);
+    }
+
+    evaSelect.value = section2Data.eva[i].eva || "";
+    evaSelect.addEventListener("change", (e) => {
+      section2Data.eva[i].eva = e.target.value;
     });
 
-    cell.appendChild(input);
+    // Desplegable RASS (-5 a 4)
+    const rassSelect = document.createElement("select");
+    rassSelect.className = "rass-select";
+
+    // Opción vacía
+    const emptyOptionRass = document.createElement("option");
+    emptyOptionRass.value = "";
+    emptyOptionRass.textContent = "—";
+    rassSelect.appendChild(emptyOptionRass);
+
+    // Opciones -5 a 4
+    for (let val = -5; val <= 4; val++) {
+      const option = document.createElement("option");
+      option.value = val;
+      option.textContent = val;
+      rassSelect.appendChild(option);
+    }
+
+    rassSelect.value = section2Data.eva[i].rass || "";
+    rassSelect.addEventListener("change", (e) => {
+      section2Data.eva[i].rass = e.target.value;
+    });
+
+    // Añadir elementos al contenedor
+    evaContainer.appendChild(evaSelect);
+    evaContainer.appendChild(rassSelect);
+
+    cell.appendChild(evaContainer);
     container.appendChild(cell);
   }
 }

@@ -521,6 +521,8 @@ body {
 .value-sato2 { color: #198754; font-weight: bold; }
 .value-glucemia { color: #dc3545; font-weight: bold; }
 
+
+
 /* ========================== */
 /* SECCIÓN 2: OXIGENACIÓN, DOLOR Y GLUCEMIAS */
 /* ========================== */
@@ -537,7 +539,9 @@ body {
   background: white;
 }
 
-/* Cabecera con horas */
+/* ========================== */
+/* CABECERA CON HORAS */
+/* ========================== */
 .section2-header {
   display: grid;
   grid-template-columns: 120px 1fr;
@@ -572,7 +576,9 @@ body {
   border-right: none;
 }
 
-/* Filas de datos */
+/* ========================== */
+/* FILAS DE DATOS */
+/* ========================== */
 .section2-row {
   display: grid;
   grid-template-columns: 120px 1fr;
@@ -584,13 +590,17 @@ body {
   border-bottom: 2px solid #333;
 }
 
-/* Etiquetas de las filas */
+/* ========================== */
+/* ETIQUETAS DE LAS FILAS */
+/* ========================== */
 .section2-label {
   background-color: #f8f8f8;
   border-right: 2px solid #333;
   display: flex;
   align-items: center;
   padding: 0 10px;
+  position: relative;
+  cursor: pointer;
 }
 
 .label-text {
@@ -606,18 +616,92 @@ body {
   color: #dc3545;
 }
 
-.insulin-label .label-text {
-  color: #dc3545; /* Rojo como glucemia */
+.eva-label .label-text {
+  color: #ff6b35;
 }
 
-/* Filas de datos mejoradas con cuadrícula */
+.insulin-label .label-text {
+  color: #dc3545;
+}
+
+/* ========================== */
+/* ICONOS DE CÁMARA */
+/* ========================== */
+.glucose-label .fa-camera,
+.eva-label .fa-camera {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 8px;
+  opacity: 0.5;
+  color: #666;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  z-index: 5;
+}
+
+.glucose-label .fa-camera:hover,
+.eva-label .fa-camera:hover {
+  opacity: 0.8;
+}
+
+/* ========================== */
+/* TOOLTIPS CON IMÁGENES */
+/* ========================== */
+.glucose-label:hover::before {
+  content: "";
+  position: absolute;
+  top: -140px;
+  right: -180px;
+  width: 180px;
+  height: 110px;
+  background-image: url('images/tabla2.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid #dc3545;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  background-color: white;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+.eva-label:hover::before {
+  content: "";
+  position: absolute;
+  top: -140px;
+  right: -180px;
+  width: 180px;
+  height: 110px;
+  background-image: url('images/tabla1.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid #ff6b35;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  background-color: white;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ========================== */
+/* FILAS DE DATOS - CUADRÍCULA */
+/* ========================== */
 .section2-data-row {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
   background: white;
 }
 
-/* Celdas de datos mejoradas */
+/* ========================== */
+/* CELDAS DE DATOS GENERALES */
+/* ========================== */
 .data-cell-secondary {
   border-right: 1px solid #333;
   border-bottom: 1px solid #ddd;
@@ -659,6 +743,12 @@ body {
   font-size: 10px;
   background: transparent;
   outline: none;
+  /* Ocultar flechas del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
 }
 
 .data-cell-secondary select:focus {
@@ -666,21 +756,31 @@ body {
   outline: 1px solid #2196f3;
 }
 
-/* Células específicas de pneumo */
+/* ========================== */
+/* CÉLULAS ESPECÍFICAS - P. NEUMO */
+/* ========================== */
 .pneumo-cell input {
   color: #333;
   font-weight: bold;
 }
 
-/* Células específicas de oxigenación */
+/* ========================== */
+/* CÉLULAS ESPECÍFICAS - OXIGENACIÓN */
+/* ========================== */
 .oxygen-cell select {
   color: #0d6efd;
   font-weight: bold;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
-/* SATURACION
- */
-/* Células específicas de saturación - editable */
+/* ========================== */
+/* CÉLULAS ESPECÍFICAS - SATURACIÓN */
+/* ========================== */
 .saturation-cell input {
   color: #198754 !important;
   font-weight: bold;
@@ -690,21 +790,18 @@ body {
   border: 1px solid #ddd;
   transition: all 0.2s ease;
   text-align: center;
-  
-  /* Ocultar las flechas del input number */
+  /* Ocultar flechas del input number */
   -webkit-appearance: none;
   -moz-appearance: textfield;
   appearance: none;
 }
 
-/* Ocultar flechas específicas de WebKit para saturación */
 .saturation-cell input[type="number"]::-webkit-outer-spin-button,
 .saturation-cell input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox para saturación */
 .saturation-cell input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -720,22 +817,92 @@ body {
   background-color: #faf9ff;
 }
 
-/* Añadir símbolo % automáticamente */
-.saturation-cell input::after {
-  content: "%";
-  position: absolute;
-  right: 2px;
-  pointer-events: none;
-  color: #198754;
-}
-/* Células específicas de EVA */
-.eva-cell input {
-  color: #ff6b35;
-  font-weight: bold;
+/* ========================== */
+/* CÉLULAS ESPECÍFICAS - EVA/RASS */
+/* ========================== */
+.eva-cell {
+  padding: 2px;
+  min-height: 40px;
+  position: relative;
 }
 
-/* GLUCEMIAS */
-/* Células específicas de glucemia */
+.eva-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+}
+
+.eva-select {
+  width: 50%;
+  height: 25px;
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: center;
+  font-size: 8px;
+  background: white;
+  outline: none;
+  color: #ff6b35;
+  font-weight: bold;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  /* Ocultar flechas del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.rass-select {
+  width: 50%;
+  height: 25px;
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: center;
+  font-size: 8px;
+  background: white;
+  outline: none;
+  color: #dc3545;
+  font-weight: bold;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  /* Ocultar flechas del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.eva-select:hover,
+.rass-select:hover {
+  font-size: 11px;
+  transform: scale(1.1);
+  z-index: 10;
+  background-color: #fff5f0;
+  border-width: 2px;
+}
+
+.eva-select:focus {
+  background-color: #fff5f0;
+  border-color: #ff6b35;
+  outline: 1px solid #ff6b35;
+  font-size: 10px;
+}
+
+.rass-select:focus {
+  background-color: #fff5f5;
+  border-color: #dc3545;
+  outline: 1px solid #dc3545;
+  font-size: 10px;
+}
+
+/* ========================== */
+/* CÉLULAS ESPECÍFICAS - GLUCEMIA */
+/* ========================== */
 .glucose-cell {
   background-color: #fff5f5;
 }
@@ -744,47 +911,22 @@ body {
   color: #dc3545 !important;
   font-weight: bold;
   font-size: 11px;
-  background: white; /* Cambiar de transparent a white */
-  pointer-events: auto; /* Cambiar de none a auto */
-  border: 1px solid #ddd;
-  transition: all 0.2s ease;
-}
-
-.glucose-cell input:focus {
-  border-color: #dc3545;
-  background-color: #fff5f5;
-  outline: none;
-}
-
-.glucose-cell input:hover {
-  border-color: #dc3545;
-  background-color: #fff9f9;
-}
-
-/* Ocultar flechas del input number en glucemia */
-.glucose-cell input[type="number"] {
-  color: #dc3545 !important;
-  font-weight: bold;
-  font-size: 11px;
   background: white;
   pointer-events: auto;
   border: 1px solid #ddd;
   transition: all 0.2s ease;
-  
-  /* Ocultar las flechas del input number */
+  /* Ocultar flechas del input number */
   -webkit-appearance: none;
   -moz-appearance: textfield;
   appearance: none;
 }
 
-/* Ocultar flechas específicas de WebKit */
 .glucose-cell input[type="number"]::-webkit-outer-spin-button,
 .glucose-cell input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
 .glucose-cell input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -800,7 +942,9 @@ body {
   background-color: #fff9f9;
 }
 
-/* Células específicas de insulina */
+/* ========================== */
+/* CÉLULAS ESPECÍFICAS - INSULINA */
+/* ========================== */
 .insulin-cell {
   flex-direction: column;
   padding: 1px;
@@ -815,6 +959,101 @@ body {
   position: relative;
 }
 
+.insulin-value {
+  width: 100%;
+  font-size: 9px;
+  padding: 1px 2px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  outline: none;
+  text-align: center;
+  height: 18px;
+  color: #dc3545;
+  font-weight: bold;
+  margin-bottom: 1px;
+  transition: all 0.2s ease;
+}
+
+.insulin-value:hover {
+  font-size: 11px;
+  transform: scale(1.05);
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  z-index: 5;
+}
+
+.insulin-value:focus {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  font-size: 10px;
+}
+
+.insulin-type {
+  width: 100%;
+  font-size: 9px;
+  padding: 1px 2px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 2px;
+  outline: none;
+  text-align: center;
+  height: 18px;
+  /* Ocultar flechas del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.insulin-type:focus {
+  border-color: #198754;
+  background-color: #f8f5ff;
+}
+
+.insulin-select {
+  width: 100%;
+  font-size: 9px;
+  padding: 1px 2px;
+  border: 1px solid #dc3545;
+  background: #fff5f5;
+  border-radius: 2px;
+  outline: none;
+  text-align: center;
+  height: 18px;
+  color: #dc3545;
+  font-weight: bold;
+  /* Ocultar flechas del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.insulin-select:focus {
+  border-color: #dc3545;
+  background-color: #fff0f0;
+}
+
+.insulin-arrow {
+  width: 100%;
+  text-align: center;
+  color: #dc3545;
+  font-weight: bold;
+  font-size: 12px;
+  height: 18px;
+  line-height: 16px;
+  display: none;
+}
+
+.insulin-arrow.show {
+  display: block;
+}
+
+/* ========================== */
+/* MENSAJES DE INSULINA */
+/* ========================== */
 .insulin-message {
   position: absolute;
   top: -25px;
@@ -836,58 +1075,30 @@ body {
   opacity: 1;
 }
 
-.insulin-value {
-  width: 100%;
-  font-size: 9px;
-  padding: 1px 2px;
-  border: 1px solid #ddd;
-  border-radius: 2px;
-  outline: none;
-  text-align: center;
-  height: 18px;
-  color: #dc3545;
+.insulin-message.show-alert {
+  opacity: 1;
+  background: #dc3545;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 8px;
   font-weight: bold;
-  margin-bottom: 1px;
+  transition: opacity 0.2s ease;
 }
 
-.insulin-value:focus {
-  border-color: #dc3545;
-  background-color: #fff5f5;
+.insulin-message.critical-alert {
+  animation: pulse 1.5s infinite;
 }
 
-.insulin-type {
-  width: 100%;
-  font-size: 9px;
-  padding: 1px 2px;
-  border: 1px solid #ccc;
-  background: white;
-  border-radius: 2px;
-  outline: none;
-  text-align: center;
-  height: 18px;
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
 }
 
-.insulin-type:focus {
-  border-color: #198754;
-  background-color: #f8f5ff;
-}
-
-.insulin-arrow {
-  width: 100%;
-  text-align: center;
-  color: #dc3545;
-  font-weight: bold;
-  font-size: 12px;
-  height: 18px;
-  line-height: 16px;
-  display: none;
-}
-
-.insulin-arrow.show {
-  display: block;
-}
-
-/* Estilos para diferentes estados */
+/* ========================== */
+/* ESTADOS DE DATOS */
+/* ========================== */
 .data-cell-secondary.has-data {
   background-color: rgba(33, 150, 243, 0.05);
 }
@@ -899,6 +1110,7 @@ body {
 .insulin-cell.has-data {
   background-color: rgba(111, 66, 193, 0.05);
 }
+
 
 /* ========================== */
 /* SECCIÓN 3: PÉRDIDAS/PÉRDIDAS INSENSIBLES */
@@ -1145,6 +1357,172 @@ body {
   50% { opacity: 0.7; }
   100% { opacity: 1; }
 }
+
+/* EVA/ESCID/RASS */
+
+/* Células específicas de EVA/RASS */
+
+/* Tooltip con imagen para EVA - activado por hover en toda la celda */
+.eva-label:hover::before {
+  content: "";
+  position: absolute;
+  top: -140px;
+  right: -180px;
+  width: 180px;
+  height: 110px;
+  background-image: url('images/tabla1.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid #ff6b35;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  background-color: white;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+}/* Células específicas de EVA/RASS */
+.eva-cell {
+  padding: 2px;
+  min-height: 40px;
+  position: relative;
+}
+
+.eva-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+}
+
+.eva-label:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.eva-select {
+  width: 50%;
+  height: 25px;
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: center;
+  font-size: 8px;
+  background: white;
+  outline: none;
+  color: #ff6b35;
+  font-weight: bold;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  /* Ocultar la flecha del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.rass-select {
+  width: 50%;
+  height: 25px;
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: center;
+  font-size: 8px;
+  background: white;
+  outline: none;
+  color: #dc3545;
+  font-weight: bold;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  /* Ocultar la flecha del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.eva-select:hover,
+.rass-select:hover {
+  font-size: 11px;
+  transform: scale(1.1);
+  z-index: 10;
+  background-color: #fff5f0;
+  border-width: 2px;
+}
+
+.eva-select:focus {
+  background-color: #fff5f0;
+  border-color: #ff6b35;
+  outline: 1px solid #ff6b35;
+  font-size: 10px;
+}
+
+/* Iconos informativos */
+.info-icon {
+  color: #007bff;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 5px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 50%;
+  background: rgba(0, 123, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.info-icon:hover {
+  background: rgba(0, 123, 255, 0.2);
+  transform: scale(1.2);
+}
+
+/* Modal para mostrar imágenes */
+.table-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.table-modal-content {
+  background-color: white;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+}
+
+.table-modal img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.table-modal-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+
+.table-modal-close:hover {
+  color: black;
+}
+
+/* FIN DE LOS DESPLEGABLES DE EVA/ESCID/RASS */
 
 /* ========================== */
 /* RESPONSIVE DESIGN */
