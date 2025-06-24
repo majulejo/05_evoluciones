@@ -73,8 +73,11 @@ function initializeApp() {
   // Inicializar sección 1 (Datos y constantes)
   initializeSection1();
 
-  // Inicializar modal
+  // Inicializar modal de datos
   initModal();
+
+  // AÑADIR ESTA LÍNEA:
+  initImageModal();
 
   // Configurar responsive
   setupResponsive();
@@ -362,6 +365,8 @@ function createPneumoCells() {
     input.min = "0";
     input.max = "100";
     input.step = "1";
+    input.placeholder = "━"; // AÑADIR ESTA LÍNEA
+
     input.value = section2Data.pneumo[i] || "";
     input.addEventListener("input", (e) => {
       const value = parseInt(e.target.value);
@@ -1351,3 +1356,72 @@ window.getCurrentSection = () => currentSection;
 window.getVitalSigns = () => vitalSigns;
 
 console.log("Script.js cargado correctamente");
+
+// ========================== //
+// MODAL DE IMÁGENES DE REFERENCIA //
+// ========================== //
+
+function openImageModal(imagePath, title) {
+  const modal = document.getElementById("imageModal");
+  const modalImage = document.getElementById("modalImage");
+  const modalTitle = document.getElementById("imageModalTitle");
+
+  if (!modal || !modalImage || !modalTitle) {
+    console.error("Elementos del modal de imagen no encontrados");
+    return;
+  }
+
+  // Establecer título y imagen
+  modalTitle.textContent = title;
+  modalImage.src = imagePath;
+  modalImage.alt = title;
+
+  // Mostrar modal
+  modal.style.display = "block";
+
+  // Añadir evento para cerrar al hacer click fuera de la imagen
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) {
+      closeImageModal();
+    }
+  });
+
+  console.log(`Abriendo modal de imagen: ${imagePath}`);
+}
+
+function closeImageModal() {
+  const modal = document.getElementById("imageModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Inicializar modal de imágenes
+function initImageModal() {
+  const imageModal = document.getElementById("imageModal");
+  if (!imageModal) return;
+
+  // Cerrar modal al hacer click en el fondo
+  imageModal.addEventListener("click", function (e) {
+    if (e.target === imageModal) {
+      closeImageModal();
+    }
+  });
+
+  // Cerrar modal con tecla Escape
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && imageModal.style.display === "block") {
+      closeImageModal();
+    }
+  });
+
+  console.log("Modal de imágenes inicializado");
+}
+
+// ========================== //
+// ACTUALIZAR FUNCIONES GLOBALES //
+// ========================== //
+
+// Añadir las nuevas funciones globales
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;

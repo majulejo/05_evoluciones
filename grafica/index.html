@@ -14,12 +14,8 @@
       type="image/x-icon"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Claude Gráfica de Enfermería UCI</title>
+    <title>Gráfica de Enfermería UCI</title>
     <link rel="stylesheet" href="styles.css?v=1" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
   </head>
 
   <body>
@@ -74,7 +70,12 @@
           <div class="patient-info">
             <div class="patient-field patient-name">
               <strong>NOMBRE:</strong>
-              <input type="text" placeholder maxlength="50" id="patientName" />
+              <input
+                type="text"
+                placeholder=""
+                maxlength="50"
+                id="patientName"
+              />
             </div>
             <div class="patient-field patient-date">
               <strong>FECHA:</strong>
@@ -566,9 +567,13 @@
 
             <!-- Fila 4: EVA/ESCID -->
             <div class="section2-row">
-              <div class="section2-label eva-label">
+              <div class="section2-label">
                 <div class="label-text">
-                  EVA/ESCID-RASS <i class="fa-solid fa-camera"></i>
+                  EVA/ESCID-RASS<span
+                    class="info-icon"
+                    onclick="openImageModal('../images/tabla1.jpg', 'Tabla EVA/ESCID-RASS')"
+                    >👁️</span
+                  >
                 </div>
               </div>
               <div class="section2-data-row" id="eva-cells">
@@ -580,7 +585,11 @@
             <div class="section2-row">
               <div class="section2-label glucose-label">
                 <div class="label-text">
-                  GLUCEMIA<i class="fa-solid fa-camera"></i>
+                  GLUCEMIA<span
+                    class="info-icon"
+                    onclick="openImageModal('../images/tabla2.jpg', 'Tabla de Glucemia')"
+                    >👁️</span
+                  >
                 </div>
               </div>
               <div class="section2-data-row" id="glucose-cells">
@@ -708,6 +717,17 @@
           <button id="saveDataBtn" class="btn btn-save">Guardar</button>
           <button id="deleteDataBtn" class="btn btn-delete">Eliminar</button>
           <button id="cancelBtn" class="btn btn-cancel">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para mostrar imágenes de referencia -->
+    <div id="imageModal" class="image-modal">
+      <div class="image-modal-content">
+        <span class="image-close" onclick="closeImageModal()">&times;</span>
+        <div class="image-container">
+          <h3 id="imageModalTitle">Tabla de Referencia</h3>
+          <img id="modalImage" src="" alt="Tabla de referencia" />
         </div>
       </div>
     </div>

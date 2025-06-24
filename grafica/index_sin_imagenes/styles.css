@@ -668,10 +668,26 @@ body {
   outline: 1px solid #2196f3;
 }
 
-/* Células específicas de pneumo */
+/* Células específicas de pneumo - SIN FLECHAS */
 .pneumo-cell input {
   color: #333;
   font-weight: bold;
+  /* Ocultar las flechas del input number */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+/* Ocultar flechas específicas de WebKit para pneumo */
+.pneumo-cell input[type="number"]::-webkit-outer-spin-button,
+.pneumo-cell input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox para pneumo */
+.pneumo-cell input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 /* Células específicas de oxigenación */

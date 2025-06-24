@@ -365,6 +365,8 @@ function createPneumoCells() {
     input.min = "0";
     input.max = "100";
     input.step = "1";
+    input.placeholder = "━"; // AÑADIR ESTA LÍNEA
+
     input.value = section2Data.pneumo[i] || "";
     input.addEventListener("input", (e) => {
       const value = parseInt(e.target.value);
