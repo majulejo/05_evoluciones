@@ -518,7 +518,7 @@ body {
 .value-temp { color: #dc3545; font-weight: bold; }
 .value-fc { color: #0d6efd; font-weight: bold; }
 .value-ta { color: #198754; font-weight: bold; }
-.value-sato2 { color: #6f42c1; font-weight: bold; }
+.value-sato2 { color: #198754; font-weight: bold; }
 .value-glucemia { color: #dc3545; font-weight: bold; }
 
 /* ========================== */
@@ -607,7 +607,7 @@ body {
 }
 
 .insulin-label .label-text {
-  color: #6f42c1;
+  color: #dc3545; /* Rojo como glucemia */
 }
 
 /* Filas de datos mejoradas con cuadrícula */
@@ -678,20 +678,63 @@ body {
   font-weight: bold;
 }
 
-/* Células específicas de saturación */
+/* SATURACION
+ */
+/* Células específicas de saturación - editable */
 .saturation-cell input {
-  color: #6f42c1;
+  color: #198754 !important;
   font-weight: bold;
-  background: transparent;
-  pointer-events: none;
+  font-size: 11px;
+  background: white;
+  pointer-events: auto;
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+  text-align: center;
+  
+  /* Ocultar las flechas del input number */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
 }
 
+/* Ocultar flechas específicas de WebKit para saturación */
+.saturation-cell input[type="number"]::-webkit-outer-spin-button,
+.saturation-cell input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox para saturación */
+.saturation-cell input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.saturation-cell input:focus {
+  border-color: #198754;
+  background-color: #f8f5ff;
+  outline: none;
+}
+
+.saturation-cell input:hover {
+  border-color: #198754;
+  background-color: #faf9ff;
+}
+
+/* Añadir símbolo % automáticamente */
+.saturation-cell input::after {
+  content: "%";
+  position: absolute;
+  right: 2px;
+  pointer-events: none;
+  color: #198754;
+}
 /* Células específicas de EVA */
 .eva-cell input {
   color: #ff6b35;
   font-weight: bold;
 }
 
+/* GLUCEMIAS */
 /* Células específicas de glucemia */
 .glucose-cell {
   background-color: #fff5f5;
@@ -701,8 +744,60 @@ body {
   color: #dc3545 !important;
   font-weight: bold;
   font-size: 11px;
-  background: transparent;
-  pointer-events: none;
+  background: white; /* Cambiar de transparent a white */
+  pointer-events: auto; /* Cambiar de none a auto */
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+}
+
+.glucose-cell input:focus {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  outline: none;
+}
+
+.glucose-cell input:hover {
+  border-color: #dc3545;
+  background-color: #fff9f9;
+}
+
+/* Ocultar flechas del input number en glucemia */
+.glucose-cell input[type="number"] {
+  color: #dc3545 !important;
+  font-weight: bold;
+  font-size: 11px;
+  background: white;
+  pointer-events: auto;
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+  
+  /* Ocultar las flechas del input number */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+/* Ocultar flechas específicas de WebKit */
+.glucose-cell input[type="number"]::-webkit-outer-spin-button,
+.glucose-cell input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.glucose-cell input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.glucose-cell input:focus {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  outline: none;
+}
+
+.glucose-cell input:hover {
+  border-color: #dc3545;
+  background-color: #fff9f9;
 }
 
 /* Células específicas de insulina */
@@ -773,7 +868,7 @@ body {
 }
 
 .insulin-type:focus {
-  border-color: #6f42c1;
+  border-color: #198754;
   background-color: #f8f5ff;
 }
 
@@ -907,6 +1002,149 @@ body {
 .btn-save { background-color: #28a745; color: white; }
 .btn-delete { background-color: #dc3545; color: white; }
 .btn-cancel { background-color: #6c757d; color: white; }
+
+/* Regla general para todos los desplegables de la sección 2 */
+.data-cell-secondary select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 2px 4px;
+  text-align: center;
+  font-size: 10px;
+  background: transparent;
+  outline: none;
+  /* Ocultar la flecha del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+/* Células específicas de oxigenación */
+.oxygen-cell select {
+  color: #0d6efd;
+  font-weight: bold;
+  /* Ocultar la flecha del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+/* INSULINA */
+
+/* Células específicas de insulina */
+.insulin-type {
+  width: 100%;
+  font-size: 9px;
+  padding: 1px 2px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 2px;
+  outline: none;
+  text-align: center;
+  height: 18px;
+  /* Ocultar la flecha del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.insulin-select {
+  width: 100%;
+  font-size: 9px;
+  padding: 1px 2px;
+  border: 1px solid #dc3545;
+  background: #fff5f5;
+  border-radius: 2px;
+  outline: none;
+  text-align: center;
+  height: 18px;
+  color: #dc3545;
+  font-weight: bold;
+  /* Ocultar la flecha del desplegable */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  cursor: pointer;
+}
+
+.insulin-select:focus {
+  border-color: #dc3545;
+  background-color: #fff0f0;
+}
+
+/* Input de insulina - tamaño normal */
+.insulin-value {
+  width: 100%;
+  font-size: 9px;
+  padding: 1px 2px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  outline: none;
+  text-align: center;
+  height: 18px;
+  color: #dc3545;
+  font-weight: bold;
+  margin-bottom: 1px;
+  transition: all 0.2s ease;
+}
+
+/* Hover en input - tamaño mayor */
+.insulin-value:hover {
+  font-size: 11px;
+  transform: scale(1.05);
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  z-index: 5;
+}
+
+.insulin-value:focus {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+  font-size: 10px;
+}
+
+/* Mensaje de alerta - visible cuando hay glucemia crítica sin selección */
+.insulin-message {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #dc3545;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 8px;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Mostrar mensaje solo cuando está activo */
+.insulin-message.show-alert {
+  opacity: 1;
+}
+
+/* Efecto pulsante para alertas críticas */
+.insulin-message.critical-alert {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
 
 /* ========================== */
 /* RESPONSIVE DESIGN */

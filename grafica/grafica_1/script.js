@@ -35,11 +35,11 @@ let section2Data = {
 // Tabla de insulina según glucemia
 const insulinTable = {
   "<150": "NADA",
-  "151-225": "6 U.I. s/c",
-  "226-250": "10 U.I. s/c",
-  "251-300": "15 U.I. s/c",
-  "301-350": "20 U.I. s/c",
-  "351-400": "20 U.I. s/c + 5 U.I. I.V.",
+  "151-225": "6U s/c",
+  "226-250": "10U s/c",
+  "251-300": "15U s/c",
+  "301-350": "20U s/c",
+  "351-400": "20U s/c + 5U I.V.",
   ">400": "AVISAR AL FACULTATIVO",
 };
 
@@ -415,9 +415,29 @@ function createSaturationCells() {
     cell.className = "data-cell-secondary saturation-cell";
 
     const input = document.createElement("input");
-    input.type = "text";
-    input.readOnly = true;
+    input.type = "number"; // Cambiado de "text" a "number"
+    input.className = "saturation-value";
+    input.readOnly = false; // Cambiado de true a false
+    input.min = "0";
+    input.max = "100";
+    input.step = "1";
     input.value = section2Data.saturation[i] || "";
+
+    // Añadir event listener para sincronizar con sección 1
+    input.addEventListener("input", (e) => {
+      const value = e.target.value;
+      section2Data.saturation[i] = value;
+
+      // Sincronizar con sección 1
+      if (vitalSigns[i]) {
+        vitalSigns[i].satO2 = value ? parseFloat(value) : undefined;
+      } else {
+        vitalSigns[i] = { satO2: value ? parseFloat(value) : undefined };
+      }
+
+      // Actualizar tooltip en sección 1
+      updateTooltip(i, vitalSigns[i]);
+    });
 
     cell.appendChild(input);
     container.appendChild(cell);
@@ -466,10 +486,32 @@ function createGlucoseCells() {
     cell.className = "data-cell-secondary glucose-cell";
 
     const input = document.createElement("input");
-    input.type = "text";
+    input.type = "number"; // Cambiado de "text" a "number"
     input.className = "glucose-value";
-    input.readOnly = true;
+    input.readOnly = false; // Cambiado de true a false
+    input.min = "0";
+    input.max = "600";
+    input.step = "1";
     input.value = section2Data.glucose[i] || "";
+
+    // Añadir event listener para sincronizar con sección 1
+    input.addEventListener("input", (e) => {
+      const value = e.target.value;
+      section2Data.glucose[i] = value;
+
+      // Sincronizar con sección 1
+      if (vitalSigns[i]) {
+        vitalSigns[i].glucemia = value ? parseFloat(value) : undefined;
+      } else {
+        vitalSigns[i] = { glucemia: value ? parseFloat(value) : undefined };
+      }
+
+      // Actualizar tooltip en sección 1
+      updateTooltip(i, vitalSigns[i]);
+
+      // Actualizar insulina basada en nueva glucemia
+      updateGlucoseInSection2(i, value);
+    });
 
     cell.appendChild(input);
     container.appendChild(cell);
@@ -494,13 +536,25 @@ function createInsulinCells() {
     message.className = "insulin-message";
     message.textContent = section2Data.insulin[i].message || "";
 
-    // Input de insulina
+    // Input de insulina (se puede convertir en select dinámicamente)
     const insulinInput = document.createElement("input");
     insulinInput.type = "text";
     insulinInput.className = "insulin-value";
     insulinInput.value = section2Data.insulin[i].value || "";
     insulinInput.addEventListener("input", (e) => {
       section2Data.insulin[i].value = e.target.value;
+    });
+
+    // Select de insulina para casos críticos (inicialmente oculto)
+    const insulinSelect = document.createElement("select");
+    insulinSelect.className = "insulin-select";
+    insulinSelect.style.display = "none";
+    insulinSelect.addEventListener("change", (e) => {
+      if (e.target.value !== "") {
+        section2Data.insulin[i].value = e.target.value;
+        // Actualizar inmediatamente para ocultar el desplegable y mostrar el valor
+        updateInsulinDisplay(i);
+      }
     });
 
     // Desplegable de tipo
@@ -544,6 +598,7 @@ function createInsulinCells() {
 
     insulinContainer.appendChild(message);
     insulinContainer.appendChild(insulinInput);
+    insulinContainer.appendChild(insulinSelect);
     insulinContainer.appendChild(typeSelect);
     insulinContainer.appendChild(arrow);
 
@@ -560,27 +615,95 @@ function updateInsulinDisplay(index) {
 
   const cell = container.children[index];
   const insulinInput = cell.querySelector(".insulin-value");
+  const insulinSelect = cell.querySelector(".insulin-select");
   const arrow = cell.querySelector(".insulin-arrow");
   const message = cell.querySelector(".insulin-message");
 
   const insulinData = section2Data.insulin[index];
+  const glucoseValue = parseFloat(section2Data.glucose[index]);
+
+  // Debug
+  console.log(
+    `Index: ${index}, Glucose: ${glucoseValue}, Type: ${insulinData.type}, Value: ${insulinData.value}`
+  );
 
   if (insulinData.type === "PERFUSIÓN") {
     insulinInput.style.display = "none";
+    insulinSelect.style.display = "none";
     arrow.classList.add("show");
-    message.textContent = "Perfusión continua";
+    message.classList.remove("show-alert", "critical-alert");
+    message.textContent = "";
   } else {
-    insulinInput.style.display = "block";
     arrow.classList.remove("show");
 
-    if (insulinData.recommended && insulinData.recommended !== "NADA") {
-      if (!insulinInput.value) {
-        insulinInput.value = insulinData.recommended;
-        section2Data.insulin[index].value = insulinData.recommended;
+    // Casos críticos: glucemia >350
+    if (!isNaN(glucoseValue) && glucoseValue > 350) {
+      // Si ya hay un valor seleccionado, mostrar input con el valor
+      if (insulinData.value && insulinData.value !== "") {
+        insulinInput.style.display = "block";
+        insulinSelect.style.display = "none";
+        insulinInput.value = insulinData.value;
+
+        // OCULTAR el mensaje de alerta una vez seleccionada la opción
+        message.classList.remove("show-alert", "critical-alert");
+        message.textContent = "";
+      } else {
+        // Si no hay valor, mostrar desplegable y MOSTRAR alerta
+        insulinInput.style.display = "none";
+        insulinSelect.style.display = "block";
+
+        // Limpiar opciones previas
+        insulinSelect.innerHTML = "";
+
+        if (glucoseValue > 350 && glucoseValue <= 400) {
+          // Caso 351-400: solo "20U s/c + 5U I.V."
+          const option1 = document.createElement("option");
+          option1.value = "";
+          option1.textContent = "Seleccionar acción...";
+
+          const option2 = document.createElement("option");
+          option2.value = "20U s/c + 5U I.V.";
+          option2.textContent = "20U s/c + 5U I.V.";
+
+          insulinSelect.appendChild(option1);
+          insulinSelect.appendChild(option2);
+
+          // MOSTRAR mensaje de alerta
+          message.textContent = "Glucemia crítica (351-400)";
+          message.classList.add("show-alert", "critical-alert");
+        } else {
+          // Caso >400: solo "AVISAR AL FACULTATIVO"
+          const option1 = document.createElement("option");
+          option1.value = "";
+          option1.textContent = "Seleccionar acción...";
+
+          const option2 = document.createElement("option");
+          option2.value = "AVISAR AL FACULTATIVO";
+          option2.textContent = "AVISAR AL FACULTATIVO";
+
+          insulinSelect.appendChild(option1);
+          insulinSelect.appendChild(option2);
+
+          // MOSTRAR mensaje de alerta
+          message.textContent = "Glucemia muy crítica (>400)";
+          message.classList.add("show-alert", "critical-alert");
+        }
       }
-      message.textContent = `Indicado administrar ${insulinData.recommended} de insulina rápida`;
     } else {
-      message.textContent = "";
+      // Casos normales: mostrar input
+      insulinInput.style.display = "block";
+      insulinSelect.style.display = "none";
+      message.classList.remove("show-alert", "critical-alert");
+
+      if (insulinData.recommended && insulinData.recommended !== "NADA") {
+        if (!insulinInput.value) {
+          insulinInput.value = insulinData.recommended;
+          section2Data.insulin[index].value = insulinData.recommended;
+        }
+        message.textContent = "";
+      } else {
+        message.textContent = "";
+      }
     }
   }
 }
@@ -590,12 +713,11 @@ function getInsulinDose(glucose) {
   if (isNaN(glucoseValue)) return "NADA";
 
   if (glucoseValue < 150) return "NADA";
-  if (glucoseValue >= 151 && glucoseValue <= 225) return "6 U.I. s/c";
-  if (glucoseValue >= 226 && glucoseValue <= 250) return "10 U.I. s/c";
-  if (glucoseValue >= 251 && glucoseValue <= 300) return "15 U.I. s/c";
-  if (glucoseValue >= 301 && glucoseValue <= 350) return "20 U.I. s/c";
-  if (glucoseValue >= 351 && glucoseValue <= 400)
-    return "20 U.I. s/c + 5 U.I. I.V.";
+  if (glucoseValue >= 151 && glucoseValue <= 225) return "6U s/c";
+  if (glucoseValue >= 226 && glucoseValue <= 250) return "10U s/c";
+  if (glucoseValue >= 251 && glucoseValue <= 300) return "15U s/c";
+  if (glucoseValue >= 301 && glucoseValue <= 350) return "20U s/c";
+  if (glucoseValue >= 351 && glucoseValue <= 400) return "20U s/c + 5U I.V.";
   if (glucoseValue > 400) return "AVISAR AL FACULTATIVO";
 
   return "NADA";
@@ -616,23 +738,32 @@ function syncDataFromSection1() {
   }
 }
 
-function updateGlucoseInSection2(index, glucoseValue) {
+function updateGlucoseInSection2(index, glucoseValue, fromSection1 = false) {
   // Actualizar valor de glucemia en sección 2
   section2Data.glucose[index] = glucoseValue;
 
-  // Actualizar celda de glucemia
-  const glucoseContainer = document.getElementById("glucose-cells");
-  if (glucoseContainer && glucoseContainer.children[index]) {
-    const glucoseInput =
-      glucoseContainer.children[index].querySelector("input");
-    if (glucoseInput) {
-      glucoseInput.value = glucoseValue;
+  // Solo actualizar el input si viene de sección 1 (evitar bucles)
+  if (fromSection1) {
+    const glucoseContainer = document.getElementById("glucose-cells");
+    if (glucoseContainer && glucoseContainer.children[index]) {
+      const glucoseInput =
+        glucoseContainer.children[index].querySelector("input");
+      if (glucoseInput) {
+        glucoseInput.value = glucoseValue;
+      }
     }
   }
 
   // Calcular dosis de insulina recomendada
   const recommendedDose = getInsulinDose(glucoseValue);
   section2Data.insulin[index].recommended = recommendedDose;
+
+  // Para casos críticos (>350), limpiar valor previo y mostrar desplegable
+  const glucoseNum = parseFloat(glucoseValue);
+  if (!isNaN(glucoseNum) && glucoseNum > 350) {
+    section2Data.insulin[index].value = ""; // Limpiar valor previo
+    section2Data.insulin[index].recommended = ""; // Limpiar recomendación también
+  }
 
   // Crear mensaje
   let message = "";
@@ -659,7 +790,8 @@ function updateGlucoseInSection2(index, glucoseValue) {
     ) {
       if (
         recommendedDose !== "NADA" &&
-        recommendedDose !== "AVISAR AL FACULTATIVO"
+        recommendedDose !== "AVISAR AL FACULTATIVO" &&
+        glucoseNum <= 350
       ) {
         section2Data.insulin[index].value = recommendedDose;
       }
@@ -671,19 +803,26 @@ function updateGlucoseInSection2(index, glucoseValue) {
   console.log(
     `Glucemia actualizada: índice ${index}, valor ${glucoseValue}, dosis recomendada: ${recommendedDose}`
   );
+
+  // Al final de updateGlucoseInSection2, añade:
+  setTimeout(() => {
+    updateInsulinDisplay(index);
+  }, 100);
 }
 
-function updateSaturationInSection2(index, satO2Value) {
+function updateSaturationInSection2(index, satO2Value, fromSection1 = false) {
   // Actualizar valor de saturación en sección 2
   section2Data.saturation[index] = satO2Value;
 
-  // Actualizar celda de saturación
-  const saturationContainer = document.getElementById("saturation-cells");
-  if (saturationContainer && saturationContainer.children[index]) {
-    const saturationInput =
-      saturationContainer.children[index].querySelector("input");
-    if (saturationInput) {
-      saturationInput.value = satO2Value;
+  // Solo actualizar el input si viene de sección 1 (evitar bucles)
+  if (fromSection1) {
+    const saturationContainer = document.getElementById("saturation-cells");
+    if (saturationContainer && saturationContainer.children[index]) {
+      const saturationInput =
+        saturationContainer.children[index].querySelector("input");
+      if (saturationInput) {
+        saturationInput.value = satO2Value;
+      }
     }
   }
 
@@ -810,10 +949,10 @@ function saveData() {
 
   // Actualizar sección 2 si hay datos de glucemia o saturación
   if (newData.glucemia) {
-    updateGlucoseInSection2(currentIndex, newData.glucemia);
+    updateGlucoseInSection2(currentIndex, newData.glucemia, true); // Añadir true
   }
   if (newData.satO2) {
-    updateSaturationInSection2(currentIndex, newData.satO2);
+    updateSaturationInSection2(currentIndex, newData.satO2, true); // Añadir true
   }
 
   closeDataModal();
