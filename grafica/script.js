@@ -1476,8 +1476,8 @@ function createFormulaTooltip() {
   formulaTooltip = document.createElement("div");
   formulaTooltip.className = "formula-tooltip";
   formulaTooltip.innerHTML = `
-    <div class="formula-tooltip-title" id="tooltipTitle">Fórmula</div>
-    <div class="formula-tooltip-content" id="tooltipContent">
+    <div class="formula-tooltip-title" id="tooltip-title">Fórmula</div>
+    <div class="formula-tooltip-content" id="tooltip-content">
       <!-- Contenido dinámico -->
     </div>
   `;
@@ -1499,8 +1499,8 @@ let tooltipTimeout;
 
 function showFormulaTooltip(element, formulaType) {
   const tooltip = createFormulaTooltip();
-  const title = tooltip.querySelector("#tooltipTitle");
-  const content = tooltip.querySelector("#tooltipContent");
+  const title = tooltip.querySelector("#tooltip-title");
+  const content = tooltip.querySelector("#tooltip-content");
 
   let titleText = "";
   let contentHTML = "";
@@ -1614,9 +1614,9 @@ function showFormulaModal(formulaType) {
 // FINAL DE TOOLTIP FIEBRE/TQN/PERDIDAS INSENSIBLES
 
 function showCustomTooltip(element, formulaType) {
-  const tooltip = document.getElementById("customTooltip");
-  const title = document.getElementById("tooltipTitle");
-  const content = document.getElementById("tooltipContent");
+  const tooltip = document.getElementById("custom-tooltip");
+  const title = document.getElementById("tooltip-title");
+  const content = document.getElementById("tooltip-content");
 
   let titleText = "";
   let contentHTML = "";
@@ -1626,9 +1626,9 @@ function showCustomTooltip(element, formulaType) {
     case "fiebre-tqn":
       titleText = "Fórmula FIEBRE + TQN";
       contentHTML = `
-                <div><strong>Fiebre >37°C:</strong> 0.1 × PESO × Nº HORAS</div>
-                <div><strong>Fiebre >38°C:</strong> 0.2 × PESO × Nº HORAS</div>
-                <div><strong>Fiebre >39°C:</strong> 0.3 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >37°C: </strong> 0.1 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >38°C: </strong> 0.2 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >39°C: </strong> 0.3 × PESO × Nº HORAS</div>
             `;
       break;
 
@@ -1650,7 +1650,7 @@ function showCustomTooltip(element, formulaType) {
 
   // Posiciona el tooltip cerca del elemento
   const rect = element.getBoundingClientRect();
-  tooltip.style.left = "35%";
+  tooltip.style.left = "50%";
   tooltip.style.top = "50%";
   tooltip.style.transform = "translate(-50%, -50%)";
   // Muestra el tooltip
@@ -1659,7 +1659,7 @@ function showCustomTooltip(element, formulaType) {
 }
 
 function hideCustomTooltip() {
-  const tooltip = document.getElementById("customTooltip");
+  const tooltip = document.getElementById("custom-tooltip");
   tooltip.style.display = "none";
 }
 // ========================== //
