@@ -1465,6 +1465,204 @@ function getSection3Data() {
 console.log("Script.js cargado correctamente");
 
 // ========================== //
+// TOOLTIPS PARA FÓRMULAS MÉDICAS //
+// ========================== //
+
+let formulaTooltip = null;
+
+function createFormulaTooltip() {
+  if (formulaTooltip) return formulaTooltip;
+
+  formulaTooltip = document.createElement("div");
+  formulaTooltip.className = "formula-tooltip";
+  formulaTooltip.innerHTML = `
+    <div class="formula-tooltip-title" id="tooltip-title">Fórmula</div>
+    <div class="formula-tooltip-content" id="tooltip-content">
+      <!-- Contenido dinámico -->
+    </div>
+  `;
+
+  // Evitar que se cierre el tooltip al hacer hover sobre él
+  formulaTooltip.addEventListener("mouseenter", () => {
+    clearTimeout(tooltipTimeout);
+  });
+
+  formulaTooltip.addEventListener("mouseleave", () => {
+    tooltipTimeout = setTimeout(hideFormulaTooltip, 300);
+  });
+
+  document.body.appendChild(formulaTooltip);
+  return formulaTooltip;
+}
+
+let tooltipTimeout;
+
+function showFormulaTooltip(element, formulaType) {
+  const tooltip = createFormulaTooltip();
+  const title = tooltip.querySelector("#tooltip-title");
+  const content = tooltip.querySelector("#tooltip-content");
+
+  let titleText = "";
+  let contentHTML = "";
+
+  switch (formulaType) {
+    case "fiebre-tqn":
+      titleText = "Fórmula FIEBRE + TQN";
+      contentHTML = `
+        <div class="formula-row">
+          <span class="formula-fever">FIEBRE:</span>
+        </div>
+        <div class="formula-row">
+          <span>• Fiebre >37°C:</span>
+          <span class="formula-fever">0,1 × PESO × Nº HORAS</span>
+        </div>
+        <div class="formula-row">
+          <span>• Fiebre >38°C:</span>
+          <span class="formula-fever">0,2 × PESO × Nº HORAS</span>
+        </div>
+        <div class="formula-row">
+          <span>• Fiebre >39°C:</span>
+          <span class="formula-fever">0,3 × PESO × Nº HORAS</span>
+        </div>
+        <div class="formula-row" style="margin-top: 8px;">
+          <span class="formula-tachypnea">TAQUIPNEA:</span>
+        </div>
+        <div class="formula-row">
+          <span>• RPM >25:</span>
+          <span class="formula-tachypnea">0,2 × PESO × Nº HORAS</span>
+        </div>
+        <div class="formula-row">
+          <span>• RPM >35:</span>
+          <span class="formula-tachypnea">0,3 × PESO × Nº HORAS</span>
+        </div>
+        <div class="formula-note">
+          Se calculan automáticamente basándose en temperatura y frecuencia respiratoria de cada hora
+        </div>
+      `;
+      break;
+
+    case "perdidas-insensibles":
+      titleText = "Fórmula PÉRDIDAS INSENSIBLES";
+      contentHTML = `
+        <div class="formula-row">
+          <span class="formula-insensible">FÓRMULA:</span>
+          <span class="formula-insensible">0.5 × PESO × HORAS</span>
+        </div>
+        <div class="formula-row" style="margin-top: 8px;">
+          <span>Donde:</span>
+        </div>
+        <div class="formula-row">
+          <span>• PESO:</span>
+          <span class="formula-result">Peso del paciente (kg)</span>
+        </div>
+        <div class="formula-row">
+          <span>• HORAS:</span>
+          <span class="formula-result">Tiempo desde el ingreso</span>
+        </div>
+        <div class="formula-note">
+          Se calcula automáticamente considerando el peso y las horas transcurridas desde el ingreso
+        </div>
+      `;
+      break;
+  }
+
+  title.textContent = titleText;
+  content.innerHTML = contentHTML;
+
+  // Posicionar tooltip en el centro de la pantalla
+  tooltip.style.left = "50%";
+  tooltip.style.top = "50%";
+
+  // Mostrar tooltip
+  tooltip.classList.add("show");
+
+  // Ocultar tooltip después de 5 segundos o al hacer click fuera
+  setTimeout(() => {
+    hideFormulaTooltip();
+  }, 5000);
+
+  // Agregar event listener para cerrar al hacer click fuera
+  document.addEventListener("click", hideFormulaTooltipOnClick);
+}
+
+function hideFormulaTooltip() {
+  if (formulaTooltip) {
+    formulaTooltip.classList.remove("show");
+    document.removeEventListener("click", hideFormulaTooltipOnClick);
+  }
+}
+
+function hideFormulaTooltipOnClick(e) {
+  if (
+    formulaTooltip &&
+    !formulaTooltip.contains(e.target) &&
+    !e.target.classList.contains("calc-indicator")
+  ) {
+    hideFormulaTooltip();
+  }
+}
+
+// Modificar la función existente para usar tooltips en lugar del modal
+function showFormulaModal(formulaType) {
+  // Buscar el elemento que disparó el evento
+  const callerElement = document.querySelector(
+    `[onclick="showFormulaModal('${formulaType}')"]`
+  );
+  showFormulaTooltip(callerElement, formulaType);
+}
+
+// FINAL DE TOOLTIP FIEBRE/TQN/PERDIDAS INSENSIBLES
+
+function showCustomTooltip(element, formulaType) {
+  const tooltip = document.getElementById("custom-tooltip");
+  const title = document.getElementById("tooltip-title");
+  const content = document.getElementById("tooltip-content");
+
+  let titleText = "";
+  let contentHTML = "";
+
+  // Aquí defines qué contenido mostrar según el tipo
+  switch (formulaType) {
+    case "fiebre-tqn":
+      titleText = "Fórmula FIEBRE + TQN";
+      contentHTML = `
+                <div><strong>Fiebre >37°C: </strong> 0.1 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >38°C: </strong> 0.2 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >39°C: </strong> 0.3 × PESO × Nº HORAS</div>
+            `;
+      break;
+
+    case "perdidas-insensibles":
+      titleText = "Fórmula PÉRDIDAS INSENSIBLES";
+      contentHTML = `
+                <div><strong>Fórmula general:</strong> 0.5 × PESO × Nº HORAS</div>
+                <div><em>Incluye pérdidas por piel y respiración.</em></div>
+            `;
+      break;
+
+    default:
+      return;
+  }
+
+  // Actualiza el contenido
+  title.textContent = titleText;
+  content.innerHTML = contentHTML;
+
+  // Posiciona el tooltip cerca del elemento
+  const rect = element.getBoundingClientRect();
+  tooltip.style.left = "50%";
+  tooltip.style.top = "50%";
+  tooltip.style.transform = "translate(-50%, -50%)";
+  // Muestra el tooltip
+
+  tooltip.style.display = "block";
+}
+
+function hideCustomTooltip() {
+  const tooltip = document.getElementById("custom-tooltip");
+  tooltip.style.display = "none";
+}
+// ========================== //
 // SECCIÓN 4: INGRESOS  //
 // ========================== //
 
@@ -2311,5 +2509,26 @@ document.addEventListener("DOMContentLoaded", function () {
       .addEventListener("click", function (e) {
         e.stopPropagation();
       });
+  }
+});
+
+document.querySelectorAll(".label-text").forEach((div) => {
+  const text = div.textContent.trim();
+
+  let formulaType = null;
+  if (text === "FIEBRE, TQN") {
+    formulaType = "fiebre-tqn";
+  } else if (text === "PÉRD. INSENSIBLES") {
+    formulaType = "perdidas-insensibles";
+  }
+
+  if (formulaType) {
+    div.addEventListener("mouseenter", () => {
+      showCustomTooltip(div, formulaType);
+    });
+
+    div.addEventListener("mouseleave", () => {
+      hideCustomTooltip();
+    });
   }
 });

@@ -19,6 +19,11 @@
   </head>
 
   <body>
+    <!-- Botones de navegación -->
+    <div class="navigation-buttons">
+      <a href="grafica.html"><button>Ir a Gráfica</button></a>
+      <a href="datos.html"><button>Modificar Datos</button></a>
+    </div>
     <!-- Control de vista -->
     <div class="view-controls">
       <button id="toggleViewBtn" class="toggle-view-btn" data-view="compact">
@@ -79,7 +84,7 @@
             </div>
             <div class="patient-field patient-date">
               <strong>FECHA:</strong>
-              <input type="date" id="patientDate" />
+              <input type="date" id="patientDate" readonly />
             </div>
             <div class="patient-field patient-age">
               <strong>EDAD:</strong>
@@ -87,7 +92,7 @@
                 type="number"
                 id="patientAge"
                 min="0"
-                max="999"
+                max="150"
                 maxlength="3"
               />
             </div>

@@ -278,8 +278,123 @@ function initializeSpecificSection(sectionId) {
 
 function initializeSection1() {
   setupGridCells();
+  updateLogicalDateInput(); // Actualiza automáticamente la fecha lógica
   console.log("Sección 1 inicializada");
 }
+
+function updateLogicalDateInput() {
+  const now = new Date(); // Fecha y hora actual
+  let logicalDate = new Date(now); // Copia para modificar
+
+  // Determinamos si está antes de las 08:00
+  if (now.getHours() < 8) {
+    // Pertenece al día anterior
+    logicalDate.setDate(now.getDate() - 1);
+  }
+
+  // Formato ISO para <input type="date"> => YYYY-MM-DD
+  const year = logicalDate.getFullYear();
+  const month = String(logicalDate.getMonth() + 1).padStart(2, "0"); // Mes empieza en 0
+  const day = String(logicalDate.getDate()).padStart(2, "0");
+
+  const formattedDate = `${year}-${month}-${day}`;
+
+  // Actualizamos el input de fecha
+  const dateInput = document.getElementById("patientDate");
+  if (dateInput && !dateInput.value) {
+    dateInput.value = formattedDate;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  updateLogicalDateInput(); // Actualiza la fecha lógica
+  updateSheetField(); // Actualiza el número de hoja
+  loadPatientData(); // Cargar datos del paciente
+
+  const ingresoInput = document.getElementById("patientIngreso");
+  if (ingresoInput) {
+    ingresoInput.addEventListener("change", updateSheetField);
+  }
+});
+
+function getLogicalDate(date) {
+  const d = new Date(date);
+  if (d.getHours() < 8) d.setDate(d.getDate() - 1);
+  return d;
+}
+
+function getDefaultIngresoDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function calculateClinicalSheet(ingresoDateStr) {
+  if (!ingresoDateStr) return 1;
+
+  const now = new Date();
+  const ingreso = new Date(ingresoDateStr);
+
+  const logicalNow = getLogicalDate(now);
+  const logicalIngreso = getLogicalDate(ingreso);
+
+  const diffDays = Math.floor(
+    (logicalNow - logicalIngreso) / (1000 * 60 * 60 * 24)
+  );
+  return diffDays + 1; // Hoja empieza en 1
+}
+
+function updateSheetField() {
+  const ingresoInput = document.getElementById("patientIngreso");
+  const sheetInput = document.getElementById("patientSheet");
+
+  if (!ingresoInput || !sheetInput) return;
+
+  const ingresoDate = ingresoInput.value;
+  const sheetNumber = calculateClinicalSheet(ingresoDate);
+
+  if (sheetNumber !== undefined && sheetNumber > 0) {
+    sheetInput.value = sheetNumber;
+    sheetInput.readOnly = true;
+  } else {
+    sheetInput.value = "";
+  }
+}
+
+function saveCurrentPatientData() {
+  const data = {
+    name: document.getElementById("patientName").value,
+    age: document.getElementById("patientAge").value,
+    peso: document.getElementById("patientPeso").value,
+    history: document.getElementById("patientHistory").value,
+    bed: document.getElementById("patientBed").value,
+    ingreso: document.getElementById("patientIngreso").value,
+  };
+
+  localStorage.setItem("currentPatient", JSON.stringify(data));
+}
+
+// Escuchar cambios en los campos importantes
+document.getElementById("patientIngreso")?.addEventListener("change", () => {
+  updateSheetField();
+  saveCurrentPatientData();
+});
+
+// Guardar también al salir de otros campos
+[
+  "patientName",
+  "patientAge",
+  "patientPeso",
+  "patientHistory",
+  "patientBed",
+].forEach((id) => {
+  document.getElementById(id)?.addEventListener("blur", saveCurrentPatientData);
+});
 
 function setupGridCells() {
   const chartGrid = document.getElementById("chartGrid");
@@ -329,6 +444,19 @@ function setupGridCells() {
   });
 }
 
+function loadPatientData() {
+  const data = JSON.parse(localStorage.getItem("currentPatient"));
+  if (!data) return;
+
+  document.getElementById("patientName").value = data.name || "";
+  document.getElementById("patientAge").value = data.age || "";
+  document.getElementById("patientPeso").value = data.peso || "";
+  document.getElementById("patientHistory").value = data.history || "";
+  document.getElementById("patientBed").value = data.bed || "";
+  document.getElementById("patientIngreso").value =
+    data.ingreso || getDefaultIngresoDate();
+  updateSheetField(); // Actualiza automáticamente la hoja clínica
+}
 // ========================== //
 // SECCIÓN 2: OXIGENACIÓN, DOLOR Y GLUCEMIAS //
 // ========================== //

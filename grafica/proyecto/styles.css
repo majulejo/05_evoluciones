@@ -288,6 +288,21 @@ body {
   font-weight: bold;
 }
 
+/* Estilo para el icono del calendario */
+.calendar-icon {
+    position: relative;
+    top: -2px; /* Ajusta según sea necesario */
+    left: -20px; /* Ajusta según sea necesario */
+    cursor: pointer;
+}
+
+/* Estilo para el campo de ingreso */
+#patientIngreso {
+    padding-right: 25px; /* Espacio para el icono del calendario */
+}
+
+
+
 .patient-name input { width: 220px; }
 .patient-date input { width: 80px; }
 .patient-age input { width: 40px; text-align: center; }
