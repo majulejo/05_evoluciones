@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ingreso del Paciente | UCI</title>
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --success-color: #27ae60;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark-color);
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h2 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2rem;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: var(--secondary-color);
+      }
+
+      .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        transition: var(--transition);
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      }
+
+      input[readonly] {
+        background-color: #f9f9f9;
+        color: #777;
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        text-align: center;
+        flex: 1;
+        min-width: 120px;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+      }
+
+      .btn-secondary:hover {
+        background-color: #d5dbdb;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #219955;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 600px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+
+      /* Animaciones */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card {
+        animation: fadeIn 0.5s ease-out;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>Ingreso del Paciente</h2>
+
+      <div class="card">
+        <form id="patientForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="patientName">NOMBRE COMPLETO</label>
+              <input
+                type="text"
+                id="patientName"
+                required
+                placeholder="Ej: Juan Pérez García"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="patientAge">EDAD</label>
+              <input
+                type="number"
+                id="patientAge"
+                min="0"
+                max="120"
+                required
+                placeholder="Años"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="patientPeso">PESO (kg)</label>
+              <input
+                type="number"
+                step="0.1"
+                id="patientPeso"
+                required
+                placeholder="Ej: 72.5"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="patientHistory">HISTORIA CLÍNICA</label>
+              <input
+                type="number"
+                id="patientHistory"
+                required
+                placeholder="Número de historia"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="patientBed">CAMA ASIGNADA</label>
+              <input type="number" id="patientBed" />
+            </div>
+
+            <div class="form-group">
+              <label for="patientIngreso">FECHA Y HORA DE INGRESO</label>
+              <input type="datetime-local" id="patientIngreso" required />
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="submit" class="btn btn-success">
+              Guardar Paciente
+            </button>
+            <a href="index.html" class="btn btn-secondary">Volver</a>
+            <a href="grafica.html" class="btn btn-primary">Ir a Gráfica</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const selectedBed = localStorage.getItem("selectedBed");
+
+        if (!selectedBed) {
+          alert("No se ha seleccionado ninguna cama. Redirigiendo...");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Configurar campos del formulario
+        document.getElementById("patientBed").value = selectedBed;
+
+        // Establecer fecha y hora actual
+        const now = new Date();
+        const timezoneOffset = now.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(now - timezoneOffset)
+          .toISOString()
+          .slice(0, 16);
+        document.getElementById("patientIngreso").value = localISOTime;
+
+        // Manejar envío del formulario
+        document
+          .getElementById("patientForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Obtener datos del formulario
+            const patientData = {
+              name: document.getElementById("patientName").value,
+              age: document.getElementById("patientAge").value,
+              weight: document.getElementById("patientPeso").value,
+              history: document.getElementById("patientHistory").value,
+              bed: document.getElementById("patientBed").value,
+              admission: document.getElementById("patientIngreso").value,
+              lastUpdate: new Date().toISOString(),
+            };
+
+            // Guardar en localStorage
+            localStorage.setItem("currentPatient", JSON.stringify(patientData));
+
+            // Redirigir
+            window.location.href = "grafica.html";
+          });
+      });
+    </script>
+  </body>
+</html>

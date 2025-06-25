@@ -1,308 +1,531 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ingreso del Paciente | UCI</title>
-    <style>
-      :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --accent-color: #e74c3c;
-        --light-color: #ecf0f1;
-        --dark-color: #2c3e50;
-        --success-color: #27ae60;
-        --border-radius: 8px;
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
-      }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingreso del Paciente | UCI</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #2c3e50;
+      --success-color: #27ae60;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
 
-      body {
-        background-color: #f5f7fa;
-        color: var(--dark-color);
-        line-height: 1.6;
-        padding: 20px;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
+    body {
+      background-color: #f5f7fa;
+      color: var(--dark-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
 
-      h2 {
-        color: var(--primary-color);
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 2rem;
-        position: relative;
-        padding-bottom: 10px;
-      }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-      h2::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 3px;
-        background: var(--secondary-color);
-      }
+    h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      position: relative;
+      padding-bottom: 10px;
+    }
 
-      .card {
-        background: white;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        padding: 30px;
-        margin-bottom: 30px;
-      }
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--secondary-color);
+    }
 
+    .card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    input[readonly] {
+      background-color: #f9f9f9;
+      color: #777;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn-primary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #d5dbdb;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #219955;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
       .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-      }
-
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: var(--primary-color);
-      }
-
-      input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: var(--border-radius);
-        font-size: 16px;
-        transition: var(--transition);
-      }
-
-      input:focus {
-        outline: none;
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-      }
-
-      input[readonly] {
-        background-color: #f9f9f9;
-        color: #777;
+        grid-template-columns: 1fr;
       }
 
       .button-group {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-        flex-wrap: wrap;
-        gap: 15px;
+        flex-direction: column;
       }
 
       .btn {
-        padding: 12px 25px;
-        border: none;
-        border-radius: var(--border-radius);
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        text-decoration: none;
-        text-align: center;
-        flex: 1;
-        min-width: 120px;
+        width: 100%;
+      }
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
 
-      .btn-primary {
-        background-color: var(--secondary-color);
-        color: white;
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* ========================== */
+    /* SISTEMA DE NAVEGACIÓN      */
+    /* ========================== */
+
+    .navigation-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 160px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-button i {
+      font-size: 16px;
+    }
+
+    /* Variantes de colores */
+    .nav-button.primary {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .nav-button.primary:hover {
+      background-color: #2980b9;
+    }
+
+    .nav-button.success {
+      background-color: #27ae60;
+      color: white;
+    }
+
+    .nav-button.success:hover {
+      background-color: #219955;
+    }
+
+    .nav-button.secondary {
+      background-color: #95a5a6;
+      color: white;
+    }
+
+    .nav-button.secondary:hover {
+      background-color: #7f8c8d;
+    }
+
+    .nav-button.warning {
+      background-color: #f39c12;
+      color: white;
+    }
+
+    .nav-button.warning:hover {
+      background-color: #e67e22;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navigation-container {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 20px auto;
+        width: fit-content;
       }
 
-      .btn-primary:hover {
-        background-color: #2980b9;
-        transform: translateY(-2px);
+      .nav-button {
+        min-width: 140px;
+        font-size: 13px;
+        padding: 10px 16px;
       }
+    }
+  </style>
+</head>
 
-      .btn-secondary {
-        background-color: var(--light-color);
-        color: var(--dark-color);
-      }
+<body>
+  <div class="container">
+    <h2>Ingreso del Paciente</h2>
 
-      .btn-secondary:hover {
-        background-color: #d5dbdb;
-        transform: translateY(-2px);
-      }
-
-      .btn-success {
-        background-color: var(--success-color);
-        color: white;
-      }
-
-      .btn-success:hover {
-        background-color: #219955;
-        transform: translateY(-2px);
-      }
-
-      @media (max-width: 600px) {
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .button-group {
-          flex-direction: column;
-        }
-
-        .btn {
-          width: 100%;
-        }
-      }
-
-      /* Animaciones */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .card {
-        animation: fadeIn 0.5s ease-out;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="container">
-      <h2>Ingreso del Paciente</h2>
-
-      <div class="card">
-        <form id="patientForm">
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="patientName">NOMBRE COMPLETO</label>
-              <input
-                type="text"
-                id="patientName"
-                required
-                placeholder="Ej: Juan Pérez García"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="patientAge">EDAD</label>
-              <input
-                type="number"
-                id="patientAge"
-                min="0"
-                max="120"
-                required
-                placeholder="Años"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="patientPeso">PESO (kg)</label>
-              <input
-                type="number"
-                step="0.1"
-                id="patientPeso"
-                required
-                placeholder="Ej: 72.5"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="patientHistory">HISTORIA CLÍNICA</label>
-              <input
-                type="number"
-                id="patientHistory"
-                required
-                placeholder="Número de historia"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="patientBed">CAMA ASIGNADA</label>
-              <input type="number" id="patientBed" />
-            </div>
-
-            <div class="form-group">
-              <label for="patientIngreso">FECHA Y HORA DE INGRESO</label>
-              <input type="datetime-local" id="patientIngreso" required />
-            </div>
+    <div class="card">
+      <form id="patientForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="patientName">NOMBRE COMPLETO</label>
+            <input type="text" id="patientName" required placeholder="Ej: Juan Pérez García" />
           </div>
 
-          <div class="button-group">
-            <button type="submit" class="btn btn-success">
-              Guardar Paciente
-            </button>
-            <a href="index.html" class="btn btn-secondary">Volver</a>
-            <a href="grafica.html" class="btn btn-primary">Ir a Gráfica</a>
+          <div class="form-group">
+            <label for="patientAge">EDAD</label>
+            <input type="number" id="patientAge" min="0" max="120" required placeholder="Años" />
           </div>
-        </form>
-      </div>
-    </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const selectedBed = localStorage.getItem("selectedBed");
+          <div class="form-group">
+            <label for="patientPeso">PESO (kg)</label>
+            <input type="number" step="0.1" id="patientPeso" required placeholder="Ej: 72.5" />
+          </div>
 
-        if (!selectedBed) {
-          alert("No se ha seleccionado ninguna cama. Redirigiendo...");
-          window.location.href = "index.html";
-          return;
-        }
+          <div class="form-group">
+            <label for="patientHistory">HISTORIA CLÍNICA</label>
+            <input type="number" id="patientHistory" required placeholder="Número de historia" />
+          </div>
 
-        // Configurar campos del formulario
-        document.getElementById("patientBed").value = selectedBed;
+          <div class="form-group">
+            <label for="patientBed">CAMA ASIGNADA</label>
+            <input type="number" id="patientBed" />
+          </div>
 
-        // Establecer fecha y hora actual
-        const now = new Date();
-        const timezoneOffset = now.getTimezoneOffset() * 60000;
-        const localISOTime = new Date(now - timezoneOffset)
-          .toISOString()
-          .slice(0, 16);
-        document.getElementById("patientIngreso").value = localISOTime;
+          <div class="form-group">
+            <label for="patientIngreso">FECHA Y HORA DE INGRESO</label>
+            <input type="datetime-local" id="patientIngreso" required />
+          </div>
+        </div>
 
-        // Manejar envío del formulario
-        document
-          .getElementById("patientForm")
-          .addEventListener("submit", function (e) {
-            e.preventDefault();
+        <!-- Reemplazar la section .button-group actual -->
+        <div class="button-group">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Guardar Paciente
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="goToIndex()">
+            <i class="fas fa-arrow-left"></i> Volver a Inicio
+          </button>
+          <button type="button" class="btn btn-primary" onclick="goToChart()">
+            <i class="fas fa-chart-line"></i> Ir a Gráfica
+          </button>
+        </div>
 
-            // Obtener datos del formulario
-            const patientData = {
-              name: document.getElementById("patientName").value,
-              age: document.getElementById("patientAge").value,
-              weight: document.getElementById("patientPeso").value,
-              history: document.getElementById("patientHistory").value,
-              bed: document.getElementById("patientBed").value,
-              admission: document.getElementById("patientIngreso").value,
-              lastUpdate: new Date().toISOString(),
-            };
+        <!-- Agregar navegación flotante -->
+        <div class="navigation-container">
+          <a href="index.html" class="nav-button secondary">
+            <i class="fas fa-home"></i> Inicio
+          </a>
+          <button class="nav-button primary" onclick="goToChart()" id="chartNavBtn">
+            <i class="fas fa-chart-line"></i> Gráfica
+          </button>
+        </div>
 
-            // Guardar en localStorage
-            localStorage.setItem("currentPatient", JSON.stringify(patientData));
+        <script>
+          function goToIndex() {
+            if (confirm('¿Estás seguro de que quieres volver al inicio? Los cambios no guardados se perderán.')) {
+              window.location.href = 'index.html';
+            }
+          }
 
-            // Redirigir
-            window.location.href = "grafica.html";
+          function goToChart() {
+            // Verificar si hay datos mínimos
+            const name = document.getElementById('patientName').value.trim();
+            if (!name) {
+              alert('Por favor, introduce al menos el nombre del paciente antes de ir a la gráfica.');
+              document.getElementById('patientName').focus();
+              return;
+            }
+
+            // Guardar datos actuales antes de navegar
+            const selectedBed = localStorage.getItem('selectedBed');
+            if (selectedBed) {
+              const currentData = {
+                name: document.getElementById('patientName').value,
+                age: document.getElementById('patientAge').value,
+                weight: document.getElementById('patientPeso').value,
+                history: document.getElementById('patientHistory').value,
+                bed: document.getElementById('patientBed').value,
+                admission: document.getElementById('patientIngreso').value
+              };
+              savePatientData(selectedBed, currentData);
+            }
+
+            window.location.href = 'grafica.html';
+          }
+
+          // Actualizar estado del botón según si hay datos
+          document.addEventListener('DOMContentLoaded', function () {
+            const chartBtn = document.getElementById('chartNavBtn');
+            const nameField = document.getElementById('patientName');
+
+            function updateChartButton() {
+              if (nameField.value.trim()) {
+                chartBtn.classList.remove('secondary');
+                chartBtn.classList.add('primary');
+                chartBtn.disabled = false;
+              } else {
+                chartBtn.classList.remove('primary');
+                chartBtn.classList.add('secondary');
+              }
+            }
+
+            if (nameField) {
+              nameField.addEventListener('input', updateChartButton);
+              updateChartButton(); // Verificar estado inicial
+            }
           });
-      });
-    </script>
-  </body>
+
+
+          document.addEventListener("DOMContentLoaded", function () {
+            const selectedBed = localStorage.getItem("selectedBed");
+
+            if (!selectedBed) {
+              alert("No se ha seleccionado ninguna cama. Redirigiendo...");
+              window.location.href = "index.html";
+              return;
+            }
+
+            // Configurar cama seleccionada
+            const bedInput = document.getElementById("patientBed");
+            if (bedInput) {
+              bedInput.value = selectedBed;
+              bedInput.readOnly = true;
+            }
+
+            // Establecer fecha y hora actual por defecto
+            const ingresoInput = document.getElementById("patientIngreso");
+            if (ingresoInput && !ingresoInput.value) {
+              const now = new Date();
+              const timezoneOffset = now.getTimezoneOffset() * 60000;
+              const localISOTime = new Date(now - timezoneOffset)
+                .toISOString()
+                .slice(0, 16);
+              ingresoInput.value = localISOTime;
+            }
+
+            // Cargar datos existentes si los hay (para poder editar)
+            const existingData = loadPatientData(selectedBed);
+            if (existingData) {
+              if (existingData.name)
+                document.getElementById("patientName").value = existingData.name;
+              if (existingData.age)
+                document.getElementById("patientAge").value = existingData.age;
+              if (existingData.weight)
+                document.getElementById("patientPeso").value = existingData.weight;
+              if (existingData.history)
+                document.getElementById("patientHistory").value =
+                  existingData.history;
+              if (existingData.admission)
+                document.getElementById("patientIngreso").value =
+                  existingData.admission;
+            }
+
+            // Configurar eventos de auto-guardado
+            const autoSaveFields = [
+              "patientName",
+              "patientAge",
+              "patientPeso",
+              "patientHistory",
+            ];
+            autoSaveFields.forEach((fieldId) => {
+              const field = document.getElementById(fieldId);
+              if (field) {
+                field.addEventListener("blur", saveCurrentDataToStorage);
+              }
+            });
+
+            // Evento especial para fecha de ingreso
+            if (ingresoInput) {
+              ingresoInput.addEventListener("change", saveCurrentDataToStorage);
+            }
+
+            // Manejar envío del formulario
+            document
+              .getElementById("patientForm")
+              .addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                // Validar datos mínimos
+                const name = document.getElementById("patientName").value.trim();
+                if (!name) {
+                  alert("Por favor, introduce el nombre del paciente.");
+                  document.getElementById("patientName").focus();
+                  return;
+                }
+
+                // Obtener todos los datos del formulario
+                const patientData = {
+                  name: document.getElementById("patientName").value,
+                  age: document.getElementById("patientAge").value,
+                  weight: document.getElementById("patientPeso").value,
+                  history: document.getElementById("patientHistory").value,
+                  bed: document.getElementById("patientBed").value,
+                  admission: document.getElementById("patientIngreso").value,
+                };
+
+                // Guardar en el sistema unificado
+                savePatientData(selectedBed, patientData);
+
+                // También guardar como currentPatient para compatibilidad
+                localStorage.setItem("currentPatient", JSON.stringify(patientData));
+
+                // Redirigir a gráfica
+                window.location.href = "grafica.html";
+              });
+
+            // Función para guardar datos actuales
+            function saveCurrentDataToStorage() {
+              const currentData = {
+                name: document.getElementById("patientName").value,
+                age: document.getElementById("patientAge").value,
+                weight: document.getElementById("patientPeso").value,
+                history: document.getElementById("patientHistory").value,
+                bed: document.getElementById("patientBed").value,
+                admission: document.getElementById("patientIngreso").value,
+              };
+
+              savePatientData(selectedBed, currentData);
+            }
+
+            // Funciones del sistema unificado
+            function loadPatientData(bedNumber) {
+              const patients = JSON.parse(localStorage.getItem("patients")) || {};
+              return patients[bedNumber] || null;
+            }
+
+            function savePatientData(bedNumber, patientData) {
+              const patients = JSON.parse(localStorage.getItem("patients")) || {};
+              patients[bedNumber] = {
+                ...patientData,
+                lastUpdate: new Date().toISOString(),
+              };
+              localStorage.setItem("patients", JSON.stringify(patients));
+            }
+          });
+        </script>
+</body>
+
 </html>

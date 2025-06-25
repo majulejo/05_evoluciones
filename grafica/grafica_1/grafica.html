@@ -26,21 +26,10 @@
 
   <body>
     <!-- Botones de navegación -->
-    <div class="navigation-container">
-      <a href="index.html" class="nav-button secondary">
-        <i class="fas fa-home"></i> Inicio
-      </a>
-      <button class="nav-button warning" onclick="goToPatientData()">
-        <i class="fas fa-user-edit"></i> Editar Datos
-      </button>
-      <button class="nav-button success" onclick="saveCurrentData()">
-        <i class="fas fa-save"></i> Guardar Todo
-      </button>
-      <button class="nav-button primary" onclick="printChart()">
-        <i class="fas fa-print"></i> Imprimir
-      </button>
+    <div class="navigation-buttons">
+      <a href="grafica.html"><button>Ir a Gráfica</button></a>
+      <a href="datos.html"><button>Modificar Datos</button></a>
     </div>
-
     <!-- Control de vista -->
     <div class="view-controls">
       <button id="toggleViewBtn" class="toggle-view-btn" data-view="compact">

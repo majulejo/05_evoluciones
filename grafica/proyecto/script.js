@@ -203,29 +203,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initializeApp() {
-  // Inicializar control de vistas
   setupViewToggle();
-
-  // Inicializar navegación entre secciones
   setupSectionNavigation();
-
-  // Configurar vista inicial
   setupInitialView();
-
-  // Inicializar sección 1 (Datos y constantes)
+  loadPatientDataInChart();
   initializeSection1();
-
-  // Inicializar modal de datos
   initModal();
-
-  // Inicializar modal de imágenes
   initImageModal();
-
-  // Configurar responsive
   setupResponsive();
-
-  // Inicializar gráfica (AÑADE ESTA LÍNEA)
   initChart();
+  setupPatientDataSyncEvents();
 
   console.log("Aplicación inicializada correctamente");
 }
@@ -416,6 +403,105 @@ function initializeSpecificSection(sectionId) {
       break;
   }
 }
+
+function goToPatientData() {
+  if (
+    confirm(
+      "¿Quieres editar los datos del paciente? Se guardará el estado actual de la gráfica."
+    )
+  ) {
+    // Guardar estado actual antes de navegar
+    saveCurrentPatientDataFromChart();
+    window.location.href = "datos.html";
+  }
+}
+
+function saveCurrentData() {
+  try {
+    saveCurrentPatientDataFromChart();
+
+    // Mostrar confirmación visual
+    const button = event.target.closest(".nav-button");
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Guardado';
+    button.style.backgroundColor = "#27ae60";
+
+    setTimeout(() => {
+      button.innerHTML = originalText;
+      button.style.backgroundColor = "";
+    }, 2000);
+  } catch (error) {
+    alert("Error al guardar los datos. Inténtalo de nuevo.");
+    console.error("Error saving data:", error);
+  }
+}
+
+function printChart() {
+  // Ocultar botones de navegación para la impresión
+  const navContainer = document.querySelector(".navigation-container");
+  const viewControls = document.querySelector(".view-controls");
+  const sectionNav = document.querySelector(".section-navigation");
+
+  if (navContainer) navContainer.style.display = "none";
+  if (viewControls) viewControls.style.display = "none";
+  if (sectionNav) sectionNav.style.display = "none";
+
+  // Asegurar vista extendida para impresión
+  if (currentView === "compact") {
+    switchView("extended");
+  }
+
+  setTimeout(() => {
+    window.print();
+
+    // Restaurar elementos después de imprimir
+    if (navContainer) navContainer.style.display = "";
+    if (viewControls) viewControls.style.display = "";
+    if (sectionNav) sectionNav.style.display = "";
+  }, 500);
+}
+
+// ========================== //
+// SISTEMA DE NAVEGACIÓN      //
+// ========================== //
+
+function confirmNavigation(message, destination) {
+  if (confirm(message)) {
+    window.location.href = destination;
+  }
+}
+
+function showNavigationTooltip(element, message) {
+  element.title = message;
+}
+
+// Función para verificar si hay cambios no guardados
+function hasUnsavedChanges() {
+  const selectedBed = localStorage.getItem("selectedBed");
+  if (!selectedBed) return false;
+
+  const currentData = {
+    name: document.getElementById("patientName")?.value || "",
+    age: document.getElementById("patientAge")?.value || "",
+    weight: document.getElementById("patientPeso")?.value || "",
+    history: document.getElementById("patientHistory")?.value || "",
+    bed: document.getElementById("patientBed")?.value || "",
+    admission: document.getElementById("patientIngreso")?.value || "",
+  };
+
+  const savedData = loadPatientData(selectedBed);
+
+  return JSON.stringify(currentData) !== JSON.stringify(savedData);
+}
+
+// Prevenir pérdida de datos al salir
+window.addEventListener("beforeunload", function (e) {
+  if (hasUnsavedChanges()) {
+    e.preventDefault();
+    e.returnValue =
+      "¿Estás seguro de que quieres salir? Los cambios no guardados se perderán.";
+  }
+});
 
 // ========================== //
 // SECCIÓN 1: DATOS Y CONSTANTES //
@@ -2792,47 +2878,106 @@ if (window.location.pathname.endsWith("grafica.html")) {
   });
 }
 // ========================== //
-// NAVEGACIÓN ENTRE PÁGINAS   //
+// SISTEMA UNIFICADO DE DATOS //
 // ========================== //
 
-// Función para cargar datos del paciente desde localStorage
 function loadPatientData(bedNumber) {
   const patients = JSON.parse(localStorage.getItem("patients")) || {};
   return patients[bedNumber] || null;
 }
 
-// Función para guardar datos del paciente en localStorage
 function savePatientData(bedNumber, patientData) {
   const patients = JSON.parse(localStorage.getItem("patients")) || {};
-  patients[bedNumber] = patientData;
+  patients[bedNumber] = {
+    ...patientData,
+    lastUpdate: new Date().toISOString(),
+  };
   localStorage.setItem("patients", JSON.stringify(patients));
+
+  document.dispatchEvent(
+    new CustomEvent("patientDataUpdated", {
+      detail: { bedNumber, patientData },
+    })
+  );
 }
 
-// Función para navegar a datos.html para nuevo ingreso
-function navigateToNewPatient(bedNumber) {
-  localStorage.setItem("selectedBed", bedNumber);
-  window.location.href = "datos.html";
+function loadPatientDataInChart() {
+  const selectedBed = localStorage.getItem("selectedBed");
+
+  if (!selectedBed) {
+    console.log("No hay cama seleccionada, redirigiendo...");
+    window.location.href = "index.html";
+    return;
+  }
+
+  const patientData = loadPatientData(selectedBed);
+
+  if (patientData) {
+    if (patientData.name)
+      document.getElementById("patientName").value = patientData.name;
+    if (patientData.age)
+      document.getElementById("patientAge").value = patientData.age;
+    if (patientData.weight)
+      document.getElementById("patientPeso").value = patientData.weight;
+    if (patientData.history)
+      document.getElementById("patientHistory").value = patientData.history;
+    if (patientData.bed)
+      document.getElementById("patientBed").value = patientData.bed;
+    if (patientData.admission)
+      document.getElementById("patientIngreso").value = patientData.admission;
+
+    console.log("Datos del paciente cargados:", patientData);
+  } else {
+    document.getElementById("patientBed").value = selectedBed;
+  }
+
+  updateLogicalDateInput();
+  updateSheetField();
 }
 
-// Función para navegar a grafica.html para paciente existente
-function navigateToExistingPatient(bedNumber) {
-  localStorage.setItem("selectedBed", bedNumber);
-  window.location.href = "grafica.html";
+function saveCurrentPatientDataFromChart() {
+  const selectedBed = localStorage.getItem("selectedBed");
+  if (!selectedBed) return;
+
+  const currentData = {
+    name: document.getElementById("patientName")?.value || "",
+    age: document.getElementById("patientAge")?.value || "",
+    weight: document.getElementById("patientPeso")?.value || "",
+    history: document.getElementById("patientHistory")?.value || "",
+    bed: document.getElementById("patientBed")?.value || "",
+    admission: document.getElementById("patientIngreso")?.value || "",
+  };
+
+  savePatientData(selectedBed, currentData);
+  console.log("Datos guardados desde gráfica:", currentData);
 }
 
-// Función para actualizar el estado de las camas
-function updateBedStatus() {
-  for (let i = 1; i <= 12; i++) {
-    const patientData = loadPatientData(i);
-    const bedStatus = document.getElementById(`bedStatus${i}`);
-    if (bedStatus) {
-      if (patientData) {
-        bedStatus.textContent = `Ocupada - ${patientData.name || "Sin nombre"}`;
-        bedStatus.className = "bed-status occupied";
-      } else {
-        bedStatus.textContent = "Libre";
-        bedStatus.className = "bed-status free";
-      }
+function setupPatientDataSyncEvents() {
+  const selectedBed = localStorage.getItem("selectedBed");
+  if (!selectedBed) return;
+
+  const patientFields = [
+    "patientName",
+    "patientAge",
+    "patientPeso",
+    "patientHistory",
+    "patientIngreso",
+  ];
+
+  patientFields.forEach((fieldId) => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      field.addEventListener("blur", () => {
+        saveCurrentPatientDataFromChart();
+      });
     }
+  });
+
+  const ingresoInput = document.getElementById("patientIngreso");
+  if (ingresoInput) {
+    ingresoInput.addEventListener("change", () => {
+      updateSheetField();
+      saveCurrentPatientDataFromChart();
+    });
   }
 }

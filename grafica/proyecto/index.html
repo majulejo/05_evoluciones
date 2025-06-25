@@ -197,6 +197,100 @@
           font-size: 1.8rem;
         }
       }
+
+      /* ========================== */
+      /* SISTEMA DE NAVEGACIÓN      */
+      /* ========================== */
+
+      .navigation-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .nav-button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 160px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .nav-button i {
+        font-size: 16px;
+      }
+
+      /* Variantes de colores */
+      .nav-button.primary {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .nav-button.primary:hover {
+        background-color: #2980b9;
+      }
+
+      .nav-button.success {
+        background-color: #27ae60;
+        color: white;
+      }
+
+      .nav-button.success:hover {
+        background-color: #219955;
+      }
+
+      .nav-button.secondary {
+        background-color: #95a5a6;
+        color: white;
+      }
+
+      .nav-button.secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+      .nav-button.warning {
+        background-color: #f39c12;
+        color: white;
+      }
+
+      .nav-button.warning:hover {
+        background-color: #e67e22;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .navigation-container {
+          position: relative;
+          top: auto;
+          right: auto;
+          margin: 20px auto;
+          width: fit-content;
+        }
+
+        .nav-button {
+          min-width: 140px;
+          font-size: 13px;
+          padding: 10px 16px;
+        }
+      }
     </style>
     <link
       rel="stylesheet"
@@ -212,7 +306,20 @@
       </div>
     </div>
 
+    <!-- Agregar antes del cierre de </body> -->
+    <div class="navigation-container">
+      <button class="nav-button secondary" onclick="showHelp()">
+        <i class="fas fa-question-circle"></i> Ayuda
+      </button>
+    </div>
+
     <script>
+      function showHelp() {
+        alert(
+          "UCI - Sistema de Gráficas de Enfermería\n\nSeleccione una cama para comenzar."
+        );
+      }
+
       document.addEventListener("DOMContentLoaded", function () {
         // Generar las 12 camas
         const bedsContainer = document.getElementById("bedsContainer");
@@ -243,19 +350,13 @@
       });
 
       function selectBed(bedNumber, action) {
-        // Guardar la cama seleccionada en localStorage
         localStorage.setItem("selectedBed", bedNumber);
 
         if (action === "ingreso") {
-          // Redirigir a datos.html para ingresar nuevo paciente
           window.location.href = "datos.html";
         } else {
-          // Verificar si hay datos para esta cama
-          const patientData = JSON.parse(
-            localStorage.getItem(`patientData_${bedNumber}`)
-          );
-          if (patientData) {
-            // Redirigir a grafica.html para ver/modificar datos
+          const patientData = loadPatientData(bedNumber);
+          if (patientData && patientData.name) {
             window.location.href = "grafica.html";
           } else {
             alert(
@@ -267,18 +368,24 @@
 
       function updateBedStatus() {
         for (let i = 1; i <= 12; i++) {
-          const patientData = JSON.parse(
-            localStorage.getItem(`patientData_${i}`)
-          );
+          const patientData = loadPatientData(i);
           const bedStatus = document.getElementById(`bedStatus${i}`);
-          if (patientData) {
-            bedStatus.textContent = `Ocupada - ${patientData.name}`;
-            bedStatus.className = "bed-status occupied";
-          } else {
-            bedStatus.textContent = "Libre";
-            bedStatus.className = "bed-status free";
+
+          if (bedStatus) {
+            if (patientData && patientData.name) {
+              bedStatus.textContent = `Ocupada - ${patientData.name}`;
+              bedStatus.className = "bed-status occupied";
+            } else {
+              bedStatus.textContent = "Libre";
+              bedStatus.className = "bed-status free";
+            }
           }
         }
+      }
+
+      function loadPatientData(bedNumber) {
+        const patients = JSON.parse(localStorage.getItem("patients")) || {};
+        return patients[bedNumber] || null;
       }
     </script>
   </body>

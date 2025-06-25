@@ -2,1005 +2,284 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-cache, no-store, must-revalidate"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link
-      rel="shortcut icon"
-      href="images/info_claude.png?v=1"
-      type="image/x-icon"
-    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gráfica de Enfermería UCI</title>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <title>UCI - Selección de Paciente</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark-color);
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.2rem;
+        position: relative;
+        padding-bottom: 15px;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 4px;
+        background: var(--secondary-color);
+      }
+
+      .beds-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+      }
+
+      .bed-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        text-align: center;
+        transition: var(--transition);
+        border-top: 4px solid var(--secondary-color);
+      }
+
+      .bed-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .bed-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+      }
+
+      .bed-status {
+        padding: 8px 12px;
+        margin: 15px auto;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        display: inline-block;
+        width: 80%;
+      }
+
+      .bed-status.free {
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+      }
+
+      .bed-status.occupied {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+      }
+
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #219955;
+        transform: translateY(-2px);
+      }
+
+      .btn-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background-color: #e67e22;
+        transform: translateY(-2px);
+      }
+
+      .btn i {
+        font-size: 18px;
+      }
+
+      /* Animaciones */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .bed-card {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .beds-container {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+      }
+
+      @media (max-width: 480px) {
+        .beds-container {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
-
   <body>
-    <!-- Control de vista -->
-    <div class="view-controls">
-      <button id="toggleViewBtn" class="toggle-view-btn" data-view="compact">
-        <span class="toggle-icon">📋</span>
-        <span class="toggle-text">Vista Extendida</span>
-      </button>
-    </div>
+    <div class="container">
+      <h1>UCI - Selección de Paciente</h1>
 
-    <!-- Navegación de secciones (solo visible en vista compacta) -->
-    <div class="section-navigation" id="sectionNavigation">
-      <div class="section-tab active" data-section="1">
-        <span class="section-number">1</span>
-        <span class="section-title">Datos y constantes</span>
-      </div>
-      <div class="section-tab" data-section="2">
-        <span class="section-number">2</span>
-        <span class="section-title"
-          >Oxigenación, Dolor y Control de Glucemias</span
-        >
-      </div>
-      <div class="section-tab" data-section="3">
-        <span class="section-number">3</span>
-        <span class="section-title">Pérdidas/Pérdidas Insensibles</span>
-      </div>
-      <div class="section-tab" data-section="4">
-        <span class="section-number">4</span>
-        <span class="section-title">Ingresos y Nutrición</span>
-      </div>
-      <div class="section-tab" data-section="5">
-        <span class="section-number">5</span>
-        <span class="section-title">Medicación</span>
+      <div class="beds-container" id="bedsContainer">
+        <!-- Las camas se generarán automáticamente -->
       </div>
     </div>
 
-    <!-- Contenedor principal -->
-    <div class="main-container" id="mainContainer">
-      <!-- SECCIÓN 1: Datos y constantes -->
-      <section id="section-1" class="content-section active">
-        <!-- Título de la sección -->
-        <div class="section-header">
-          <h2 class="section-title-display">
-            <span class="section-number">1</span>
-            Datos y constantes
-          </h2>
-        </div>
-
-        <div class="chart-container">
-          <!-- Información del paciente -->
-          <div class="patient-info">
-            <div class="patient-field patient-name">
-              <strong>NOMBRE:</strong>
-              <input
-                type="text"
-                placeholder=""
-                maxlength="50"
-                id="patientName"
-              />
-            </div>
-            <div class="patient-field patient-date">
-              <strong>FECHA:</strong>
-              <input type="date" id="patientDate" />
-            </div>
-            <div class="patient-field patient-age">
-              <strong>EDAD:</strong>
-              <input
-                type="number"
-                id="patientAge"
-                min="0"
-                max="999"
-                maxlength="3"
-              />
-            </div>
-            <div class="patient-field patient-history">
-              <strong>H.C.:</strong>
-              <input
-                type="number"
-                id="patientHistory"
-                min="0"
-                max="9999999"
-                maxlength="7"
-              />
-            </div>
-            <div class="patient-field patient-bed">
-              <strong>CAMA:</strong>
-              <input type="number" id="patientBed" min="1" max="12" />
-            </div>
-            <div class="patient-field patient-sheet">
-              <strong>HOJA:</strong>
-              <input
-                type="number"
-                id="patientSheet"
-                min="1"
-                max="999"
-                maxlength="3"
-              />
-            </div>
-            <div class="patient-field patient-peso">
-              <strong>PESO:</strong>
-              <input
-                type="number"
-                id="patientPeso"
-                min="1"
-                max="300"
-                step="0.1"
-                placeholder="kg"
-              />
-            </div>
-            <div class="patient-field patient-ingreso">
-              <strong>INGRESO:</strong>
-              <input type="datetime-local" id="patientIngreso" />
-            </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Generar las 12 camas
+        const bedsContainer = document.getElementById("bedsContainer");
+        for (let i = 1; i <= 12; i++) {
+          const bedCard = document.createElement("div");
+          bedCard.className = "bed-card";
+          bedCard.dataset.bedNumber = i;
+          bedCard.innerHTML = `
+          <h3 class="bed-title">Cama ${i}</h3>
+          <div class="bed-status" id="bedStatus${i}">Libre</div>
+          <div class="button-group">
+            <button class="btn btn-success" onclick="selectBed(${i}, 'ingreso')">
+              <i class="fas fa-user-plus"></i> Nuevo Ingreso
+            </button>
+            <button class="btn btn-primary" onclick="selectBed(${i}, 'consulta')">
+              <i class="fas fa-user-injured"></i> Paciente Ingresado
+            </button>
           </div>
+        `;
+          bedsContainer.appendChild(bedCard);
+        }
 
-          <!-- Sección principal de gráfica -->
-          <div class="chart-main">
-            <!-- Sección de escalas -->
-            <div class="scales-section">
-              <div class="scales-title">ESCALAS</div>
-              <div class="scales-grid">
-                <!-- Frecuencia Respiratoria -->
-                <div class="scale-column resp-scale">
-                  <div class="scale-title" style="color: #000">F.R.</div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    50
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    45
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    40
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    35
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    30
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    25
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    20
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    15
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    10
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    5
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="r.p.m."
-                    style="color: #000"
-                  >
-                    0
-                  </div>
-                </div>
+        // Cargar estado de las camas desde localStorage
+        updateBedStatus();
 
-                <!-- Temperatura -->
-                <div class="scale-column temperature-scale">
-                  <div class="scale-title" style="color: #dc3545">°C</div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    42
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    41
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    40
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    39
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    38
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    37
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    36
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    35
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    34
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    33
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="ºC"
-                    style="color: #dc3545"
-                  >
-                    32
-                  </div>
-                </div>
+        // Escuchar cambios en los datos de pacientes
+        document.addEventListener("patientDataUpdated", updateBedStatus);
+      });
 
-                <!-- Frecuencia Cardíaca -->
-                <div class="scale-column pulse-scale">
-                  <div class="scale-title" style="color: #0d6efd">F.C.</div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    200
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    180
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    160
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    140
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    120
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    100
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    80
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    60
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    40
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    20
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="l/m"
-                    style="color: #0d6efd"
-                  >
-                    0
-                  </div>
-                </div>
+      function selectBed(bedNumber, action) {
+        // Guardar la cama seleccionada en localStorage
+        localStorage.setItem("selectedBed", bedNumber);
 
-                <!-- Tensión Arterial -->
-                <div class="scale-column bp-scale">
-                  <div class="scale-title" style="color: #198754">T.A.</div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    250
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    225
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    200
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    175
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    150
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    125
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    100
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    75
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    50
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    25
-                  </div>
-                  <div
-                    class="scale-value"
-                    data-tooltip="mmHg"
-                    style="color: #198754"
-                  >
-                    0
-                  </div>
-                </div>
-              </div>
-            </div>
+        if (action === "ingreso") {
+          // Redirigir a datos.html para ingresar nuevo paciente
+          window.location.href = "datos.html";
+        } else {
+          // Verificar si hay datos para esta cama
+          const patientData = JSON.parse(
+            localStorage.getItem(`patientData_${bedNumber}`)
+          );
+          if (patientData) {
+            // Redirigir a grafica.html para ver/modificar datos
+            window.location.href = "grafica.html";
+          } else {
+            alert(
+              'No hay datos de paciente para esta cama. Seleccione "Nuevo Ingreso" para registrar un paciente.'
+            );
+          }
+        }
+      }
 
-            <!-- Área de gráfico -->
-            <div class="chart-area">
-              <!-- Cabecera de horas -->
-              <div class="hours-header">
-                <div class="hour-cell">8</div>
-                <div class="hour-cell">9</div>
-                <div class="hour-cell">10</div>
-                <div class="hour-cell">11</div>
-                <div class="hour-cell">12</div>
-                <div class="hour-cell">13</div>
-                <div class="hour-cell">14</div>
-                <div class="hour-cell">15</div>
-                <div class="hour-cell">16</div>
-                <div class="hour-cell">17</div>
-                <div class="hour-cell">18</div>
-                <div class="hour-cell">19</div>
-                <div class="hour-cell">20</div>
-                <div class="hour-cell">21</div>
-                <div class="hour-cell">22</div>
-                <div class="hour-cell">23</div>
-                <div class="hour-cell">0</div>
-                <div class="hour-cell">1</div>
-                <div class="hour-cell">2</div>
-                <div class="hour-cell">3</div>
-                <div class="hour-cell">4</div>
-                <div class="hour-cell">5</div>
-                <div class="hour-cell">6</div>
-                <div class="hour-cell">7</div>
-              </div>
-
-              <!-- Cuadrícula del gráfico -->
-              <div class="chart-grid" id="chartGrid">
-                <!-- Las líneas horizontales y celdas se generarán con JavaScript -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN 2: Oxigenación, Dolor y Control de Glucemias -->
-      <section id="section-2" class="content-section">
-        <div class="section-header">
-          <h2 class="section-title-display">
-            <span class="section-number">2</span>
-            Oxigenación, Dolor y Control de Glucemias
-          </h2>
-        </div>
-
-        <div class="chart-container section2-container">
-          <!-- Estructura tipo gráfica real -->
-          <div class="section2-grid">
-            <!-- Cabecera con horas -->
-            <div class="section2-header">
-              <div class="section2-label-header"></div>
-              <div class="section2-hours-header">
-                <div class="hour-cell-s2">8</div>
-                <div class="hour-cell-s2">9</div>
-                <div class="hour-cell-s2">10</div>
-                <div class="hour-cell-s2">11</div>
-                <div class="hour-cell-s2">12</div>
-                <div class="hour-cell-s2">13</div>
-                <div class="hour-cell-s2">14</div>
-                <div class="hour-cell-s2">15</div>
-                <div class="hour-cell-s2">16</div>
-                <div class="hour-cell-s2">17</div>
-                <div class="hour-cell-s2">18</div>
-                <div class="hour-cell-s2">19</div>
-                <div class="hour-cell-s2">20</div>
-                <div class="hour-cell-s2">21</div>
-                <div class="hour-cell-s2">22</div>
-                <div class="hour-cell-s2">23</div>
-                <div class="hour-cell-s2">0</div>
-                <div class="hour-cell-s2">1</div>
-                <div class="hour-cell-s2">2</div>
-                <div class="hour-cell-s2">3</div>
-                <div class="hour-cell-s2">4</div>
-                <div class="hour-cell-s2">5</div>
-                <div class="hour-cell-s2">6</div>
-                <div class="hour-cell-s2">7</div>
-              </div>
-            </div>
-
-            <!-- Fila 1: P. NEUMO  SECCIÓN 2-->
-            <div class="section2-row">
-              <div class="section2-label">
-                <div class="label-text">P. NEUMO</div>
-              </div>
-              <div class="section2-data-row" id="pneumo-cells">
-                <!-- Se generarán 24 celdas editables con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 2: OXIGENACIÓN  SECCIÓN 2 -->
-            <div class="section2-row">
-              <div class="section2-label">
-                <div class="label-text">OXIGENACIÓN</div>
-              </div>
-              <div class="section2-data-row" id="oxygen-cells">
-                <!-- Se generarán 24 celdas con desplegables con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 3: SATURACIÓN  SECCIÓN 2 -->
-            <div class="section2-row">
-              <div class="section2-label">
-                <div class="label-text">SATURACIÓN</div>
-              </div>
-              <div class="section2-data-row" id="saturation-cells">
-                <!-- Se generarán 24 celdas automáticas con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 4: EVA/ESCID/RASS  SECCIÓN 2 -->
-            <div class="section2-row">
-              <div class="section2-label eva-label">
-                <div class="label-text">EVA/ESCID/RASS</div>
-                <span
-                  class="info-icon eva-info subtle"
-                  onclick="showAccordion('eva-rass')"
-                  title="Ver escalas EVA/ESCID/RASS"
-                  >👁️</span
-                >
-              </div>
-              <div class="section2-data-row" id="eva-cells">
-                <!-- Se generarán 24 celdas editables con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 5: GLUCEMIA  SECCIÓN 2 -->
-            <div class="section2-row">
-              <div class="section2-label glucose-label">
-                <div class="label-text">GLUCEMIA</div>
-              </div>
-              <div class="section2-data-row" id="glucose-cells">
-                <!-- Se generarán 24 celdas con valores automáticos con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 6: INSULINA  SECCIÓN 2 -->
-            <div class="section2-row">
-              <div class="section2-label insulin-label">
-                <div class="label-text">INSULINA</div>
-                <span
-                  class="info-icon insulin-info subtle"
-                  onclick="showAccordion('insulin')"
-                  title="Ver pauta de insulina"
-                  >👁️</span
-                >
-              </div>
-              <div class="section2-data-row" id="insulin-cells">
-                <!-- Se generarán 24 celdas con desplegables con JavaScript -->
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Overlay transparente -->
-        <div
-          class="accordion-overlay"
-          id="accordionOverlay"
-          onclick="hideAccordion()"
-        ></div>
-
-        <!-- Contenedor del acordeón -->
-        <div class="accordion-container" id="accordionContainer">
-          <div class="accordion-header">
-            <h3 class="accordion-title" id="accordionTitle">Escalas Médicas</h3>
-            <button class="accordion-close" onclick="hideAccordion()">×</button>
-          </div>
-
-          <div class="accordion-content" id="accordionContent">
-            <!-- El contenido se cargará dinámicamente -->
-          </div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN 3: Pérdidas/Pérdidas Insensibles -->
-      <section id="section-3" class="content-section">
-        <div class="section-header">
-          <h2 class="section-title-display">
-            <span class="section-number">3</span>
-            Pérdidas
-          </h2>
-        </div>
-
-        <div class="chart-container section3-container">
-          <!-- Estructura tipo gráfica real -->
-          <div class="section3-grid">
-            <!-- Cabecera con horas y balance -->
-            <div class="section3-header">
-              <div class="section3-label-header"></div>
-              <div class="section3-hours-header">
-                <div class="hour-cell-s3">8</div>
-                <div class="hour-cell-s3">9</div>
-                <div class="hour-cell-s3">10</div>
-                <div class="hour-cell-s3">11</div>
-                <div class="hour-cell-s3">12</div>
-                <div class="hour-cell-s3">13</div>
-                <div class="hour-cell-s3">14</div>
-                <div class="hour-cell-s3">15</div>
-                <div class="hour-cell-s3">16</div>
-                <div class="hour-cell-s3">17</div>
-                <div class="hour-cell-s3">18</div>
-                <div class="hour-cell-s3">19</div>
-                <div class="hour-cell-s3">20</div>
-                <div class="hour-cell-s3">21</div>
-                <div class="hour-cell-s3">22</div>
-                <div class="hour-cell-s3">23</div>
-                <div class="hour-cell-s3">0</div>
-                <div class="hour-cell-s3">1</div>
-                <div class="hour-cell-s3">2</div>
-                <div class="hour-cell-s3">3</div>
-                <div class="hour-cell-s3">4</div>
-                <div class="hour-cell-s3">5</div>
-                <div class="hour-cell-s3">6</div>
-                <div class="hour-cell-s3">7</div>
-                <div class="balance-cell-header">BALANCE</div>
-              </div>
-            </div>
-
-            <!-- Fila 1: DIURESIS -->
-            <div class="section3-row">
-              <div class="section3-label">
-                <div class="label-text">DIURESIS</div>
-              </div>
-              <div class="section3-data-row" id="diuresis-cells">
-                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 2: DEPOSICIONES -->
-            <div class="section3-row">
-              <div class="section3-label">
-                <div class="label-text">DEPOSICIONES</div>
-              </div>
-              <div class="section3-data-row" id="deposiciones-cells">
-                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 3: VÓMITOS, SUDOR -->
-            <div class="section3-row">
-              <div class="section3-label">
-                <div class="label-text">VÓMITOS, SUDOR</div>
-              </div>
-              <div class="section3-data-row" id="vomitos-cells">
-                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 4: FIEBRE, TQN (Calculada automáticamente) -->
-            <div class="section3-row">
-              <div class="section3-label calculated-label">
-                <div class="label-text">FIEBRE, TQN</div>
-                <span
-                  class="calc-indicator"
-                  data-formula="fiebre-tqn"
-                  title="Hover para ver fórmulas"
-                  >📊</span
-                >
-              </div>
-              <div class="section3-data-row" id="fiebre-tqn-cells">
-                <!-- Se generarán 24 celdas calculadas + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 5: SNG (Campo personalizable) -->
-            <div class="section3-row">
-              <div class="section3-label editable-label">
-                <input
-                  type="text"
-                  class="label-input"
-                  id="sng-label"
-                  placeholder="SNG"
-                  maxlength="20"
-                />
-              </div>
-              <div class="section3-data-row" id="sng-cells">
-                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 6: DRENAJES (Expandible) -->
-            <div class="section3-row drenajes-main-row">
-              <div class="section3-label drenajes-label">
-                <div class="label-text">DRENAJES</div>
-                <span
-                  class="expand-icon"
-                  id="drenajes-expand"
-                  onclick="toggleDrenajes()"
-                  title="Expandir drenajes"
-                  >▼</span
-                >
-              </div>
-              <div class="section3-data-row" id="drenajes-cells">
-                <!-- Se generarán 24 celdas calculadas + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Filas de drenajes expandibles (inicialmente ocultas) -->
-            <div class="drenajes-expandable" id="drenajes-expandable">
-              <!-- Drenaje 1 -->
-              <div class="section3-row drenaje-row">
-                <div class="section3-label drenaje-sublabel">
-                  <input
-                    type="text"
-                    class="label-input drenaje-input"
-                    placeholder="Tipo drenaje 1"
-                    maxlength="15"
-                  />
-                </div>
-                <div class="section3-data-row" id="drenaje1-cells">
-                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-                </div>
-              </div>
-
-              <!-- Drenaje 2 -->
-              <div class="section3-row drenaje-row">
-                <div class="section3-label drenaje-sublabel">
-                  <input
-                    type="text"
-                    class="label-input drenaje-input"
-                    placeholder="Tipo drenaje 2"
-                    maxlength="15"
-                  />
-                </div>
-                <div class="section3-data-row" id="drenaje2-cells">
-                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-                </div>
-              </div>
-
-              <!-- Drenaje 3 -->
-              <div class="section3-row drenaje-row">
-                <div class="section3-label drenaje-sublabel">
-                  <input
-                    type="text"
-                    class="label-input drenaje-input"
-                    placeholder="Tipo drenaje 3"
-                    maxlength="15"
-                  />
-                </div>
-                <div class="section3-data-row" id="drenaje3-cells">
-                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-                </div>
-              </div>
-
-              <!-- Drenaje 4 -->
-              <div class="section3-row drenaje-row">
-                <div class="section3-label drenaje-sublabel">
-                  <input
-                    type="text"
-                    class="label-input drenaje-input"
-                    placeholder="Tipo drenaje 4"
-                    maxlength="15"
-                  />
-                </div>
-                <div class="section3-data-row" id="drenaje4-cells">
-                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-                </div>
-              </div>
-
-              <!-- Drenaje 5 -->
-              <div class="section3-row drenaje-row">
-                <div class="section3-label drenaje-sublabel">
-                  <input
-                    type="text"
-                    class="label-input drenaje-input"
-                    placeholder="Tipo drenaje 5"
-                    maxlength="15"
-                  />
-                </div>
-                <div class="section3-data-row" id="drenaje5-cells">
-                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Fila 7: CONTROL DE RESIDUOS -->
-            <div class="section3-row">
-              <div class="section3-label">
-                <div class="label-text">CONTROL DE RESIDUOS</div>
-              </div>
-              <div class="section3-data-row" id="control-residuos-cells">
-                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
-              </div>
-            </div>
-
-            <!-- Fila 8: PÉRDIDAS INSENSIBLES (Solo balance) -->
-            <div class="section3-row">
-              <div class="section3-label calculated-label">
-                <div class="label-text">PÉRD. INSENSIBLES</div>
-                <span
-                  class="calc-indicator"
-                  onclick="showFormulaModal('perdidas-insensibles')"
-                  >📊</span
-                >
-              </div>
-              <div class="section3-data-row" id="perdidas-cells">
-                <!-- Solo 24 celdas vacías + 1 celda de balance calculado -->
-              </div>
-            </div>
-            <!-- Tooltip para fórmulas -->
-            <div
-              id="custom-tooltip"
-              class="custom-tooltip"
-              style="display: none"
-            >
-              <div id="tooltip-title" class="tooltip-title"></div>
-              <div id="tooltip-content" class="tooltip-content"></div>
-            </div>
-            <!-- Fila 9: TOTAL PÉRDIDAS -->
-            <div class="section3-row total-row">
-              <div class="section3-label total-label">
-                <div class="label-text">TOTAL PÉRDIDAS</div>
-              </div>
-              <div class="section3-data-row" id="total-perdidas-cells">
-                <!-- Solo 24 celdas vacías + 1 celda de balance total calculado -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN 4: Ingresos y Nutrición -->
-      <section id="section-4" class="content-section">
-        <div class="section-header">
-          <h2 class="section-title-display">
-            <span class="section-number">4</span>
-            Ingresos
-          </h2>
-        </div>
-        <div class="section-placeholder">
-          <p>Sección en desarrollo...</p>
-        </div>
-      </section>
-
-      <!-- SECCIÓN 5: Medicación -->
-      <section id="section-5" class="content-section">
-        <div class="section-header">
-          <h2 class="section-title-display">
-            <span class="section-number">5</span>
-            Medicación
-          </h2>
-        </div>
-        <div class="section-placeholder">
-          <p>Sección en desarrollo...</p>
-        </div>
-      </section>
-    </div>
-
-    <!-- Modal para introducir datos -->
-    <div id="dataModal" class="data-modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeDataModal()">&times;</span>
-        <h3>Introducir Constantes</h3>
-        <p>Hora: <span id="modalHour"></span></p>
-
-        <div class="form-field">
-          <label>Frecuencia Respiratoria (rpm):</label>
-          <input type="number" id="respRate" step="1" min="0" max="50" />
-          <div class="error-message" id="respRate-error">
-            Valor debe estar entre 0 y 50 rpm
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>Temperatura (°C):</label>
-          <input type="number" id="temperature" step="0.1" min="32" max="42" />
-          <div class="error-message" id="temperature-error">
-            Valor debe estar entre 32 y 42°C
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>Frecuencia Cardíaca (lpm):</label>
-          <input type="number" id="pulse" min="0" max="200" />
-          <div class="error-message" id="pulse-error">
-            Valor debe estar entre 0 y 200 lpm
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>T.A. Sistólica (mmHg):</label>
-          <input type="number" id="systolic" min="0" max="250" />
-          <div class="error-message" id="systolic-error">
-            Valor debe estar entre 0 y 250 mmHg
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>T.A. Diastólica (mmHg):</label>
-          <input type="number" id="diastolic" min="0" max="250" />
-          <div class="error-message" id="diastolic-error">
-            Valor debe estar entre 0 y 250 mmHg
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>Sat O2 (%):</label>
-          <input type="number" id="satO2" min="0" max="100" step="1" />
-          <div class="error-message" id="satO2-error">
-            Valor debe estar entre 0 y 100%
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>Glucemia (mg/dL):</label>
-          <input type="number" id="glucemia" min="0" max="600" step="1" />
-          <div class="error-message" id="glucemia-error">
-            Valor debe estar entre 0 y 600 mg/dL
-          </div>
-        </div>
-
-        <div class="button-group">
-          <button id="saveDataBtn" class="btn btn-save">Guardar</button>
-          <button id="deleteDataBtn" class="btn btn-delete">Eliminar</button>
-          <button id="cancelBtn" class="btn btn-cancel">Cancelar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal para mostrar imágenes de referencia -->
-    <div id="imageModal" class="image-modal">
-      <div class="image-modal-content">
-        <span class="image-close" onclick="closeImageModal()">&times;</span>
-        <div class="image-container">
-          <h3 id="imageModalTitle">Tabla de Referencia</h3>
-          <img id="modalImage" src="" alt="Tabla de referencia" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Scripts JavaScript -->
-    <script src="script.js?v=1"></script>
+      function updateBedStatus() {
+        for (let i = 1; i <= 12; i++) {
+          const patientData = JSON.parse(
+            localStorage.getItem(`patientData_${i}`)
+          );
+          const bedStatus = document.getElementById(`bedStatus${i}`);
+          if (patientData) {
+            bedStatus.textContent = `Ocupada - ${patientData.name}`;
+            bedStatus.className = "bed-status occupied";
+          } else {
+            bedStatus.textContent = "Libre";
+            bedStatus.className = "bed-status free";
+          }
+        }
+      }
+    </script>
   </body>
 </html>

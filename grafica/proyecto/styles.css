@@ -243,6 +243,100 @@ body {
 }
 
 /* ========================== */
+/* SISTEMA DE NAVEGACIÓN      */
+/* ========================== */
+
+.navigation-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 160px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-button i {
+  font-size: 16px;
+}
+
+/* Variantes de colores */
+.nav-button.primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.nav-button.primary:hover {
+  background-color: #2980b9;
+}
+
+.nav-button.success {
+  background-color: #27ae60;
+  color: white;
+}
+
+.nav-button.success:hover {
+  background-color: #219955;
+}
+
+.nav-button.secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.nav-button.secondary:hover {
+  background-color: #7f8c8d;
+}
+
+.nav-button.warning {
+  background-color: #f39c12;
+  color: white;
+}
+
+.nav-button.warning:hover {
+  background-color: #e67e22;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navigation-container {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 20px auto;
+    width: fit-content;
+  }
+  
+  .nav-button {
+    min-width: 140px;
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+}
+
+/* ========================== */
 /* SECCIÓN 1: DATOS Y CONSTANTES */
 /* ========================== */
 .chart-container {
