@@ -1,10 +1,3 @@
-/*
-INSTRUCCIONES DE INSTALACIÓN:
-1. Guarda este archivo como "script.js" en el mismo directorio que 1.html
-2. Reemplaza completamente el archivo JavaScript existente
-3. Incluye todas las funcionalidades mejoradas para la sección 2
-*/
-
 // ========================== //
 // VARIABLES GLOBALES         //
 // ========================== //
@@ -53,6 +46,155 @@ let currentSection = 1;
 let currentView = "compact"; // 'compact' o 'extended'
 
 // ========================== //
+// INICIALIZACIÓN DEL GRÁFICO //
+// ========================== //
+
+// FUNCIÓN CORREGIDA PARA INICIALIZAR EL GRÁFICO
+
+function initChart() {
+  console.log("Inicializando gráfica...");
+
+  const chartGrid = document.getElementById("chartGrid");
+  if (!chartGrid) {
+    console.error("No se encontró chartGrid");
+    return;
+  }
+
+  // Limpiar grid existente
+  chartGrid.innerHTML = "";
+
+  console.log(
+    "Dimensiones del grid:",
+    chartGrid.offsetWidth,
+    "x",
+    chartGrid.offsetHeight
+  );
+
+  // PASO 1: Crear líneas horizontales (fondo)
+  for (let i = 0; i <= 10; i++) {
+    const line = document.createElement("div");
+    line.className = "horizontal-line";
+    line.style.position = "absolute";
+    line.style.left = "0";
+    line.style.right = "0";
+    line.style.height = "1px";
+    line.style.backgroundColor = "#ddd";
+    line.style.pointerEvents = "none";
+    line.style.zIndex = "1";
+    line.style.top = `${(i / 10) * 100}%`;
+
+    // Línea inferior más oscura
+    if (i === 10) {
+      line.style.backgroundColor = "#333";
+      line.style.height = "2px";
+    }
+
+    chartGrid.appendChild(line);
+    console.log(`Línea horizontal ${i} creada`);
+  }
+
+  // PASO 2: Crear líneas verticales (CRÍTICO)
+  for (let i = 0; i <= 24; i++) {
+    const line = document.createElement("div");
+    line.className = "vertical-line";
+    line.style.position = "absolute";
+    line.style.top = "0";
+    line.style.bottom = "0";
+    line.style.width = "1px";
+    line.style.backgroundColor = "#999"; // Color más visible
+    line.style.pointerEvents = "none";
+    line.style.zIndex = "1";
+    line.style.left = `${(i / 24) * 100}%`;
+
+    // Estilo especial para bordes
+    if (i === 0 || i === 24) {
+      line.classList.add("border-line");
+      line.style.backgroundColor = "#333";
+      line.style.width = "2px";
+      line.style.zIndex = "2";
+    }
+
+    // FORZAR visibilidad
+    line.style.display = "block";
+    line.style.opacity = "1";
+
+    chartGrid.appendChild(line);
+    console.log(`Línea vertical ${i} creada en posición ${(i / 24) * 100}%`);
+  }
+
+  // PASO 3: Crear celdas interactivas
+  for (let i = 0; i < 24; i++) {
+    const hour = (i + 8) % 24;
+    const cell = document.createElement("div");
+    cell.className = "grid-cell";
+    cell.dataset.hour = hour;
+    cell.dataset.index = i;
+
+    // Posicionamiento
+    cell.style.position = "absolute";
+    cell.style.left = `${(i / 24) * 100}%`;
+    cell.style.width = `${(1 / 24) * 100}%`;
+    cell.style.top = "0";
+    cell.style.height = "100%";
+    cell.style.zIndex = "3";
+    cell.style.cursor = "pointer";
+    cell.style.transition = "background-color 0.2s";
+    // IMPORTANTE: Sin bordes para no interferir con las líneas
+    cell.style.border = "none";
+    cell.style.outline = "none";
+
+    // Estructura del tooltip
+    cell.innerHTML = `
+      <div class="vital-signs-tooltip">
+        <div class="tooltip-content">
+          <div class="tooltip-row"><span style="color: #000;">FR:</span> <span class="value-fr">--</span> <span style="color: #000;">rpm</span></div>
+          <div class="tooltip-row"><span style="color: #0d6efd;">FC:</span> <span class="value-fc">--</span> <span style="color: #0d6efd;">lpm</span></div>
+          <div class="tooltip-row"><span style="color: #198754;">TA:</span> <span class="value-ta">--/--</span> <span style="color: #198754;">mmHg</span></div>
+          <div class="tooltip-row"><span style="color: #dc3545;">Tª:</span> <span class="value-temp">--</span> <span style="color: #dc3545;">°C</span></div>
+          <div class="tooltip-row"><span style="color: #6f42c1;">SatO2:</span> <span class="value-sato2">--</span> <span style="color: #6f42c1;">%</span></div>
+          <div class="tooltip-row"><span style="color: #dc3545;">Gluc:</span> <span class="value-glucemia">--</span> <span style="color: #dc3545;">mg/dL</span></div>
+        </div>
+      </div>
+    `;
+
+    // Eventos
+    cell.addEventListener("click", () => openDataModal(hour, i));
+
+    // Efectos hover
+    cell.addEventListener("mouseenter", () => {
+      if (!cell.classList.contains("has-data")) {
+        cell.style.backgroundColor = "rgba(0, 102, 204, 0.1)";
+      }
+    });
+
+    cell.addEventListener("mouseleave", () => {
+      if (!cell.classList.contains("has-data")) {
+        cell.style.backgroundColor = "transparent";
+      }
+    });
+
+    chartGrid.appendChild(cell);
+    console.log(`Celda ${i} (hora ${hour}) creada`);
+  }
+
+  console.log(
+    "Chart inicializado con líneas verticales y horizontales VISIBLES"
+  );
+
+  // Verificar que las líneas son visibles (debug)
+  setTimeout(() => {
+    const verticalLines = chartGrid.querySelectorAll(".vertical-line");
+    console.log(`Líneas verticales encontradas: ${verticalLines.length}`);
+    verticalLines.forEach((line, index) => {
+      const computed = window.getComputedStyle(line);
+      console.log(
+        `Línea ${index}: visible=${computed.display}, opacity=${computed.opacity}, background=${computed.backgroundColor}`
+      );
+    });
+  }, 100);
+}
+
+// ========================== //
 // INICIALIZACIÓN             //
 // ========================== //
 
@@ -76,11 +218,14 @@ function initializeApp() {
   // Inicializar modal de datos
   initModal();
 
-  // AÑADIR ESTA LÍNEA:
+  // Inicializar modal de imágenes
   initImageModal();
 
   // Configurar responsive
   setupResponsive();
+
+  // Inicializar gráfica (AÑADE ESTA LÍNEA)
+  initChart();
 
   console.log("Aplicación inicializada correctamente");
 }
@@ -277,7 +422,7 @@ function initializeSpecificSection(sectionId) {
 // ========================== //
 
 function initializeSection1() {
-  setupGridCells();
+  initChart(); //
   updateLogicalDateInput(); // Actualiza automáticamente la fecha lógica
   console.log("Sección 1 inicializada");
 }
@@ -305,17 +450,6 @@ function updateLogicalDateInput() {
     dateInput.value = formattedDate;
   }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  updateLogicalDateInput(); // Actualiza la fecha lógica
-  updateSheetField(); // Actualiza el número de hoja
-  loadPatientData(); // Cargar datos del paciente
-
-  const ingresoInput = document.getElementById("patientIngreso");
-  if (ingresoInput) {
-    ingresoInput.addEventListener("change", updateSheetField);
-  }
-});
 
 function getLogicalDate(date) {
   const d = new Date(date);
@@ -367,16 +501,20 @@ function updateSheetField() {
 }
 
 function saveCurrentPatientData() {
+  const selectedBed = localStorage.getItem("selectedBed");
+  if (!selectedBed) return;
+
   const data = {
     name: document.getElementById("patientName").value,
     age: document.getElementById("patientAge").value,
-    peso: document.getElementById("patientPeso").value,
+    weight: document.getElementById("patientPeso").value,
     history: document.getElementById("patientHistory").value,
     bed: document.getElementById("patientBed").value,
-    ingreso: document.getElementById("patientIngreso").value,
+    admission: document.getElementById("patientIngreso").value,
+    lastUpdate: new Date().toISOString(),
   };
 
-  localStorage.setItem("currentPatient", JSON.stringify(data));
+  savePatientData(selectedBed, data);
 }
 
 // Escuchar cambios en los campos importantes
@@ -396,67 +534,29 @@ document.getElementById("patientIngreso")?.addEventListener("change", () => {
   document.getElementById(id)?.addEventListener("blur", saveCurrentPatientData);
 });
 
-function setupGridCells() {
-  const chartGrid = document.getElementById("chartGrid");
-  if (!chartGrid) return;
-
-  chartGrid.innerHTML = "";
-
-  // Añadir líneas horizontales
-  for (let i = 0; i <= 10; i++) {
-    const line = document.createElement("div");
-    line.className = "horizontal-line";
-    chartGrid.appendChild(line);
-  }
-
-  // Crear 24 celdas (de 8:00 a 7:00)
-  for (let i = 0; i < 24; i++) {
-    const hour = (i + 8) % 24;
-    const cell = document.createElement("div");
-    cell.className = "grid-cell";
-    cell.dataset.hour = hour;
-    cell.dataset.index = i;
-
-    // Estructura del tooltip
-    cell.innerHTML = `
-      <div class="vital-signs-tooltip">
-        <div class="tooltip-content">
-          <div class="tooltip-row"><span style="color: #000;">FR:</span> <span class="value-fr">--</span> <span style="color: #000;">rpm</span></div>
-          <div class="tooltip-row"><span style="color: #0d6efd;">FC:</span> <span class="value-fc">--</span> <span style="color: #0d6efd;">lpm</span></div>
-          <div class="tooltip-row"><span style="color: #198754;">TA:</span> <span class="value-ta">--/--</span> <span style="color: #198754;">mmHg</span></div>
-          <div class="tooltip-row"><span style="color: #dc3545;">Tª:</span> <span class="value-temp">--</span> <span style="color: #dc3545;">°C</span></div>
-          <div class="tooltip-row"><span style="color: #6f42c1;">SatO2:</span> <span class="value-sato2">--</span> <span style="color: #6f42c1;">%</span></div>
-          <div class="tooltip-row"><span style="color: #dc3545;">Gluc:</span> <span class="value-glucemia">--</span> <span style="color: #dc3545;">mg/dL</span></div>
-        </div>
-      </div>
-    `;
-
-    // Eventos
-    cell.addEventListener("click", () => openDataModal(hour, i));
-    chartGrid.appendChild(cell);
-  }
-
-  // Asignar data-hour a las celdas de cabecera
-  const hourCells = document.querySelectorAll(".hour-cell");
-  hourCells.forEach((cell, index) => {
-    const hour = (index + 8) % 24;
-    cell.dataset.hour = hour;
-  });
-}
-
 function loadPatientData() {
-  const data = JSON.parse(localStorage.getItem("currentPatient"));
-  if (!data) return;
+  // Cargar datos del paciente actual desde localStorage
+  const patientData = JSON.parse(localStorage.getItem("currentPatient"));
 
-  document.getElementById("patientName").value = data.name || "";
-  document.getElementById("patientAge").value = data.age || "";
-  document.getElementById("patientPeso").value = data.peso || "";
-  document.getElementById("patientHistory").value = data.history || "";
-  document.getElementById("patientBed").value = data.bed || "";
-  document.getElementById("patientIngreso").value =
-    data.ingreso || getDefaultIngresoDate();
-  updateSheetField(); // Actualiza automáticamente la hoja clínica
+  if (patientData) {
+    document.getElementById("patientName").value = patientData.name || "";
+    document.getElementById("patientAge").value = patientData.age || "";
+    document.getElementById("patientPeso").value = patientData.weight || "";
+    document.getElementById("patientHistory").value = patientData.history || "";
+    document.getElementById("patientBed").value = patientData.bed || "";
+    document.getElementById("patientIngreso").value =
+      patientData.admission || "";
+
+    // Establecer fecha actual
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0];
+    document.getElementById("patientDate").value = formattedDate;
+
+    return patientData;
+  }
+  return null;
 }
+
 // ========================== //
 // SECCIÓN 2: OXIGENACIÓN, DOLOR Y GLUCEMIAS //
 // ========================== //
@@ -2660,3 +2760,79 @@ document.querySelectorAll(".label-text").forEach((div) => {
     });
   }
 });
+
+// Para grafica.html, modificaremos la carga de datos:
+
+// Reemplaza la función loadPatientData existente con:
+function loadPatientDataToForm() {
+  const selectedBed = localStorage.getItem("selectedBed");
+  if (!selectedBed) {
+    console.log("No hay cama seleccionada, redirigiendo...");
+    window.location.href = "index.html";
+    return;
+  }
+
+  const data = loadPatientData(selectedBed);
+  if (data) {
+    document.getElementById("patientName").value = data.name || "";
+    document.getElementById("patientAge").value = data.age || "";
+    document.getElementById("patientPeso").value = data.weight || "";
+    document.getElementById("patientHistory").value = data.history || "";
+    document.getElementById("patientBed").value = data.bed || "";
+    document.getElementById("patientIngreso").value =
+      data.admission || getDefaultIngresoDate();
+    updateSheetField();
+  }
+}
+
+// Y en el DOMContentLoaded de grafica.html:
+if (window.location.pathname.endsWith("grafica.html")) {
+  document.addEventListener("DOMContentLoaded", function () {
+    loadPatientDataToForm();
+  });
+}
+// ========================== //
+// NAVEGACIÓN ENTRE PÁGINAS   //
+// ========================== //
+
+// Función para cargar datos del paciente desde localStorage
+function loadPatientData(bedNumber) {
+  const patients = JSON.parse(localStorage.getItem("patients")) || {};
+  return patients[bedNumber] || null;
+}
+
+// Función para guardar datos del paciente en localStorage
+function savePatientData(bedNumber, patientData) {
+  const patients = JSON.parse(localStorage.getItem("patients")) || {};
+  patients[bedNumber] = patientData;
+  localStorage.setItem("patients", JSON.stringify(patients));
+}
+
+// Función para navegar a datos.html para nuevo ingreso
+function navigateToNewPatient(bedNumber) {
+  localStorage.setItem("selectedBed", bedNumber);
+  window.location.href = "datos.html";
+}
+
+// Función para navegar a grafica.html para paciente existente
+function navigateToExistingPatient(bedNumber) {
+  localStorage.setItem("selectedBed", bedNumber);
+  window.location.href = "grafica.html";
+}
+
+// Función para actualizar el estado de las camas
+function updateBedStatus() {
+  for (let i = 1; i <= 12; i++) {
+    const patientData = loadPatientData(i);
+    const bedStatus = document.getElementById(`bedStatus${i}`);
+    if (bedStatus) {
+      if (patientData) {
+        bedStatus.textContent = `Ocupada - ${patientData.name || "Sin nombre"}`;
+        bedStatus.className = "bed-status occupied";
+      } else {
+        bedStatus.textContent = "Libre";
+        bedStatus.className = "bed-status free";
+      }
+    }
+  }
+}

@@ -215,6 +215,7 @@ body {
   border-radius: 0 15px 0 0;
   padding: 15px 25px;
   margin: 0;
+  margin-top: 10px;
   font-size: 16px;
   font-weight: 600;
   color: #333;
@@ -223,7 +224,6 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  border-top: none;
 }
 
 .section-placeholder {
@@ -277,16 +277,6 @@ body {
   font-weight: bold;
 }
 
-.patient-field input {
-  border: none;
-  border-bottom: 1px solid #333;
-  background: transparent;
-  padding: 2px 3px;
-  font-size: 11px;
-  height: 18px;
-  outline: none;
-  font-weight: bold;
-}
 
 /* Estilo para el icono del calendario */
 .calendar-icon {
@@ -317,19 +307,23 @@ body {
   display: flex;
 }
 
-/* Escalas */
+/* Mejorar la sección de escalas */
 .scales-section {
   width: 100px;
-  padding: 10px;
-  border-right: 1px solid #333;
-  background-color: #f0f0f0;
+  padding: 8px; /* REDUCIDO de 10px a 8px */
+  border-right: 2px solid #333; /* CAMBIADO de 1px a 2px para mayor definición */
+  background-color: #f8f8f8; /* CAMBIADO de #f0f0f0 a #f8f8f8 */
   font-weight: bold;
 }
 
+/* Mejorar el título de escalas */
 .scales-title {
   font-weight: bold;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* REDUCIDO de 10px a 8px */
+  font-size: 10px; /* AÑADIDO: tamaño específico */
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ddd;
 }
 
 .scales-grid {
@@ -350,8 +344,9 @@ body {
   font-size: 9px;
 }
 
+/* Mejorar los valores de escala */
 .scale-value {
-  height: 20px;
+  height: 24px; /* AUMENTADO de 20px a 24px */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,6 +355,8 @@ body {
   font-weight: bold;
   position: relative;
   cursor: pointer;
+  font-size: 9px; /* AÑADIDO: tamaño específico */
+  padding: 1px; /* AÑADIDO: pequeño padding */
 }
 
 .scale-value:hover::after {
@@ -377,10 +374,11 @@ body {
   z-index: 10;
 }
 
-/* Área de gráfico */
+/* Añadir líneas de separación más claras entre secciones */
 .chart-area {
   flex: 1;
   position: relative;
+  border-left: 1px solid #ddd; /* AÑADIDO: separación visual */
 }
 
 /* Cabecera de horas */
@@ -393,10 +391,18 @@ body {
   background-color: #f0f0f0;
 }
 
+/* Mejorar las celdas de horas en la cabecera */
 .hour-cell {
-  padding: 5px 0;
-  border-right: 1px solid #ccc;
+  padding: 8px 0; /* AUMENTADO de 5px a 8px */
+  border-right: 1px solid #999; /* CAMBIADO de #ccc a #999 para mayor visibilidad */
   transition: background-color 0.2s;
+  font-size: 12px; /* AÑADIDO: tamaño de fuente específico */
+  font-weight: bold;
+}
+
+/* Última celda de hora sin borde derecho */
+.hour-cell:last-child {
+  border-right: none;
 }
 
 .hour-cell.has-data {
@@ -404,46 +410,55 @@ body {
   font-weight: bold;
 }
 
-/* Cuadrícula de gráfico */
+/* ========================== */
+/* CORRECCIONES PARA SECCIÓN 1 */
+/* ========================== */
+
+/* Mejorar el espaciado de la cuadrícula */
 .chart-grid {
-  display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  height: 220px;
   position: relative;
+  width: 100%;
+  height: 280px; /* AUMENTADO de 220px a 280px para más espacio */
+  background-color: white;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  display: block;
 }
 
-.grid-cell {
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  position: relative;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  background-color: transparent;
-}
-
-.grid-cell:hover {
-  background-color: rgba(0, 102, 204, 0.1);
-}
-
-.grid-cell.has-data {
-  background-color: rgba(52, 152, 219, 0.08);
-}
-
-.grid-cell.has-data:hover {
-  background-color: rgba(52, 152, 219, 0.15);
-}
-
-/* Líneas horizontales de referencia */
+/* Líneas horizontales más visibles y mejor espaciadas */
 .horizontal-line {
   position: absolute;
   left: 0;
   right: 0;
   height: 1px;
-  background-color: #ddd;
+  background-color: #ccc; /* CAMBIADO de #ddd a #ccc para mayor visibilidad */
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
 
+/* Líneas verticales - ya funcionan bien */
+.vertical-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #999;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 1;
+  display: block;
+}
+
+/* Líneas de borde más gruesas */
+.vertical-line.border-line {
+  background-color: #333;
+  width: 2px;
+  z-index: 2;
+}
+
+
+
+/* POSICIONAMIENTO ESPECÍFICO DE LÍNEAS HORIZONTALES */
 .horizontal-line:nth-child(1) { top: 0%; }
 .horizontal-line:nth-child(2) { top: 10%; }
 .horizontal-line:nth-child(3) { top: 20%; }
@@ -460,33 +475,56 @@ body {
 .chart-point {
   width: 6px;
   height: 6px;
-  margin: 0;
   position: absolute;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 4;
+  pointer-events: none;
 }
 
-.resp-point { background-color: #000; }
-.temp-point { background-color: #dc3545; }
-.pulse-point { background-color: #0d6efd; }
-.bp-point { background-color: #198754; }
+.resp-point { 
+  background-color: #000; 
+  border: 1px solid #fff;
+}
 
-/* Líneas del gráfico */
+.temp-point { 
+  background-color: #dc3545; 
+  border: 1px solid #fff;
+}
+
+.pulse-point { 
+  background-color: #0d6efd; 
+  border: 1px solid #fff;
+}
+
+.bp-point { 
+  background-color: #198754; 
+  border: 1px solid #fff;
+}
+
+/* Líneas conectoras del gráfico */
 .chart-line {
   position: absolute;
   height: 2px;
-  background-color: #000;
   transform-origin: left center;
-  z-index: 1;
+  z-index: 4;
+  pointer-events: none;
 }
 
 .resp-line { background-color: #000; }
 .temp-line { background-color: #dc3545; }
 .pulse-line { background-color: #0d6efd; }
-.bp-line { background-color: #198754; height: 3px; width: 1px; z-index: 1; }
 
-/* Tooltip container */
+/* Línea especial para tensión arterial */
+.bp-line { 
+  background-color: #198754; 
+  width: 3px; 
+  height: auto; 
+  transform-origin: center;
+}
+
+
+/* Mejorar los tooltips para que sean más visibles */
 .vital-signs-tooltip {
   position: absolute;
   top: 50%;
@@ -495,8 +533,8 @@ body {
   background: white;
   border: 2px solid #3498db;
   border-radius: 8px;
-  padding: 8px 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  padding: 10px 12px; /* AUMENTADO padding */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* MEJORADO shadow */
   font-family: Arial, sans-serif;
   font-size: 11px;
   white-space: nowrap;
@@ -505,12 +543,31 @@ body {
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
   pointer-events: none;
-  min-width: 140px;
+  min-width: 160px; /* AUMENTADO de 140px */
 }
 
-.grid-cell:hover .vital-signs-tooltip {
-  opacity: 1;
-  visibility: visible;
+/* Celdas interactivas con mejor feedback visual */
+.grid-cell {
+  position: absolute;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: transparent;
+  z-index: 3;
+  border: none;
+  outline: none;
+}
+
+.grid-cell:hover {
+  background-color: rgba(0, 102, 204, 0.15) !important; /* AUMENTADO opacidad */
+  border-radius: 3px; /* AÑADIDO: bordes redondeados en hover */
+}
+
+.grid-cell.has-data {
+  background-color: rgba(52, 152, 219, 0.12); /* AUMENTADO opacidad */
+}
+
+.grid-cell.has-data:hover {
+  background-color: rgba(52, 152, 219, 0.25) !important; /* AUMENTADO opacidad */
 }
 
 .tooltip-content {
@@ -531,12 +588,37 @@ body {
   margin-right: 8px;
 }
 
+/* Valores de los tooltips */
 .value-fr { color: #000; font-weight: bold; }
 .value-temp { color: #dc3545; font-weight: bold; }
 .value-fc { color: #0d6efd; font-weight: bold; }
 .value-ta { color: #198754; font-weight: bold; }
 .value-sato2 { color: #198754; font-weight: bold; }
 .value-glucemia { color: #dc3545; font-weight: bold; }
+
+/* ========================== */
+/* RESPONSIVE PARA LA GRÁFICA */
+/* ========================== */
+@media (max-width: 768px) {
+  .chart-grid {
+    height: 180px;
+  }
+  
+  .chart-point {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .vital-signs-tooltip {
+    font-size: 10px;
+    padding: 6px 8px;
+    min-width: 120px;
+  }
+  
+  .tooltip-row {
+    min-width: 100px;
+  }
+}
 
 /* ========================== */
 /* SECCIÓN 2: OXIGENACIÓN, DOLOR Y GLUCEMIAS */
@@ -1361,11 +1443,29 @@ body {
     padding: 12px 20px;
   }
   
-  .patient-info {
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-  }
+  /* Mejorar la información del paciente */
+.patient-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px; /* AUMENTADO padding */
+  border-bottom: 2px solid #333; /* CAMBIADO de 1px a 2px */
+  flex-wrap: nowrap;
+  align-items: center;
+  background-color: #f8f8f8;
+  font-size: 11px;
+}
+
+/* Mejorar los campos del paciente */
+.patient-field input {
+  border: none;
+  border-bottom: 1px solid #333;
+  background: transparent;
+  padding: 3px 4px; /* AUMENTADO padding */
+  font-size: 11px;
+  height: 20px; /* AUMENTADO de 18px a 20px */
+  outline: none;
+  font-weight: bold;
+}
   
   .patient-field {
     justify-content: space-between;

@@ -2,16 +2,284 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UCI - Selección de Paciente</title>
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark-color);
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.2rem;
+        position: relative;
+        padding-bottom: 15px;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 4px;
+        background: var(--secondary-color);
+      }
+
+      .beds-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+      }
+
+      .bed-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        text-align: center;
+        transition: var(--transition);
+        border-top: 4px solid var(--secondary-color);
+      }
+
+      .bed-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .bed-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+      }
+
+      .bed-status {
+        padding: 8px 12px;
+        margin: 15px auto;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        display: inline-block;
+        width: 80%;
+      }
+
+      .bed-status.free {
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+      }
+
+      .bed-status.occupied {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+      }
+
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #219955;
+        transform: translateY(-2px);
+      }
+
+      .btn-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background-color: #e67e22;
+        transform: translateY(-2px);
+      }
+
+      .btn i {
+        font-size: 18px;
+      }
+
+      /* Animaciones */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .bed-card {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .beds-container {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+      }
+
+      @media (max-width: 480px) {
+        .beds-container {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
   <body>
-    <h1>UCI - Selección de Paciente</h1>
+    <div class="container">
+      <h1>UCI - Selección de Paciente</h1>
 
-    <div class="beds-container" id="bedsContainer">
-      <!-- Se generarán automáticamente las 12 camas -->
+      <div class="beds-container" id="bedsContainer">
+        <!-- Las camas se generarán automáticamente -->
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Generar las 12 camas
+        const bedsContainer = document.getElementById("bedsContainer");
+        for (let i = 1; i <= 12; i++) {
+          const bedCard = document.createElement("div");
+          bedCard.className = "bed-card";
+          bedCard.dataset.bedNumber = i;
+          bedCard.innerHTML = `
+          <h3 class="bed-title">Cama ${i}</h3>
+          <div class="bed-status" id="bedStatus${i}">Libre</div>
+          <div class="button-group">
+            <button class="btn btn-success" onclick="selectBed(${i}, 'ingreso')">
+              <i class="fas fa-user-plus"></i> Nuevo Ingreso
+            </button>
+            <button class="btn btn-primary" onclick="selectBed(${i}, 'consulta')">
+              <i class="fas fa-user-injured"></i> Paciente Ingresado
+            </button>
+          </div>
+        `;
+          bedsContainer.appendChild(bedCard);
+        }
+
+        // Cargar estado de las camas desde localStorage
+        updateBedStatus();
+
+        // Escuchar cambios en los datos de pacientes
+        document.addEventListener("patientDataUpdated", updateBedStatus);
+      });
+
+      function selectBed(bedNumber, action) {
+        // Guardar la cama seleccionada en localStorage
+        localStorage.setItem("selectedBed", bedNumber);
+
+        if (action === "ingreso") {
+          // Redirigir a datos.html para ingresar nuevo paciente
+          window.location.href = "datos.html";
+        } else {
+          // Verificar si hay datos para esta cama
+          const patientData = JSON.parse(
+            localStorage.getItem(`patientData_${bedNumber}`)
+          );
+          if (patientData) {
+            // Redirigir a grafica.html para ver/modificar datos
+            window.location.href = "grafica.html";
+          } else {
+            alert(
+              'No hay datos de paciente para esta cama. Seleccione "Nuevo Ingreso" para registrar un paciente.'
+            );
+          }
+        }
+      }
+
+      function updateBedStatus() {
+        for (let i = 1; i <= 12; i++) {
+          const patientData = JSON.parse(
+            localStorage.getItem(`patientData_${i}`)
+          );
+          const bedStatus = document.getElementById(`bedStatus${i}`);
+          if (patientData) {
+            bedStatus.textContent = `Ocupada - ${patientData.name}`;
+            bedStatus.className = "bed-status occupied";
+          } else {
+            bedStatus.textContent = "Libre";
+            bedStatus.className = "bed-status free";
+          }
+        }
+      }
+    </script>
   </body>
 </html>
