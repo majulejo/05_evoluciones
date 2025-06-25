@@ -2525,6 +2525,11 @@ body {
 }
 
 /* FINAL DEL TOOLTIP DE PÉRDIDAS */
+.custom-tooltip {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    border-radius: 4px;
+}
 
 /* Celdas calculadas automáticamente */
 .data-cell-s3.fiebre-tqn-cell {

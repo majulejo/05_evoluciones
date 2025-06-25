@@ -869,20 +869,27 @@
                 <!-- Solo 24 celdas vacías + 1 celda de balance calculado -->
               </div>
             </div>
-            <!-- Modal para mostrar fórmulas -->
-            <div id="formulaModal" class="formula-modal">
-              <div class="formula-modal-content">
-                <span class="formula-close" onclick="closeFormulaModal()"
-                  >&times;</span
-                >
-                <div id="formulaContent" class="formula-content">
-                  <!-- El contenido se cargará dinámicamente -->
-                </div>
-              </div>
+            <!-- Tooltip para fórmulas -->
+            <div
+              id="customTooltip"
+              class="custom-tooltip"
+              style="
+                display: none;
+                position: absolute;
+                background: #fff;
+                border: 1px solid #ccc;
+                padding: 8px;
+                z-index: 9999;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                max-width: 300px;
+              "
+            >
+              <div
+                id="tooltipTitle"
+                style="font-weight: bold; margin-bottom: 4px"
+              ></div>
+              <div id="tooltipContent"></div>
             </div>
-
-            <!-- Modal para introducir datos -->
-
             <!-- Fila 9: TOTAL PÉRDIDAS -->
             <div class="section3-row total-row">
               <div class="section3-label total-label">

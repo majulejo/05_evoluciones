@@ -1613,6 +1613,55 @@ function showFormulaModal(formulaType) {
 
 // FINAL DE TOOLTIP FIEBRE/TQN/PERDIDAS INSENSIBLES
 
+function showCustomTooltip(element, formulaType) {
+  const tooltip = document.getElementById("customTooltip");
+  const title = document.getElementById("tooltipTitle");
+  const content = document.getElementById("tooltipContent");
+
+  let titleText = "";
+  let contentHTML = "";
+
+  // Aquí defines qué contenido mostrar según el tipo
+  switch (formulaType) {
+    case "fiebre-tqn":
+      titleText = "Fórmula FIEBRE + TQN";
+      contentHTML = `
+                <div><strong>Fiebre >37°C:</strong> 0.1 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >38°C:</strong> 0.2 × PESO × Nº HORAS</div>
+                <div><strong>Fiebre >39°C:</strong> 0.3 × PESO × Nº HORAS</div>
+            `;
+      break;
+
+    case "perdidas-insensibles":
+      titleText = "Fórmula PÉRDIDAS INSENSIBLES";
+      contentHTML = `
+                <div><strong>Fórmula general:</strong> 0.5 × PESO × Nº HORAS</div>
+                <div><em>Incluye pérdidas por piel y respiración.</em></div>
+            `;
+      break;
+
+    default:
+      return;
+  }
+
+  // Actualiza el contenido
+  title.textContent = titleText;
+  content.innerHTML = contentHTML;
+
+  // Posiciona el tooltip cerca del elemento
+  const rect = element.getBoundingClientRect();
+  tooltip.style.left = "35%";
+  tooltip.style.top = "50%";
+  tooltip.style.transform = "translate(-50%, -50%)";
+  // Muestra el tooltip
+
+  tooltip.style.display = "block";
+}
+
+function hideCustomTooltip() {
+  const tooltip = document.getElementById("customTooltip");
+  tooltip.style.display = "none";
+}
 // ========================== //
 // SECCIÓN 4: INGRESOS  //
 // ========================== //
@@ -2460,5 +2509,26 @@ document.addEventListener("DOMContentLoaded", function () {
       .addEventListener("click", function (e) {
         e.stopPropagation();
       });
+  }
+});
+
+document.querySelectorAll(".label-text").forEach((div) => {
+  const text = div.textContent.trim();
+
+  let formulaType = null;
+  if (text === "FIEBRE, TQN") {
+    formulaType = "fiebre-tqn";
+  } else if (text === "PÉRD. INSENSIBLES") {
+    formulaType = "perdidas-insensibles";
+  }
+
+  if (formulaType) {
+    div.addEventListener("mouseenter", () => {
+      showCustomTooltip(div, formulaType);
+    });
+
+    div.addEventListener("mouseleave", () => {
+      hideCustomTooltip();
+    });
   }
 });
