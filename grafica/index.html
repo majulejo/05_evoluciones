@@ -115,6 +115,21 @@
                 maxlength="3"
               />
             </div>
+            <div class="patient-field patient-peso">
+              <strong>PESO:</strong>
+              <input
+                type="number"
+                id="patientPeso"
+                min="1"
+                max="300"
+                step="0.1"
+                placeholder="kg"
+              />
+            </div>
+            <div class="patient-field patient-ingreso">
+              <strong>INGRESO:</strong>
+              <input type="datetime-local" id="patientIngreso" />
+            </div>
           </div>
 
           <!-- Sección principal de gráfica -->
@@ -634,11 +649,232 @@
         <div class="section-header">
           <h2 class="section-title-display">
             <span class="section-number">3</span>
-            Pérdidas/Pérdidas Insensibles
+            Pérdidas
           </h2>
         </div>
-        <div class="section-placeholder">
-          <p>Sección en desarrollo...</p>
+
+        <div class="chart-container section3-container">
+          <!-- Estructura tipo gráfica real -->
+          <div class="section3-grid">
+            <!-- Cabecera con horas y balance -->
+            <div class="section3-header">
+              <div class="section3-label-header"></div>
+              <div class="section3-hours-header">
+                <div class="hour-cell-s3">8</div>
+                <div class="hour-cell-s3">9</div>
+                <div class="hour-cell-s3">10</div>
+                <div class="hour-cell-s3">11</div>
+                <div class="hour-cell-s3">12</div>
+                <div class="hour-cell-s3">13</div>
+                <div class="hour-cell-s3">14</div>
+                <div class="hour-cell-s3">15</div>
+                <div class="hour-cell-s3">16</div>
+                <div class="hour-cell-s3">17</div>
+                <div class="hour-cell-s3">18</div>
+                <div class="hour-cell-s3">19</div>
+                <div class="hour-cell-s3">20</div>
+                <div class="hour-cell-s3">21</div>
+                <div class="hour-cell-s3">22</div>
+                <div class="hour-cell-s3">23</div>
+                <div class="hour-cell-s3">0</div>
+                <div class="hour-cell-s3">1</div>
+                <div class="hour-cell-s3">2</div>
+                <div class="hour-cell-s3">3</div>
+                <div class="hour-cell-s3">4</div>
+                <div class="hour-cell-s3">5</div>
+                <div class="hour-cell-s3">6</div>
+                <div class="hour-cell-s3">7</div>
+                <div class="balance-cell-header">BALANCE</div>
+              </div>
+            </div>
+
+            <!-- Fila 1: DIURESIS -->
+            <div class="section3-row">
+              <div class="section3-label">
+                <div class="label-text">DIURESIS</div>
+              </div>
+              <div class="section3-data-row" id="diuresis-cells">
+                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Fila 2: DEPOSICIONES -->
+            <div class="section3-row">
+              <div class="section3-label">
+                <div class="label-text">DEPOSICIONES</div>
+              </div>
+              <div class="section3-data-row" id="deposiciones-cells">
+                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Fila 3: VÓMITOS, SUDOR -->
+            <div class="section3-row">
+              <div class="section3-label">
+                <div class="label-text">VÓMITOS, SUDOR</div>
+              </div>
+              <div class="section3-data-row" id="vomitos-cells">
+                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Fila 4: FIEBRE, TQN (Calculada automáticamente) -->
+            <div class="section3-row">
+              <div class="section3-label calculated-label">
+                <div class="label-text">FIEBRE, TQN</div>
+                <span class="calc-indicator" title="Calculado automáticamente"
+                  >📊</span
+                >
+              </div>
+              <div class="section3-data-row" id="fiebre-tqn-cells">
+                <!-- Se generarán 24 celdas calculadas + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Fila 5: SNG (Campo personalizable) -->
+            <div class="section3-row">
+              <div class="section3-label editable-label">
+                <input
+                  type="text"
+                  class="label-input"
+                  id="sng-label"
+                  placeholder="SNG"
+                  maxlength="20"
+                />
+              </div>
+              <div class="section3-data-row" id="sng-cells">
+                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Fila 6: DRENAJES (Expandible) -->
+            <div class="section3-row drenajes-main-row">
+              <div class="section3-label drenajes-label">
+                <div class="label-text">DRENAJES</div>
+                <span
+                  class="expand-icon"
+                  id="drenajes-expand"
+                  onclick="toggleDrenajes()"
+                  title="Expandir drenajes"
+                  >▼</span
+                >
+              </div>
+              <div class="section3-data-row" id="drenajes-cells">
+                <!-- Se generarán 24 celdas calculadas + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Filas de drenajes expandibles (inicialmente ocultas) -->
+            <div class="drenajes-expandable" id="drenajes-expandable">
+              <!-- Drenaje 1 -->
+              <div class="section3-row drenaje-row">
+                <div class="section3-label drenaje-sublabel">
+                  <input
+                    type="text"
+                    class="label-input drenaje-input"
+                    placeholder="Tipo drenaje 1"
+                    maxlength="15"
+                  />
+                </div>
+                <div class="section3-data-row" id="drenaje1-cells">
+                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+                </div>
+              </div>
+
+              <!-- Drenaje 2 -->
+              <div class="section3-row drenaje-row">
+                <div class="section3-label drenaje-sublabel">
+                  <input
+                    type="text"
+                    class="label-input drenaje-input"
+                    placeholder="Tipo drenaje 2"
+                    maxlength="15"
+                  />
+                </div>
+                <div class="section3-data-row" id="drenaje2-cells">
+                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+                </div>
+              </div>
+
+              <!-- Drenaje 3 -->
+              <div class="section3-row drenaje-row">
+                <div class="section3-label drenaje-sublabel">
+                  <input
+                    type="text"
+                    class="label-input drenaje-input"
+                    placeholder="Tipo drenaje 3"
+                    maxlength="15"
+                  />
+                </div>
+                <div class="section3-data-row" id="drenaje3-cells">
+                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+                </div>
+              </div>
+
+              <!-- Drenaje 4 -->
+              <div class="section3-row drenaje-row">
+                <div class="section3-label drenaje-sublabel">
+                  <input
+                    type="text"
+                    class="label-input drenaje-input"
+                    placeholder="Tipo drenaje 4"
+                    maxlength="15"
+                  />
+                </div>
+                <div class="section3-data-row" id="drenaje4-cells">
+                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+                </div>
+              </div>
+
+              <!-- Drenaje 5 -->
+              <div class="section3-row drenaje-row">
+                <div class="section3-label drenaje-sublabel">
+                  <input
+                    type="text"
+                    class="label-input drenaje-input"
+                    placeholder="Tipo drenaje 5"
+                    maxlength="15"
+                  />
+                </div>
+                <div class="section3-data-row" id="drenaje5-cells">
+                  <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila 7: CONTROL DE RESIDUOS -->
+            <div class="section3-row">
+              <div class="section3-label">
+                <div class="label-text">CONTROL DE RESIDUOS</div>
+              </div>
+              <div class="section3-data-row" id="control-residuos-cells">
+                <!-- Se generarán 24 celdas editables + 1 balance con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Fila 8: PÉRDIDAS INSENSIBLES (Solo balance) -->
+            <div class="section3-row">
+              <div class="section3-label calculated-label">
+                <div class="label-text">PÉRD. INSENSIBLES</div>
+                <span class="calc-indicator" title="Calculado automáticamente"
+                  >📊</span
+                >
+              </div>
+              <div class="section3-data-row" id="perdidas-cells">
+                <!-- Solo 24 celdas vacías + 1 celda de balance calculado -->
+              </div>
+            </div>
+
+            <!-- Fila 9: TOTAL PÉRDIDAS -->
+            <div class="section3-row total-row">
+              <div class="section3-label total-label">
+                <div class="label-text">TOTAL PÉRDIDAS</div>
+              </div>
+              <div class="section3-data-row" id="total-perdidas-cells">
+                <!-- Solo 24 celdas vacías + 1 celda de balance total calculado -->
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -647,7 +883,7 @@
         <div class="section-header">
           <h2 class="section-title-display">
             <span class="section-number">4</span>
-            Ingresos y Nutrición
+            Ingresos
           </h2>
         </div>
         <div class="section-placeholder">
