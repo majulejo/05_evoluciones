@@ -878,16 +878,594 @@ function updateSaturationInSection2(index, satO2Value, fromSection1 = false) {
 }
 
 // ========================== //
-// SECCIÓN 3: PÉRDIDAS/PÉRDIDAS INSENSIBLES //
+// SECCIÓN 3: PÉRDIDAS //
 // ========================== //
+
+// Datos de la sección 3
+let section3Data = {
+  diuresis: Array(24).fill(""),
+  deposiciones: Array(24).fill(""),
+  vomitos: Array(24).fill(""), // Solo vómitos y sudor
+  fiebreTqn: Array(24).fill(0), // Calculado automáticamente
+  sng: Array(24).fill(""),
+  drenajes: Array(24).fill(0), // Calculado desde los subdrenajes
+  controlResiduos: Array(24).fill(""), // Nueva fila editable
+  perdidasInsensibles: 0, // Solo balance calculado
+  // Subdrenajes individuales
+  drenaje1: Array(24).fill(""),
+  drenaje2: Array(24).fill(""),
+  drenaje3: Array(24).fill(""),
+  drenaje4: Array(24).fill(""),
+  drenaje5: Array(24).fill(""),
+  totals: Array(24).fill(0), // Totales calculados por hora
+  balances: {
+    diuresis: 0,
+    deposiciones: 0,
+    vomitos: 0,
+    fiebreTqn: 0,
+    sng: 0,
+    drenajes: 0,
+    drenaje1: 0,
+    drenaje2: 0,
+    drenaje3: 0,
+    drenaje4: 0,
+    drenaje5: 0,
+    controlResiduos: 0, // Nueva fila
+    perdidasInsensibles: 0,
+    total: 0,
+  },
+  drenajesExpanded: false,
+};
 
 function initializeSection3() {
+  console.log("Inicializando Sección 3...");
+
+  // Crear celdas para cada subsección
+  createDiuresisCells();
+  createDeposicionesCells();
+  createVomitosCells(); // Solo vómitos y sudor
+  createFiebreTqnCells(); // Nueva fila calculada
+  createSngCells();
+  createDrenajesCells(); // Fila principal calculada
+  createControlResiduosCells(); // Nueva fila editable
+  createPerdidasInsensiblesCells(); // Solo balance
+  createTotalPerdidasCells();
+
+  // Crear celdas para drenajes individuales
+  createDrenajeIndividualCells(
+    "drenaje1-cells",
+    section3Data.drenaje1,
+    "drenaje-cell",
+    1
+  );
+  createDrenajeIndividualCells(
+    "drenaje2-cells",
+    section3Data.drenaje2,
+    "drenaje-cell",
+    2
+  );
+  createDrenajeIndividualCells(
+    "drenaje3-cells",
+    section3Data.drenaje3,
+    "drenaje-cell",
+    3
+  );
+  createDrenajeIndividualCells(
+    "drenaje4-cells",
+    section3Data.drenaje4,
+    "drenaje-cell",
+    4
+  );
+  createDrenajeIndividualCells(
+    "drenaje5-cells",
+    section3Data.drenaje5,
+    "drenaje-cell",
+    5
+  );
+
+  // Configurar eventos para peso e ingreso
+  setupPatientDataEvents();
+
   console.log("Sección 3 inicializada");
-  // Aquí se añadirá la funcionalidad específica de la sección 3
 }
 
+function createSection3Cells(
+  containerId,
+  dataArray,
+  className,
+  inputType = "number"
+) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Crear 24 celdas horarias
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = `data-cell-s3 ${className}`;
+
+    const input = document.createElement("input");
+    input.type = inputType;
+    if (inputType === "number") {
+      input.min = "0";
+      input.max = "9999";
+      input.step = "1";
+    }
+    input.placeholder = "━";
+    input.value = dataArray[i] || "";
+
+    input.addEventListener("input", (e) => {
+      const value =
+        inputType === "number"
+          ? parseFloat(e.target.value) || 0
+          : e.target.value;
+      dataArray[i] = value;
+
+      // Recalcular totales cuando cambie cualquier valor
+      updateSection3Totals();
+    });
+
+    cell.appendChild(input);
+    container.appendChild(cell);
+  }
+
+  // Crear celda de balance
+  const balanceCell = document.createElement("div");
+  balanceCell.className = "data-cell-s3 balance-cell";
+  balanceCell.id = `${className}-balance`;
+  balanceCell.textContent = "0";
+  container.appendChild(balanceCell);
+}
+
+function createDiuresisCells() {
+  createSection3Cells("diuresis-cells", section3Data.diuresis, "diuresis-cell");
+}
+
+function createDeposicionesCells() {
+  createSection3Cells(
+    "deposiciones-cells",
+    section3Data.deposiciones,
+    "deposiciones-cell"
+  );
+}
+
+function createVomitosCells() {
+  createSection3Cells("vomitos-cells", section3Data.vomitos, "vomitos-cell");
+}
+
+function createFiebreTqnCells() {
+  const container = document.getElementById("fiebre-tqn-cells");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Crear 24 celdas calculadas (no editables)
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = "data-cell-s3 fiebre-tqn-cell calculated";
+    cell.id = `fiebre-tqn-${i}`;
+    cell.textContent = "0";
+    container.appendChild(cell);
+  }
+
+  // Crear celda de balance
+  const balanceCell = document.createElement("div");
+  balanceCell.className = "data-cell-s3 balance-cell";
+  balanceCell.id = "fiebre-tqn-balance";
+  balanceCell.textContent = "0";
+  container.appendChild(balanceCell);
+}
+
+function createSngCells() {
+  createSection3Cells("sng-cells", section3Data.sng, "sng-cell");
+}
+
+function createDrenajesCells() {
+  const container = document.getElementById("drenajes-cells");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Crear 24 celdas calculadas (no editables)
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = "data-cell-s3 drenajes-main calculated";
+    cell.id = `drenajes-total-${i}`;
+    cell.textContent = "0";
+    container.appendChild(cell);
+  }
+
+  // Crear celda de balance
+  const balanceCell = document.createElement("div");
+  balanceCell.className = "data-cell-s3 balance-cell";
+  balanceCell.id = "drenajes-cell-balance";
+  balanceCell.textContent = "0";
+  container.appendChild(balanceCell);
+}
+
+function createDrenajeIndividualCells(
+  containerId,
+  dataArray,
+  className,
+  drenajeNumber
+) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Crear 24 celdas editables
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = `data-cell-s3 ${className}`;
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = "0";
+    input.max = "9999";
+    input.step = "1";
+    input.placeholder = "━";
+    input.value = dataArray[i] || "";
+
+    input.addEventListener("input", (e) => {
+      const value = parseFloat(e.target.value) || 0;
+      dataArray[i] = value;
+
+      // Recalcular totales de drenajes y totales generales
+      updateDrenajesTotal();
+      updateSection3Totals();
+    });
+
+    cell.appendChild(input);
+    container.appendChild(cell);
+  }
+
+  // Crear celda de balance
+  const balanceCell = document.createElement("div");
+  balanceCell.className = "data-cell-s3 balance-cell";
+  balanceCell.id = `drenaje${drenajeNumber}-balance`;
+  balanceCell.textContent = "0";
+  container.appendChild(balanceCell);
+}
+
+function updateDrenajesTotal() {
+  // Calcular totales de drenajes por hora
+  for (let i = 0; i < 24; i++) {
+    const hourTotal =
+      (parseFloat(section3Data.drenaje1[i]) || 0) +
+      (parseFloat(section3Data.drenaje2[i]) || 0) +
+      (parseFloat(section3Data.drenaje3[i]) || 0) +
+      (parseFloat(section3Data.drenaje4[i]) || 0) +
+      (parseFloat(section3Data.drenaje5[i]) || 0);
+
+    section3Data.drenajes[i] = hourTotal;
+
+    // Actualizar celda visual de drenajes principal
+    const drenajesCell = document.getElementById(`drenajes-total-${i}`);
+    if (drenajesCell) {
+      drenajesCell.textContent = hourTotal.toString();
+    }
+  }
+
+  // Calcular balances de cada subdrenaje
+  section3Data.balances.drenaje1 = section3Data.drenaje1.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.drenaje2 = section3Data.drenaje2.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.drenaje3 = section3Data.drenaje3.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.drenaje4 = section3Data.drenaje4.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.drenaje5 = section3Data.drenaje5.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.drenajes = section3Data.drenajes.reduce(
+    (sum, val) => sum + val,
+    0
+  );
+
+  // Actualizar celdas de balance de subdrenajes
+  updateBalanceCell("drenaje1-balance", section3Data.balances.drenaje1);
+  updateBalanceCell("drenaje2-balance", section3Data.balances.drenaje2);
+  updateBalanceCell("drenaje3-balance", section3Data.balances.drenaje3);
+  updateBalanceCell("drenaje4-balance", section3Data.balances.drenaje4);
+  updateBalanceCell("drenaje5-balance", section3Data.balances.drenaje5);
+  updateBalanceCell("drenajes-cell-balance", section3Data.balances.drenajes);
+}
+
+function toggleDrenajes() {
+  const expandableDiv = document.getElementById("drenajes-expandable");
+  const expandIcon = document.getElementById("drenajes-expand");
+
+  if (!expandableDiv || !expandIcon) return;
+
+  section3Data.drenajesExpanded = !section3Data.drenajesExpanded;
+
+  if (section3Data.drenajesExpanded) {
+    expandableDiv.classList.add("expanded");
+    expandIcon.classList.add("expanded");
+    expandIcon.title = "Contraer drenajes";
+  } else {
+    expandableDiv.classList.remove("expanded");
+    expandIcon.classList.remove("expanded");
+    expandIcon.title = "Expandir drenajes";
+  }
+
+  console.log("Drenajes expandidos:", section3Data.drenajesExpanded);
+}
+
+function createPerdidasCells() {
+  createSection3Cells("perdidas-cells", section3Data.perdidas, "perdidas-cell");
+}
+
+function createControlResiduosCells() {
+  createSection3Cells(
+    "control-residuos-cells",
+    section3Data.controlResiduos,
+    "control-residuos-cell"
+  );
+}
+
+function createPerdidasInsensiblesCells() {
+  const container = document.getElementById("perdidas-cells");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Crear 24 celdas vacías
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = "data-cell-s3 empty-calculated";
+    container.appendChild(cell);
+  }
+
+  // Crear celda de balance calculado
+  const balanceCell = document.createElement("div");
+  balanceCell.className = "data-cell-s3 perdidas-insensibles-cell balance-cell";
+  balanceCell.id = "perdidas-insensibles-balance";
+  balanceCell.textContent = "0";
+  container.appendChild(balanceCell);
+}
+
+function setupPatientDataEvents() {
+  const pesoInput = document.getElementById("patientPeso");
+  const ingresoInput = document.getElementById("patientIngreso");
+
+  if (pesoInput) {
+    pesoInput.addEventListener("input", () => {
+      calculateAllFormulas();
+    });
+  }
+
+  if (ingresoInput) {
+    ingresoInput.addEventListener("change", () => {
+      calculateAllFormulas();
+    });
+  }
+}
+
+function calculateAllFormulas() {
+  const peso = parseFloat(document.getElementById("patientPeso")?.value) || 0;
+  const ingresoDatetime = document.getElementById("patientIngreso")?.value;
+
+  if (peso === 0) {
+    console.log("Peso no definido, no se pueden calcular fórmulas");
+    return;
+  }
+
+  // Calcular número de horas desde el ingreso
+  const horasTranscurridas = calculateHorasTranscurridas(ingresoDatetime);
+
+  // Calcular FIEBRE, TQN por hora
+  calculateFiebreTqnByHour(peso);
+
+  // Calcular PÉRDIDAS INSENSIBLES (solo balance)
+  calculatePerdidasInsensibles(peso, horasTranscurridas);
+
+  // Recalcular totales
+  updateSection3Totals();
+}
+
+function calculateHorasTranscurridas(ingresoDatetime) {
+  if (!ingresoDatetime) {
+    return 24; // Por defecto 24 horas si no se especifica
+  }
+
+  const ingreso = new Date(ingresoDatetime);
+  const ahora = new Date();
+  const diferenciaMs = ahora - ingreso;
+  const horasTranscurridas = Math.max(
+    0,
+    Math.min(24, Math.floor(diferenciaMs / (1000 * 60 * 60)))
+  );
+
+  return horasTranscurridas;
+}
+
+function calculateFiebreTqnByHour(peso) {
+  // Recorrer las 24 horas y calcular FIEBRE, TQN para cada una
+  for (let i = 0; i < 24; i++) {
+    let totalHour = 0;
+
+    // Obtener temperatura y frecuencia respiratoria de la hora i
+    const temperatura = vitalSigns[i]?.temperature || 0;
+    const frecuenciaResp = vitalSigns[i]?.respRate || 0;
+
+    // Cálculos de FIEBRE
+    if (temperatura > 39) {
+      totalHour += 0.3 * peso; // >39°C
+    } else if (temperatura > 38) {
+      totalHour += 0.2 * peso; // >38°C
+    } else if (temperatura > 37) {
+      totalHour += 0.1 * peso; // >37°C
+    }
+
+    // Cálculos de TQN (Taquipnea)
+    if (frecuenciaResp > 35) {
+      totalHour += 0.3 * peso; // >35 rpm
+    } else if (frecuenciaResp > 25) {
+      totalHour += 0.2 * peso; // >25 rpm
+    }
+
+    // Actualizar datos
+    section3Data.fiebreTqn[i] = totalHour;
+
+    // Actualizar celda visual
+    const cell = document.getElementById(`fiebre-tqn-${i}`);
+    if (cell) {
+      cell.textContent = totalHour.toFixed(1);
+    }
+  }
+
+  // Calcular balance total de FIEBRE, TQN
+  section3Data.balances.fiebreTqn = section3Data.fiebreTqn.reduce(
+    (sum, val) => sum + val,
+    0
+  );
+  updateBalanceCell(
+    "fiebre-tqn-balance",
+    Math.round(section3Data.balances.fiebreTqn)
+  );
+}
+
+function calculatePerdidasInsensibles(peso, horas) {
+  // Fórmula: 0.5 × PESO × Nº HORAS
+  const perdidas = 0.5 * peso * horas;
+
+  section3Data.balances.perdidasInsensibles = perdidas;
+
+  // Actualizar celda de balance
+  const balanceCell = document.getElementById("perdidas-insensibles-balance");
+  if (balanceCell) {
+    balanceCell.textContent = Math.round(perdidas).toString();
+  }
+
+  console.log(
+    `Pérdidas insensibles: ${peso}kg × 0.5 × ${horas}h = ${perdidas.toFixed(
+      1
+    )}ml`
+  );
+}
+
+function createTotalPerdidasCells() {
+  const container = document.getElementById("total-perdidas-cells");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Crear 24 celdas vacías (sin números, solo líneas divisorias)
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = "data-cell-s3 total-cell-empty";
+    // Celda vacía, solo visual
+    container.appendChild(cell);
+  }
+
+  // Crear celda de balance total con color rojo
+  const totalBalanceCell = document.createElement("div");
+  totalBalanceCell.className = "data-cell-s3 total-balance-cell-red";
+  totalBalanceCell.id = "total-balance";
+  totalBalanceCell.textContent = "0";
+  container.appendChild(totalBalanceCell);
+}
+
+function updateSection3Totals() {
+  // Primero actualizar los totales de drenajes
+  updateDrenajesTotal();
+
+  // Recalcular fórmulas automáticas si hay peso
+  const peso = parseFloat(document.getElementById("patientPeso")?.value) || 0;
+  if (peso > 0) {
+    const ingresoDatetime = document.getElementById("patientIngreso")?.value;
+    const horasTranscurridas = calculateHorasTranscurridas(ingresoDatetime);
+
+    calculateFiebreTqnByHour(peso);
+    calculatePerdidasInsensibles(peso, horasTranscurridas);
+  }
+
+  // Calcular balances por categoría
+  section3Data.balances.diuresis = section3Data.diuresis.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.deposiciones = section3Data.deposiciones.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.vomitos = section3Data.vomitos.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.sng = section3Data.sng.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+  section3Data.balances.controlResiduos = section3Data.controlResiduos.reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  );
+
+  // Calcular el total final (suma de todos los balances)
+  section3Data.balances.total =
+    section3Data.balances.diuresis +
+    section3Data.balances.deposiciones +
+    section3Data.balances.vomitos +
+    section3Data.balances.fiebreTqn + // Ya calculado
+    section3Data.balances.sng +
+    section3Data.balances.drenajes + // Ya calculado desde subdrenajes
+    section3Data.balances.controlResiduos + // Nueva fila
+    section3Data.balances.perdidasInsensibles; // Ya calculado
+
+  // Actualizar celdas de balance principales
+  updateBalanceCell("diuresis-cell-balance", section3Data.balances.diuresis);
+  updateBalanceCell(
+    "deposiciones-cell-balance",
+    section3Data.balances.deposiciones
+  );
+  updateBalanceCell("vomitos-cell-balance", section3Data.balances.vomitos);
+  updateBalanceCell("sng-cell-balance", section3Data.balances.sng);
+  updateBalanceCell(
+    "control-residuos-cell-balance",
+    section3Data.balances.controlResiduos
+  );
+
+  // Actualizar el balance total con color rojo
+  const totalBalanceCell = document.getElementById("total-balance");
+  if (totalBalanceCell) {
+    totalBalanceCell.textContent = Math.round(
+      section3Data.balances.total
+    ).toString();
+  }
+
+  console.log("Totales de sección 3 actualizados:", section3Data.balances);
+}
+
+function updateBalanceCell(cellId, value) {
+  const cell = document.getElementById(cellId);
+  if (cell) {
+    cell.textContent = value.toString();
+  }
+}
+
+// Función para obtener datos de la sección 3
+function getSection3Data() {
+  return section3Data;
+}
+
+console.log("Script.js cargado correctamente");
+
 // ========================== //
-// SECCIÓN 4: INGRESOS Y NUTRICIÓN //
+// SECCIÓN 4: INGRESOS  //
 // ========================== //
 
 function initializeSection4() {
@@ -997,10 +1575,19 @@ function saveData() {
 
   // Actualizar sección 2 si hay datos de glucemia o saturación
   if (newData.glucemia) {
-    updateGlucoseInSection2(currentIndex, newData.glucemia, true); // Añadir true
+    updateGlucoseInSection2(currentIndex, newData.glucemia, true);
   }
   if (newData.satO2) {
-    updateSaturationInSection2(currentIndex, newData.satO2, true); // Añadir true
+    updateSaturationInSection2(currentIndex, newData.satO2, true);
+  }
+
+  // NUEVO: Recalcular fórmulas de sección 3 si cambió temperatura o frecuencia respiratoria
+  if (newData.temperature || newData.respRate) {
+    const peso = parseFloat(document.getElementById("patientPeso")?.value) || 0;
+    if (peso > 0) {
+      calculateFiebreTqnByHour(peso);
+      updateSection3Totals();
+    }
   }
 
   closeDataModal();
@@ -1354,6 +1941,10 @@ window.closeDataModal = closeDataModal;
 window.switchToSection = switchToSection;
 window.getCurrentSection = () => currentSection;
 window.getVitalSigns = () => vitalSigns;
+// Añadir las nuevas funciones globales
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
+window.toggleDrenajes = toggleDrenajes;
 
 console.log("Script.js cargado correctamente");
 
@@ -1722,57 +2313,3 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 });
-
-// ========================== //
-// CONTROL DE ESCALAS (TABLETS) //
-// ========================== //
-
-function toggleScales() {
-  const scalesSection = document.getElementById("scalesSection");
-  const toggleBtn = document.getElementById("scalesToggle");
-  const toggleIcon = toggleBtn.querySelector(".toggle-icon");
-
-  if (!scalesSection || !toggleBtn) return;
-
-  if (scalesSection.classList.contains("collapsed")) {
-    // Expandir escalas
-    scalesSection.classList.remove("collapsed");
-    scalesSection.classList.add("expanded");
-    toggleIcon.textContent = "◀";
-  } else {
-    // Colapsar escalas
-    scalesSection.classList.remove("expanded");
-    scalesSection.classList.add("collapsed");
-    toggleIcon.textContent = "▶";
-  }
-
-  // Recalcular gráfico después de la animación
-  setTimeout(() => {
-    if (vitalSigns.some((data) => data && Object.keys(data).length > 0)) {
-      updateChart();
-    }
-  }, 300);
-}
-
-// Función para inicializar estado de escalas según el dispositivo
-function initializeScalesVisibility() {
-  const scalesSection = document.getElementById("scalesSection");
-  if (!scalesSection) return;
-
-  // En tablets, empezar expandido
-  if (window.innerWidth <= 1024 && window.innerWidth > 768) {
-    scalesSection.classList.add("expanded");
-  }
-}
-
-// ========================== //
-// FUNCIONES GLOBALES ACTUALIZADAS //
-// ========================== //
-
-// Función para cerrar modal desde HTML
-window.closeDataModal = closeDataModal;
-
-// Funciones de utilidad que pueden ser usadas por otras secciones
-window.switchToSection = switchToSection;
-window.getCurrentSection = () => currentSection;
-window.getVitalSigns = () => vitalSigns;

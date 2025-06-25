@@ -294,6 +294,8 @@ body {
 .patient-history input { width: 80px; text-align: center; }
 .patient-bed input { width: 40px; text-align: center; }
 .patient-sheet input { width: 40px; text-align: center; }
+.patient-peso input { width: 60px; text-align: center; }
+.patient-ingreso input { width: 140px; font-size: 10px; }
 
 /* Sección principal de gráfica */
 .chart-main {
@@ -1924,6 +1926,795 @@ body {
 /* SECCIÓN 3: PÉRDIDAS/PÉRDIDAS INSENSIBLES */
 /* ========================== */
 /* Estilos específicos para la sección 3 se añadirán aquí */
+/* ========================== */
+/* SECCIÓN 3: PÉRDIDAS/PÉRDIDAS INSENSIBLES */
+/* ========================== */
+
+.section3-container {
+  padding: 0;
+  border: 2px solid #333;
+  border-radius: 0 0 8px 8px;
+}
+
+.section3-grid {
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+/* Cabecera con horas y balance */
+.section3-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  border-bottom: 2px solid #333;
+  background-color: #f0f0f0;
+}
+
+.section3-label-header {
+  background-color: #f0f0f0;
+  border-right: 2px solid #333;
+}
+
+.section3-hours-header {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr) 80px; /* 24 horas + columna balance */
+  background-color: #f0f0f0;
+}
+
+.hour-cell-s3 {
+  padding: 8px 2px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 11px;
+  border-right: 1px solid #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 35px;
+}
+
+.balance-cell-header {
+  padding: 8px 2px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 10px;
+  border-left: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 35px;
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+/* Filas de datos */
+.section3-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  border-bottom: 1px solid #333;
+  min-height: 40px;
+}
+
+.section3-row:last-child {
+  border-bottom: 2px solid #333;
+}
+
+/* Fila total con estilo especial */
+.section3-row.total-row {
+  background-color: #f8f9fa;
+  border-top: 2px solid #333;
+}
+
+/* Etiquetas de las filas */
+.section3-label {
+  background-color: #f8f8f8;
+  border-right: 2px solid #333;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+  min-height: 40px;
+  justify-content: center;
+}
+
+.section3-label.total-label {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+/* ETIQUETAS EDITABLES Y DRENAJES */
+/* Etiquetas editables */
+.section3-label.editable-label {
+  padding: 0 5px;
+}
+
+.label-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-weight: bold;
+  font-size: 10px;
+  color: #333;
+  outline: none;
+  padding: 2px;
+}
+
+.label-input:focus {
+  background-color: #e3f2fd;
+  border-radius: 3px;
+}
+
+.label-input::placeholder {
+  color: #999;
+  font-weight: normal;
+}
+
+/* Drenajes expandibles */
+.drenajes-label {
+  position: relative;
+}
+
+.expand-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.expand-icon:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #333;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.expand-icon.expanded {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Filas de drenajes expandibles */
+.drenajes-expandable {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.drenajes-expandable.expanded {
+  max-height: 250px; /* 5 filas × 50px aprox */
+}
+
+.drenaje-row {
+  background-color: #fafafa;
+  /* ELIMINAR: border-left: 4px solid #9c27b0; - esto desalineaba las celdas */
+  /* MANTENER la misma estructura de grid que las filas principales */
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  border-bottom: 1px solid #333;
+  min-height: 40px;
+}
+
+.drenaje-sublabel {
+  background-color: #f3e5f5;
+  padding: 0 5px;
+  min-height: 35px;
+  /* APLICAR los mismos estilos que section3-label */
+  border-right: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* AÑADIR borde izquierdo SOLO en la etiqueta para indicar que es un subdrenaje */
+  border-left: 4px solid #9c27b0;
+}
+
+.drenaje-sublabel .label-input {
+  font-size: 9px;
+  color: #9c27b0;
+  font-weight: bold;
+}
+
+.drenaje-sublabel .label-input:focus {
+  background-color: #e1bee7;
+}
+
+/* ASEGURAR que las filas de datos de drenajes sigan el mismo grid */
+.drenaje-row .section3-data-row {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr) 80px; /* EXACTAMENTE igual que las otras filas */
+  background: #fafafa;
+}
+
+/* Celdas de drenajes individuales */
+.drenaje-cell {
+  background-color: #fafafa;
+  /* MANTENER las mismas propiedades que data-cell-s3 */
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+}
+
+.drenaje-cell:nth-child(24) {
+  border-right: 2px solid #333; /* Línea más gruesa antes del balance */
+}
+
+.drenaje-cell input {
+  color: #9c27b0;
+  font-weight: bold;
+  font-size: 9px;
+  /* APLICAR los mismos estilos que otros inputs */
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 2px 4px;
+  text-align: center;
+  background: transparent;
+  outline: none;
+  /* Ocultar las flechas del input number */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+/* Ocultar flechas específicas de WebKit para drenajes */
+.drenaje-cell input[type="number"]::-webkit-outer-spin-button,
+.drenaje-cell input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.drenaje-cell input:focus {
+  background-color: #e3f2fd;
+  outline: 1px solid #2196f3;
+}
+
+.drenaje-cell input:hover {
+  background-color: #f5f5f5;
+}
+
+/* Balance de drenajes individuales */
+.drenaje-cell.balance-cell {
+  background-color: #e1bee7;
+  border-left: 2px solid #333;
+  font-weight: bold;
+  color: #9c27b0;
+}
+
+/* Celdas de drenajes principal (calculada) */
+.data-cell-s3.drenajes-main {
+  background-color: #f3e5f5;
+  font-weight: bold;
+  color: #9c27b0;
+  pointer-events: none;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+}
+
+.data-cell-s3.drenajes-main:nth-child(24) {
+  border-right: 2px solid #333; /* Línea más gruesa antes del balance */
+}
+
+/* Fila de datos */
+.section3-data-row {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr) 80px; /* 24 horas + columna balance */
+  background: white;
+}
+
+/* Celdas de datos */
+.data-cell-s3 {
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+  background: white;
+}
+
+.data-cell-s3:nth-child(24) {
+  border-right: 2px solid #333; /* Línea más gruesa antes del balance */
+}
+
+.data-cell-s3.perdidas-insensibles-cell {
+  background-color: #f3e5f5;
+  font-weight: bold;
+  color: #7b1fa2;
+  pointer-events: none;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+}
+
+.data-cell-s3.balance-cell {
+  background-color: #f8f5ff;
+  border-left: 2px solid #333;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.data-cell-s3.total-cell {
+  background-color: #e8f5e8;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.data-cell-s3.total-balance-cell {
+  background-color: #c8e6c9;
+  border-left: 2px solid #333;
+  font-weight: bold;
+  color: #1b5e20;
+  font-size: 12px;
+}
+
+/* Inputs de la sección 3 */
+.data-cell-s3 input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 2px 4px;
+  text-align: center;
+  font-size: 10px;
+  background: transparent;
+  outline: none;
+  /* Ocultar las flechas del input number */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+/* Celdas vacías de total pérdidas */
+.data-cell-s3.total-cell-empty {
+  background-color: #f8f9fa;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  /* Sin contenido, solo líneas divisorias */
+}
+
+.data-cell-s3.total-cell-empty:nth-child(24) {
+  border-right: 2px solid #333; /* Línea más gruesa antes del balance */
+}
+
+/* Balance total con color rojo */
+.data-cell-s3.total-balance-cell-red {
+  background-color: #ffebee;
+  border-left: 2px solid #333;
+  font-weight: bold;
+  color: #d32f2f; /* Rojo más intenso */
+  font-size: 14px; /* Ligeramente más grande */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil para destacar */
+}
+
+/* Ocultar flechas específicas de WebKit */
+.data-cell-s3 input[type="number"]::-webkit-outer-spin-button,
+.data-cell-s3 input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.data-cell-s3 input:focus {
+  background-color: #e3f2fd;
+  outline: 1px solid #2196f3;
+}
+
+.data-cell-s3 input:hover {
+  background-color: #f5f5f5;
+}
+
+/* Colores específicos por tipo de pérdida */
+.diuresis-cell input {
+  color: #1976d2;
+  font-weight: bold;
+}
+
+.deposiciones-cell input {
+  color: #8d6e63;
+  font-weight: bold;
+}
+
+.vomitos-cell input {
+  color: #e91e63;
+  font-weight: bold;
+}
+
+.sng-cell input {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.drenajes-cell input {
+  color: #9c27b0;
+  font-weight: bold;
+}
+
+.control-residuos-cell input {
+  color: #795548;
+  font-weight: bold;
+}
+
+.perdidas-cell input {
+  color: #607d8b;
+  font-weight: bold;
+}
+
+/* Valores calculados - solo lectura */
+.data-cell-s3.calculated {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.data-cell-s3.calculated input {
+  background-color: transparent;
+  color: #2e7d32;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+/* Etiquetas calculadas automáticamente */
+.section3-label.calculated-label {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  position: relative;
+}
+
+.calc-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 8px;
+  color: #4caf50;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  z-index: 10;
+  opacity: 0.7;
+}
+
+.calc-indicator:hover {
+  opacity: 1;
+  transform: scale(1.3);
+  background: rgba(255, 255, 255, 1);
+}
+
+/* Modal simple para fórmulas */
+.formula-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.formula-modal.show {
+  display: flex;
+}
+
+.formula-modal-content {
+  background: white;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  cursor: default;
+}
+
+.formula-modal-content:hover {
+  cursor: default;
+}
+
+.formula-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  color: #666;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.formula-close:hover {
+  color: #333;
+  background: rgba(255, 255, 255, 1);
+}
+
+.formula-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  padding-top: 5px;
+}
+
+.formula-title {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+  font-size: 14px;
+}
+
+.formula-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 200px;
+  padding: 2px 0;
+}
+
+.formula-row span:first-child {
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.formula-temp {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.formula-resp {
+  color: #000;
+  font-weight: bold;
+}
+
+.formula-result {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.formula-example {
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+  border-left: 3px solid #3498db;
+  font-size: 11px;
+}
+
+/* FINAL DEL TOOLTIP DE PÉRDIDAS */
+
+/* Celdas calculadas automáticamente */
+.data-cell-s3.fiebre-tqn-cell {
+  background-color: #f1f8e9;
+  font-weight: bold;
+  color: #558b2f;
+  pointer-events: none;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+}
+
+.data-cell-s3.fiebre-tqn-cell:nth-child(24) {
+  border-right: 2px solid #333; /* Línea más gruesa antes del balance */
+}
+
+.data-cell-s3.perdidas-insensibles-cell {
+  background-color: #f3e5f5;
+  font-weight: bold;
+  color: #7b1fa2;
+  pointer-events: none;
+}
+
+.data-cell-s3.agua-endogena-cell {
+  background-color: #e3f2fd;
+  font-weight: bold;
+  color: #1565c0;
+  pointer-events: none;
+}
+
+/* Celdas vacías para filas solo-balance */
+.data-cell-s3.empty-calculated {
+  background-color: #fafafa;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #ddd;
+  pointer-events: none;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+}
+
+.data-cell-s3.empty-calculated:nth-child(24) {
+  border-right: 2px solid #333; /* Línea más gruesa antes del balance */
+}
+
+
+
+/* ========================== */
+/* RESPONSIVE DESIGN */
+/* ========================== */
+@media (max-width: 768px) {
+  body {
+    padding: 5px;
+  }
+  
+  .view-controls {
+    margin-bottom: 10px;
+  }
+  
+  .toggle-view-btn {
+    padding: 8px 15px;
+    font-size: 11px;
+  }
+  
+  .toggle-icon {
+    font-size: 14px;
+  }
+  
+  .toggle-text {
+    font-size: 10px;
+  }
+  
+  .section-navigation {
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .section-tab {
+    width: 100%;
+    justify-content: flex-start;
+    transform: none;
+    padding: 10px 15px;
+  }
+  
+  .section-tab.active {
+    transform: none;
+  }
+  
+  .section-title-display {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+  
+  .patient-info {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .patient-field {
+    justify-content: space-between;
+    margin: 0;
+  }
+  
+  .chart-main {
+    flex-direction: column;
+  }
+  
+  .scales-section {
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid #333;
+  }
+  
+  .scales-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .chart-grid {
+    height: 180px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+
+  /* Responsive para sección 3 */
+  .section3-hours-header {
+    font-size: 9px;
+  }
+  
+  .hour-cell-s3 {
+    padding: 6px 1px;
+    font-size: 9px;
+    min-height: 30px;
+  }
+  
+  .balance-cell-header {
+    padding: 6px 1px;
+    font-size: 8px;
+    min-height: 30px;
+  }
+  
+  .data-cell-s3 {
+    min-height: 35px;
+  }
+  
+  .data-cell-s3 input {
+    font-size: 9px;
+    padding: 1px 2px;
+  }
+  
+  /* En móvil, forzar vista compacta */
+  .main-container {
+    /* Siempre compacta en móvil */
+  }
+  
+  /* Ocultar botón de toggle en móvil muy pequeño */
+  @media (max-width: 480px) {
+    .view-controls {
+      display: none;
+    }
+    
+    .main-container {
+      /* Forzar vista compacta en móviles pequeños */
+    }
+    
+    .section3-hours-header {
+      grid-template-columns: repeat(24, 1fr) 60px; /* Balance más pequeño en móvil */
+    }
+    
+    .section3-data-row {
+      grid-template-columns: repeat(24, 1fr) 60px;
+    }
+    
+    .balance-cell-header {
+      font-size: 7px;
+    }
+  }
+}
 
 /* ========================== */
 /* SECCIÓN 4: INGRESOS Y NUTRICIÓN */
@@ -1934,637 +2725,3 @@ body {
 /* SECCIÓN 5: MEDICACIÓN */
 /* ========================== */
 /* Estilos específicos para la sección 5 se añadirán aquí */
-
-
-/* ========================== */
-/* RESPONSIVE DESIGN */
-/* ========================== */
-
-/* ====== TABLET (768px - 1024px) ====== */
-@media (max-width: 1024px) and (min-width: 769px) {
-  body {
-    padding: 8px;
-    font-size: 11px;
-  }
-  
-  /* Controles de vista en tablet */
-  .view-controls {
-    margin-bottom: 12px;
-  }
-  
-  .toggle-view-btn {
-    padding: 9px 18px;
-    font-size: 11px;
-  }
-  
-  .toggle-icon {
-    font-size: 15px;
-  }
-  
-  .toggle-text {
-    font-size: 10px;
-  }
-  
-  /* Navegación de secciones en tablet */
-  .section-navigation {
-    flex-wrap: wrap;
-    gap: 3px;
-  }
-  
-  .section-tab {
-    flex: 1;
-    min-width: 150px;
-    padding: 10px 15px 6px 12px;
-    font-size: 13px;
-  }
-  
-  .section-number {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-  }
-  
-  .section-title {
-    font-size: 13px;
-  }
-  
-  /* Título de sección en tablet */
-  .section-title-display {
-    font-size: 15px;
-    padding: 13px 22px;
-  }
-  
-  /* Información del paciente en tablet */
-  .patient-info {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 8px 12px;
-  }
-  
-  .patient-field {
-    margin: 0 5px;
-  }
-  
-  .patient-name input { width: 180px; }
-  .patient-date input { width: 75px; }
-  .patient-age input { width: 35px; }
-  .patient-history input { width: 70px; }
-  .patient-bed input { width: 35px; }
-  .patient-sheet input { width: 35px; }
-  
-  /* Gráfico en tablet */
-  .chart-grid {
-    height: 200px;
-  }
-  
-  /* Escalas en tablet - HABILITAR funcionalidad toggle */
-  .scales-section {
-    width: 90px;
-    padding: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  /* MOSTRAR botón toggle solo en tablets */
-  .scales-toggle {
-    display: flex;
-    right: -22px;
-    width: 22px;
-    height: 45px;
-    font-size: 12px;
-  }
-  
-  .scales-section.expanded {
-    width: 90px;
-    padding: 8px;
-  }
-  
-  .scales-grid {
-    font-size: 9px;
-  }
-  
-  .scale-title {
-    font-size: 8px;
-  }
-  
-  /* Sección 2 en tablet */
-  .hour-cell-s2 {
-    padding: 6px 1px;
-    font-size: 10px;
-    min-height: 30px;
-  }
-  
-  .section2-row {
-    min-height: 35px;
-  }
-  
-  .data-cell-secondary {
-    min-height: 35px;
-    padding: 1px;
-  }
-  
-  .data-cell-secondary input,
-  .data-cell-secondary select {
-    font-size: 9px;
-  }
-  
-  /* Modal en tablet */
-  .modal-content {
-    width: 400px;
-    margin: 12% auto;
-  }
-  
-  /* Acordeones en tablet */
-  .accordion-container {
-    max-width: 85vw;
-    max-height: 75vh;
-  }
-  
-  .accordion-title {
-    font-size: 17px;
-  }
-  
-  .medical-table-accordion th,
-  .medical-table-accordion td {
-    padding: 10px 6px;
-    font-size: 13px;
-  }
-}
-
-/* ====== MÓVIL (< 768px) ====== */
-@media (max-width: 768px) {
-  body {
-    padding: 5px;
-    font-size: 11px;
-  }
-  
-  /* Controles de vista en móvil */
-  .view-controls {
-    margin-bottom: 8px;
-  }
-  
-  .toggle-view-btn {
-    padding: 8px 15px;
-    font-size: 10px;
-  }
-  
-  .toggle-icon {
-    font-size: 14px;
-  }
-  
-  .toggle-text {
-    font-size: 9px;
-  }
-  
-  /* Navegación de secciones en móvil */
-  .section-navigation {
-    flex-direction: column;
-    gap: 2px;
-    margin-bottom: 8px;
-  }
-  
-  .section-tab {
-    width: 100%;
-    justify-content: flex-start;
-    transform: none;
-    padding: 12px 15px;
-    border-radius: 8px;
-  }
-  
-  .section-tab.active {
-    transform: none;
-  }
-  
-  .section-number {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-  }
-  
-  .section-title {
-    font-size: 12px;
-  }
-  
-  /* Título de sección en móvil */
-  .section-title-display {
-    font-size: 14px;
-    padding: 10px 15px;
-    gap: 8px;
-  }
-  
-  /* Información del paciente en móvil */
-  .patient-info {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
-    padding: 8px;
-  }
-  
-  .patient-field {
-    justify-content: space-between;
-    margin: 0;
-    padding: 4px 0;
-  }
-  
-  .patient-field input {
-    font-size: 11px;
-    height: 22px;
-    padding: 3px;
-  }
-  
-  .patient-name input { width: 100%; max-width: 200px; }
-  .patient-date input { width: 100px; }
-  .patient-age input { width: 60px; }
-  .patient-history input { width: 80px; }
-  .patient-bed input { width: 60px; }
-  .patient-sheet input { width: 60px; }
-  
-  /* Gráfico principal en móvil */
-  .chart-main {
-    flex-direction: column;
-  }
-  
-  /* Ocultar escalas completamente en móvil */
-  .scales-section {
-    display: none;
-  }
-  
-  .scales-toggle {
-    display: none;
-  }
-  
-  /* Ajustar área de gráfico para ocupar todo el ancho */
-  .chart-area {
-    width: 100%;
-  }
-  
-  .chart-grid {
-    height: 160px;
-  }
-  
-  .hours-header {
-    font-size: 9px;
-  }
-  
-  .hour-cell {
-    padding: 3px 0;
-    font-size: 9px;
-  }
-  
-  /* Tooltip en móvil */
-  .vital-signs-tooltip {
-    font-size: 10px;
-    padding: 6px 8px;
-    min-width: 120px;
-  }
-  
-  .tooltip-row {
-    min-width: 100px;
-  }
-  
-  /* Sección 2 en móvil */
-  .section2-container {
-    border: 1px solid #333;
-  }
-  
-  .hour-cell-s2 {
-    padding: 4px 1px;
-    font-size: 9px;
-    min-height: 28px;
-  }
-  
-  .section2-row {
-    min-height: 32px;
-  }
-  
-  .section2-label {
-    min-height: 32px;
-    padding: 0 8px;
-  }
-  
-  .label-text {
-    font-size: 10px;
-  }
-  
-  .data-cell-secondary {
-    min-height: 32px;
-    padding: 1px;
-  }
-  
-  .data-cell-secondary input,
-  .data-cell-secondary select {
-    font-size: 8px;
-    padding: 1px 2px;
-  }
-  
-  /* EVA en móvil */
-  .eva-select,
-  .rass-select {
-    height: 22px;
-    font-size: 7px;
-  }
-  
-  .eva-select:hover,
-  .rass-select:hover {
-    font-size: 9px;
-    transform: scale(1.05);
-  }
-  
-  /* Insulina en móvil */
-  .insulin-value {
-    height: 16px;
-    font-size: 8px;
-  }
-  
-  .insulin-type {
-    height: 16px;
-    font-size: 8px;
-  }
-  
-  .insulin-select {
-    height: 16px;
-    font-size: 8px;
-  }
-  
-  .insulin-message {
-    font-size: 7px;
-    padding: 2px 4px;
-    top: -20px;
-  }
-  
-  /* Iconos de información en móvil */
-  .info-icon {
-    width: 10px;
-    height: 10px;
-    font-size: 8px;
-    top: 1px;
-    right: 1px;
-  }
-  
-  /* Modal en móvil */
-  .modal-content {
-    width: 95%;
-    margin: 5% auto;
-    padding: 15px;
-  }
-  
-  .form-field {
-    margin-bottom: 12px;
-  }
-  
-  .form-field label {
-    font-size: 12px;
-    margin-bottom: 4px;
-  }
-  
-  .form-field input {
-    font-size: 14px;
-    padding: 8px;
-    height: auto;
-  }
-  
-  .button-group {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .btn {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-  
-  /* Modal de imágenes en móvil */
-  .image-modal-content {
-    margin: 2% auto;
-    max-width: 98%;
-    max-height: 95%;
-    padding: 8px;
-  }
-  
-  .image-close {
-    top: 2px;
-    right: 5px;
-    font-size: 20px;
-    width: 25px;
-    height: 25px;
-  }
-  
-  #imageModalTitle {
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-  
-  #modalImage {
-    max-height: 80vh;
-  }
-  
-  /* Acordeones en móvil */
-  .accordion-container {
-    max-width: 98vw;
-    max-height: 90vh;
-    border-radius: 8px;
-  }
-  
-  .accordion-header {
-    padding: 12px 15px;
-  }
-  
-  .accordion-title {
-    font-size: 16px;
-  }
-  
-  .accordion-close {
-    font-size: 20px;
-    width: 25px;
-    height: 25px;
-  }
-  
-  .accordion-button {
-    font-size: 14px;
-    padding: 12px 15px;
-  }
-  
-  .accordion-panel.active {
-    padding: 15px;
-  }
-  
-  .medical-table-accordion {
-    font-size: 11px;
-  }
-  
-  .medical-table-accordion th,
-  .medical-table-accordion td {
-    padding: 6px 4px;
-    font-size: 10px;
-  }
-  
-  .score-ranges {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  
-  .score-range {
-    padding: 6px;
-    font-size: 11px;
-  }
-  
-  /* En móvil, forzar vista compacta */
-  .main-container.extended-view {
-    /* Permitir vista extendida pero con ajustes */
-  }
-  
-  .main-container.extended-view .content-section {
-    margin-bottom: 15px;
-  }
-}
-
-/* ====== MÓVIL PEQUEÑO (< 480px) ====== */
-@media (max-width: 480px) {
-  body {
-    padding: 3px;
-    font-size: 10px;
-  }
-  
-  /* Ocultar botón de toggle en móvil muy pequeño */
-  .view-controls {
-    display: none;
-  }
-  
-  /* Forzar vista compacta en móviles muy pequeños */
-  .main-container {
-    /* Siempre vista compacta */
-  }
-  
-  .main-container.extended-view {
-    /* Forzar compacta incluso si está en extendida */
-  }
-  
-  /* Navegación más compacta */
-  .section-tab {
-    padding: 10px 12px;
-    font-size: 11px;
-  }
-  
-  .section-title {
-    font-size: 11px;
-  }
-  
-  /* Información del paciente más compacta */
-  .patient-field {
-    padding: 3px 0;
-    font-size: 10px;
-  }
-  
-  .patient-field strong {
-    font-size: 10px;
-  }
-  
-  .patient-field input {
-    font-size: 10px;
-    height: 20px;
-  }
-  
-  /* Escalas más pequeñas */
-  .scales-grid {
-    font-size: 7px;
-  }
-  
-  .scale-title {
-    font-size: 6px;
-  }
-  
-  .scale-value {
-    height: 12px;
-    font-size: 6px;
-  }
-  
-  /* Gráfico más pequeño */
-  .chart-grid {
-    height: 140px;
-  }
-  
-  .hour-cell {
-    padding: 2px 0;
-    font-size: 8px;
-  }
-  
-  /* Sección 2 más compacta */
-  .hour-cell-s2 {
-    padding: 3px 0;
-    font-size: 8px;
-    min-height: 24px;
-  }
-  
-  .section2-row {
-    min-height: 28px;
-  }
-  
-  .data-cell-secondary {
-    min-height: 28px;
-  }
-  
-  .data-cell-secondary input,
-  .data-cell-secondary select {
-    font-size: 7px;
-  }
-  
-  /* Modal más pequeño */
-  .modal-content {
-    width: 98%;
-    margin: 2% auto;
-    padding: 12px;
-  }
-  
-  .form-field input {
-    font-size: 12px;
-    padding: 6px;
-  }
-  
-  /* Acordeones más pequeños */
-  .accordion-container {
-    max-width: 99vw;
-    max-height: 95vh;
-  }
-  
-  .accordion-title {
-    font-size: 14px;
-  }
-  
-  .medical-table-accordion {
-    font-size: 9px;
-  }
-  
-  .medical-table-accordion th,
-  .medical-table-accordion td {
-    padding: 4px 2px;
-    font-size: 8px;
-  }
-}
-
-/* ====== LANDSCAPE EN MÓVIL ====== */
-@media (max-width: 768px) and (orientation: landscape) {
-  .chart-grid {
-    height: 120px;
-  }
-  
-  .modal-content {
-    margin: 2% auto;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  
-  .accordion-container {
-    max-height: 95vh;
-  }
-  
-  /* Información del paciente en una fila en landscape */
-  .patient-info {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-  
-  .patient-field {
-    min-width: 120px;
-  }
-}
