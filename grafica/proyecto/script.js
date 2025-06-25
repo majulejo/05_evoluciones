@@ -110,7 +110,7 @@ function initChart() {
     if (i === 0 || i === 24) {
       line.classList.add("border-line");
       line.style.backgroundColor = "#333";
-      line.style.width = "2px";
+      line.style.width = "0px";
       line.style.zIndex = "2";
     }
 

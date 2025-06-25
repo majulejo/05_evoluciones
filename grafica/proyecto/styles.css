@@ -12,10 +12,11 @@ INSTRUCCIONES DE INSTALACIÓN:
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline: none;
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 12px;
   background-color: #f5f5f5;
   padding: 10px;
@@ -245,7 +246,6 @@ body {
 /* SECCIÓN 1: DATOS Y CONSTANTES */
 /* ========================== */
 .chart-container {
-  background-color: white;
   border: 2px solid #e0e0e0;
   border-radius: 0 10px 10px 10px;
   border-top: none;
@@ -301,6 +301,29 @@ body {
 .patient-sheet input { width: 40px; text-align: center; }
 .patient-peso input { width: 60px; text-align: center; }
 .patient-ingreso input { width: 140px; font-size: 10px; }
+
+
+/* ASPECTO DE LOS INPUTS DE SECCIÓN 1 */
+
+.patient-name input ,
+.patient-date input ,
+.patient-age input ,
+.patient-history input ,
+.patient-bed input ,
+.patient-sheet input ,
+.patient-peso input ,
+.patient-ingreso input { 
+  background-color: inherit;;
+  border:none;
+  border-bottom: 1px solid #333; 
+  font-size: 11px;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+    color: #444; /* Gris oscuro */
+
+}
+
+
 
 /* Sección principal de gráfica */
 .chart-main {
@@ -423,6 +446,9 @@ body {
   border: 1px solid #ddd;
   overflow: hidden;
   display: block;
+  padding: 0; /* AÑADIDO: eliminar cualquier padding */
+  margin: 0; /* AÑADIDO: eliminar cualquier margin */
+  box-sizing: border-box; /* AÑADIDO: asegurar que el border esté incluido */
 }
 
 /* Líneas horizontales más visibles y mejor espaciadas */
@@ -456,6 +482,16 @@ body {
   z-index: 2;
 }
 
+/* CORRECCIÓN ESPECÍFICA: Forzar que la primera línea vertical esté en left: 0 */
+.vertical-line:first-of-type {
+  left: 0 !important;
+}
+
+/* CORRECCIÓN ESPECÍFICA: Forzar que la última línea vertical esté en right: 0 */
+.vertical-line:last-of-type {
+  right: 0 !important;
+  left: auto !important;
+}/* Mejorar el espaciado de la cuadrícula */
 
 
 /* POSICIONAMIENTO ESPECÍFICO DE LÍNEAS HORIZONTALES */
