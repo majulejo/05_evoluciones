@@ -199,22 +199,135 @@ function initChart() {
 // ========================== //
 
 document.addEventListener("DOMContentLoaded", function () {
-  initializeApp();
+  // Esperar un poco para que otros scripts se carguen
+  setTimeout(() => {
+    initializeApp(); // Cambiar de initializePatientDataSafely() a initializeApp()
+  }, 100);
 });
 
-function initializeApp() {
-  setupViewToggle();
-  setupSectionNavigation();
-  setupInitialView();
-  loadPatientDataInChart();
-  initializeSection1();
-  initModal();
-  initImageModal();
-  setupResponsive();
-  initChart();
-  setupPatientDataSyncEvents();
+function animateButtonAction(actionType, callback) {
+  // Función básica para animación de botones
+  if (callback && typeof callback === "function") {
+    setTimeout(callback, 200);
+  }
+}
 
-  console.log("Aplicación inicializada correctamente");
+function verifyPageElements() {
+  const requiredElements = [
+    "patientName",
+    "patientAge",
+    "patientPeso",
+    "patientHistory",
+    "patientBed",
+    "patientIngreso",
+    "patientDate",
+    "patientSheet",
+  ];
+
+  const found = {};
+  const missing = [];
+
+  requiredElements.forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      found[id] = element.tagName;
+    } else {
+      missing.push(id);
+    }
+  });
+
+  console.log("Elementos encontrados:", found);
+  if (missing.length > 0) {
+    console.warn("Elementos faltantes:", missing);
+  }
+
+  return { found, missing };
+}
+
+// Hacer funciones disponibles globalmente
+if (typeof window !== "undefined") {
+  window.saveCurrentPatientDataFromChart = saveCurrentPatientDataFromChart;
+  window.loadPatientDataInChart = loadPatientDataInChart;
+  window.hasUnsavedChanges = hasUnsavedChanges;
+  window.updateSheetField = updateSheetField;
+  window.calculateClinicalSheet = calculateClinicalSheet;
+  window.verifyPageElements = verifyPageElements;
+}
+
+function initializeApp() {
+  try {
+    setupViewToggle();
+    setupSectionNavigation();
+    setupInitialView();
+
+    // Cargar datos del paciente de forma segura
+    loadPatientDataInChart();
+
+    initializeSection1();
+    initModal();
+    initImageModal();
+    setupResponsive();
+    initChart(); // CRÍTICO: Esta función debe ejecutarse
+
+    // Configurar eventos de sincronización
+    setupPatientDataSyncEvents();
+
+    console.log("Aplicación inicializada correctamente");
+  } catch (error) {
+    console.error("Error en inicialización de la aplicación:", error);
+    // Intentar al menos inicializar el gráfico
+    try {
+      initChart();
+    } catch (chartError) {
+      console.error("Error crítico al inicializar gráfico:", chartError);
+    }
+  }
+}
+
+function forceVerticalLinesVisibility() {
+  setTimeout(() => {
+    const chartGrid = document.getElementById("chartGrid");
+    if (!chartGrid) return;
+
+    // Verificar líneas verticales existentes
+    const verticalLines = chartGrid.querySelectorAll(".vertical-line");
+    console.log(`Líneas verticales encontradas: ${verticalLines.length}`);
+
+    // Si no hay líneas verticales, recrearlas
+    if (verticalLines.length === 0) {
+      console.log("Recreando líneas verticales...");
+
+      for (let i = 0; i <= 24; i++) {
+        const line = document.createElement("div");
+        line.className = "vertical-line";
+        line.style.position = "absolute";
+        line.style.top = "0";
+        line.style.bottom = "0";
+        line.style.width = "1px";
+        line.style.backgroundColor = "#999";
+        line.style.pointerEvents = "none";
+        line.style.zIndex = "1";
+        line.style.left = `${(i / 24) * 100}%`;
+        line.style.display = "block";
+        line.style.opacity = "1";
+
+        if (i === 0 || i === 24) {
+          line.classList.add("border-line");
+          line.style.backgroundColor = "#333";
+          line.style.zIndex = "2";
+        }
+
+        chartGrid.appendChild(line);
+      }
+      console.log("Líneas verticales recreadas");
+    }
+    // Forzar visibilidad de todas las líneas
+    verticalLines.forEach((line, index) => {
+      line.style.display = "block";
+      line.style.opacity = "1";
+      line.style.visibility = "visible";
+    });
+  }, 500);
 }
 
 // ========================== //
@@ -417,49 +530,350 @@ function goToPatientData() {
 }
 
 function saveCurrentData() {
-  try {
-    saveCurrentPatientDataFromChart();
+  return new Promise((resolve, reject) => {
+    try {
+      // Guardar datos del paciente
+      saveCurrentPatientDataFromChart();
 
-    // Mostrar confirmación visual
-    const button = event.target.closest(".nav-button");
-    const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-check"></i> Guardado';
-    button.style.backgroundColor = "#27ae60";
+      // Guardar datos adicionales si existen
+      const selectedBed = localStorage.getItem("selectedBed");
+      if (selectedBed) {
+        if (typeof vitalSigns !== "undefined") {
+          localStorage.setItem(
+            `vitalSigns_${selectedBed}`,
+            JSON.stringify(vitalSigns)
+          );
+        }
+        if (typeof section2Data !== "undefined") {
+          localStorage.setItem(
+            `section2Data_${selectedBed}`,
+            JSON.stringify(section2Data)
+          );
+        }
+        if (typeof section3Data !== "undefined") {
+          localStorage.setItem(
+            `section3Data_${selectedBed}`,
+            JSON.stringify(section3Data)
+          );
+        }
+      }
 
-    setTimeout(() => {
-      button.innerHTML = originalText;
-      button.style.backgroundColor = "";
-    }, 2000);
-  } catch (error) {
-    alert("Error al guardar los datos. Inténtalo de nuevo.");
-    console.error("Error saving data:", error);
-  }
+      console.log("Todos los datos guardados correctamente");
+      resolve();
+    } catch (error) {
+      console.error("Error al guardar datos:", error);
+      reject(error);
+    }
+  });
 }
+// ========================== //
+// FUNCIÓN DE IMPRESIÓN CORREGIDA //
+// ========================== //
+
+// Reemplazar la función printChart existente con esta versión mejorada:
 
 function printChart() {
-  // Ocultar botones de navegación para la impresión
-  const navContainer = document.querySelector(".navigation-container");
-  const viewControls = document.querySelector(".view-controls");
-  const sectionNav = document.querySelector(".section-navigation");
+  animateButtonAction("print", () => {
+    try {
+      // Guardar antes de imprimir
+      saveCurrentData();
 
-  if (navContainer) navContainer.style.display = "none";
-  if (viewControls) viewControls.style.display = "none";
-  if (sectionNav) sectionNav.style.display = "none";
+      setTimeout(() => {
+        // Forzar actualización del gráfico antes de imprimir
+        updateChart();
 
-  // Asegurar vista extendida para impresión
-  if (currentView === "compact") {
-    switchView("extended");
-  }
+        // Asegurar que todos los elementos gráficos estén visibles
+        forceGraphicVisibility();
 
-  setTimeout(() => {
-    window.print();
+        // Ocultar elementos de navegación
+        const elementsToHide = [
+          ".footer-navigation",
+          ".floating-nav",
+          ".view-controls",
+          ".section-navigation",
+        ];
 
-    // Restaurar elementos después de imprimir
-    if (navContainer) navContainer.style.display = "";
-    if (viewControls) viewControls.style.display = "";
-    if (sectionNav) sectionNav.style.display = "";
-  }, 500);
+        const hiddenElements = [];
+        elementsToHide.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((el) => {
+            hiddenElements.push({
+              element: el,
+              originalDisplay: el.style.display,
+            });
+            el.style.display = "none";
+          });
+        });
+
+        // Asegurar vista extendida para mejor impresión
+        const wasCompact =
+          typeof currentView !== "undefined" && currentView === "compact";
+        if (wasCompact && typeof switchView === "function") {
+          switchView("extended");
+        }
+
+        // Esperar un momento para que se rendericen los cambios
+        setTimeout(() => {
+          // Aplicar estilos específicos para impresión
+          applyPrintStyles();
+
+          // Imprimir
+          window.print();
+
+          // Restaurar elementos después de imprimir
+          setTimeout(() => {
+            hiddenElements.forEach((item) => {
+              item.element.style.display = item.originalDisplay;
+            });
+
+            // Restaurar vista si era compacta
+            if (wasCompact && typeof switchView === "function") {
+              setTimeout(() => switchView("compact"), 100);
+            }
+
+            // Remover estilos de impresión
+            removePrintStyles();
+          }, 1000);
+        }, 500);
+      }, 300);
+    } catch (error) {
+      console.error("Error al imprimir:", error);
+      alert("Error al preparar la impresión. Inténtalo de nuevo.");
+    }
+  });
 }
+
+// ========================== //
+// FUNCIONES AUXILIARES PARA IMPRESIÓN //
+// ========================== //
+
+function forceGraphicVisibility() {
+  // Forzar visibilidad de líneas de cuadrícula
+  document
+    .querySelectorAll(".horizontal-line, .vertical-line")
+    .forEach((line) => {
+      line.style.display = "block";
+      line.style.opacity = "1";
+      line.style.visibility = "visible";
+      line.style.backgroundColor = line.classList.contains("border-line")
+        ? "#333"
+        : "#999";
+    });
+
+  // Forzar visibilidad de puntos del gráfico
+  document.querySelectorAll(".chart-point").forEach((point) => {
+    point.style.display = "block";
+    point.style.opacity = "1";
+    point.style.visibility = "visible";
+    point.style.position = "absolute";
+    point.style.zIndex = "10";
+
+    // Asegurar colores específicos
+    if (point.classList.contains("resp-point")) {
+      point.style.backgroundColor = "#000";
+      point.style.borderColor = "#000";
+    } else if (point.classList.contains("temp-point")) {
+      point.style.backgroundColor = "#dc3545";
+      point.style.borderColor = "#dc3545";
+    } else if (point.classList.contains("pulse-point")) {
+      point.style.backgroundColor = "#0d6efd";
+      point.style.borderColor = "#0d6efd";
+    } else if (point.classList.contains("bp-point")) {
+      point.style.backgroundColor = "#198754";
+      point.style.borderColor = "#198754";
+    }
+  });
+
+  // Forzar visibilidad de líneas conectoras
+  document.querySelectorAll(".chart-line").forEach((line) => {
+    line.style.display = "block";
+    line.style.opacity = "1";
+    line.style.visibility = "visible";
+    line.style.position = "absolute";
+    line.style.zIndex = "5";
+
+    // Asegurar colores específicos
+    if (line.classList.contains("resp-line")) {
+      line.style.backgroundColor = "#000";
+    } else if (line.classList.contains("temp-line")) {
+      line.style.backgroundColor = "#dc3545";
+    } else if (line.classList.contains("pulse-line")) {
+      line.style.backgroundColor = "#0d6efd";
+    } else if (line.classList.contains("bp-line")) {
+      line.style.backgroundColor = "#198754";
+    }
+  });
+
+  // Forzar visibilidad de celdas del gráfico con datos
+  document.querySelectorAll(".grid-cell.has-data").forEach((cell) => {
+    cell.style.backgroundColor = "rgba(0, 102, 204, 0.1)";
+  });
+
+  console.log("Elementos gráficos forzados a ser visibles para impresión");
+}
+
+function applyPrintStyles() {
+  // Crear un estilo temporal para impresión
+  const printStyle = document.createElement("style");
+  printStyle.id = "temp-print-styles";
+  printStyle.innerHTML = `
+    @media print {
+      .chart-grid {
+        background: white !important;
+        border: 2px solid #000 !important;
+      }
+      
+      .chart-point,
+      .chart-line,
+      .horizontal-line,
+      .vertical-line {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      .main-container {
+        padding-right: 0 !important;
+      }
+      
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
+  `;
+  document.head.appendChild(printStyle);
+}
+
+function removePrintStyles() {
+  const tempStyle = document.getElementById("temp-print-styles");
+  if (tempStyle) {
+    tempStyle.remove();
+  }
+}
+
+// ========================== //
+// FUNCIÓN ALTERNATIVA DE IMPRESIÓN (BACKUP) //
+// ========================== //
+
+function printChartAlternative() {
+  // Método alternativo si el principal no funciona
+  try {
+    // Crear una nueva ventana con el contenido
+    const printWindow = window.open("", "_blank");
+
+    // Obtener el HTML de la gráfica
+    const chartContent = document.querySelector(".main-container").innerHTML;
+
+    // Crear el HTML completo para la nueva ventana
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Gráfica UCI - Impresión</title>
+        <link rel="stylesheet" href="styles.css">
+        <style>
+          body { margin: 0; padding: 20px; background: white; }
+          .footer-navigation, .floating-nav, .view-controls, .section-navigation { display: none !important; }
+          .chart-point, .chart-line { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        </style>
+      </head>
+      <body>
+        ${chartContent}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+              window.close();
+            }, 1000);
+          };
+        </script>
+      </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+  } catch (error) {
+    console.error("Error en impresión alternativa:", error);
+    alert("Error al imprimir. Intente usar Ctrl+P manualmente.");
+  }
+}
+
+// ========================== //
+// MEJORAS EN LA FUNCIÓN updateChart PARA IMPRESIÓN //
+// ========================== //
+
+// Agregar esta función mejorada al script.js existente o modificar la existente:
+
+function updateChartForPrint() {
+  // Versión específica de updateChart optimizada para impresión
+  updateChart(); // Llamar a la función normal primero
+
+  // Luego aplicar mejoras específicas para impresión
+  setTimeout(() => {
+    document.querySelectorAll(".chart-point").forEach((point) => {
+      point.style.width = "8px";
+      point.style.height = "8px";
+      point.style.border = "2px solid";
+      point.style.borderRadius = "50%";
+    });
+
+    document.querySelectorAll(".chart-line").forEach((line) => {
+      if (line.classList.contains("bp-line")) {
+        line.style.width = "3px";
+      } else {
+        line.style.height = "3px";
+      }
+    });
+  }, 100);
+}
+
+// ========================== //
+// DETECCIÓN DE IMPRESIÓN //
+// ========================== //
+
+// Detectar cuando se va a imprimir (Ctrl+P o menú)
+window.addEventListener("beforeprint", function () {
+  console.log("Preparando para impresión...");
+  forceGraphicVisibility();
+  applyPrintStyles();
+});
+
+window.addEventListener("afterprint", function () {
+  console.log("Impresión completada");
+  removePrintStyles();
+});
+
+// ========================== //
+// FUNCIÓN DE DEBUG PARA VERIFICAR ELEMENTOS //
+// ========================== //
+
+function debugPrintElements() {
+  console.log("=== DEBUG ELEMENTOS DE IMPRESIÓN ===");
+
+  const points = document.querySelectorAll(".chart-point");
+  const lines = document.querySelectorAll(".chart-line");
+  const gridLines = document.querySelectorAll(
+    ".horizontal-line, .vertical-line"
+  );
+
+  console.log(`Puntos encontrados: ${points.length}`);
+  console.log(`Líneas encontradas: ${lines.length}`);
+  console.log(`Líneas de cuadrícula: ${gridLines.length}`);
+
+  points.forEach((point, index) => {
+    const styles = window.getComputedStyle(point);
+    console.log(
+      `Punto ${index}: visible=${styles.display}, opacity=${styles.opacity}, bg=${styles.backgroundColor}`
+    );
+  });
+
+  return {
+    points: points.length,
+    lines: lines.length,
+    gridLines: gridLines.length,
+  };
+}
+
+// Llamar esta función en consola si hay problemas: debugPrintElements()
 
 // ========================== //
 // SISTEMA DE NAVEGACIÓN      //
@@ -475,34 +889,30 @@ function showNavigationTooltip(element, message) {
   element.title = message;
 }
 
-// Función para verificar si hay cambios no guardados
 function hasUnsavedChanges() {
   const selectedBed = localStorage.getItem("selectedBed");
   if (!selectedBed) return false;
 
-  const currentData = {
-    name: document.getElementById("patientName")?.value || "",
-    age: document.getElementById("patientAge")?.value || "",
-    weight: document.getElementById("patientPeso")?.value || "",
-    history: document.getElementById("patientHistory")?.value || "",
-    bed: document.getElementById("patientBed")?.value || "",
-    admission: document.getElementById("patientIngreso")?.value || "",
-  };
+  try {
+    const currentData = {
+      name: getElementValue("patientName", ""),
+      age: getElementValue("patientAge", ""),
+      weight: getElementValue("patientPeso", ""),
+      history: getElementValue("patientHistory", ""),
+      bed: getElementValue("patientBed", ""),
+      admission: getElementValue("patientIngreso", ""),
+    };
 
-  const savedData = loadPatientData(selectedBed);
-
-  return JSON.stringify(currentData) !== JSON.stringify(savedData);
-}
-
-// Prevenir pérdida de datos al salir
-window.addEventListener("beforeunload", function (e) {
-  if (hasUnsavedChanges()) {
-    e.preventDefault();
-    e.returnValue =
-      "¿Estás seguro de que quieres salir? Los cambios no guardados se perderán.";
+    const savedData =
+      typeof loadPatientData === "function"
+        ? loadPatientData(selectedBed)
+        : null;
+    return JSON.stringify(currentData) !== JSON.stringify(savedData || {});
+  } catch (error) {
+    console.warn("Error al verificar cambios no guardados:", error);
+    return false;
   }
-});
-
+}
 // ========================== //
 // SECCIÓN 1: DATOS Y CONSTANTES //
 // ========================== //
@@ -514,26 +924,23 @@ function initializeSection1() {
 }
 
 function updateLogicalDateInput() {
-  const now = new Date(); // Fecha y hora actual
-  let logicalDate = new Date(now); // Copia para modificar
+  try {
+    const now = new Date();
+    let logicalDate = new Date(now);
 
-  // Determinamos si está antes de las 08:00
-  if (now.getHours() < 8) {
-    // Pertenece al día anterior
-    logicalDate.setDate(now.getDate() - 1);
-  }
+    // Si es antes de las 8:00, pertenece al día anterior
+    if (now.getHours() < 8) {
+      logicalDate.setDate(now.getDate() - 1);
+    }
 
-  // Formato ISO para <input type="date"> => YYYY-MM-DD
-  const year = logicalDate.getFullYear();
-  const month = String(logicalDate.getMonth() + 1).padStart(2, "0"); // Mes empieza en 0
-  const day = String(logicalDate.getDate()).padStart(2, "0");
+    const year = logicalDate.getFullYear();
+    const month = String(logicalDate.getMonth() + 1).padStart(2, "0");
+    const day = String(logicalDate.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
 
-  const formattedDate = `${year}-${month}-${day}`;
-
-  // Actualizamos el input de fecha
-  const dateInput = document.getElementById("patientDate");
-  if (dateInput && !dateInput.value) {
-    dateInput.value = formattedDate;
+    setElementValue("patientDate", formattedDate);
+  } catch (error) {
+    console.error("Error al actualizar fecha lógica:", error);
   }
 }
 
@@ -557,32 +964,55 @@ function getDefaultIngresoDate() {
 function calculateClinicalSheet(ingresoDateStr) {
   if (!ingresoDateStr) return 1;
 
-  const now = new Date();
-  const ingreso = new Date(ingresoDateStr);
+  try {
+    const now = new Date();
+    const ingreso = new Date(ingresoDateStr);
 
-  const logicalNow = getLogicalDate(now);
-  const logicalIngreso = getLogicalDate(ingreso);
+    // Validar fechas
+    if (isNaN(now.getTime()) || isNaN(ingreso.getTime())) {
+      console.warn("Fechas inválidas para cálculo de hoja clínica");
+      return 1;
+    }
 
-  const diffDays = Math.floor(
-    (logicalNow - logicalIngreso) / (1000 * 60 * 60 * 24)
-  );
-  return diffDays + 1; // Hoja empieza en 1
+    // Aplicar lógica de día clínico (cambia a las 8:00)
+    const logicalNow = new Date(now);
+    if (now.getHours() < 8) {
+      logicalNow.setDate(now.getDate() - 1);
+    }
+
+    const logicalIngreso = new Date(ingreso);
+    if (ingreso.getHours() < 8) {
+      logicalIngreso.setDate(ingreso.getDate() - 1);
+    }
+
+    const diffDays = Math.floor(
+      (logicalNow - logicalIngreso) / (1000 * 60 * 60 * 24)
+    );
+    return Math.max(1, diffDays + 1);
+  } catch (error) {
+    console.error("Error al calcular hoja clínica:", error);
+    return 1;
+  }
 }
 
 function updateSheetField() {
-  const ingresoInput = document.getElementById("patientIngreso");
-  const sheetInput = document.getElementById("patientSheet");
+  try {
+    const ingresoInput = document.getElementById("patientIngreso");
+    const sheetInput = document.getElementById("patientSheet");
 
-  if (!ingresoInput || !sheetInput) return;
+    if (!ingresoInput || !sheetInput) {
+      console.warn("Campos de ingreso o hoja no encontrados");
+      return;
+    }
 
-  const ingresoDate = ingresoInput.value;
-  const sheetNumber = calculateClinicalSheet(ingresoDate);
+    const ingresoDate = ingresoInput.value;
+    if (!ingresoDate) return;
 
-  if (sheetNumber !== undefined && sheetNumber > 0) {
+    const sheetNumber = calculateClinicalSheet(ingresoDate);
     sheetInput.value = sheetNumber;
     sheetInput.readOnly = true;
-  } else {
-    sheetInput.value = "";
+  } catch (error) {
+    console.error("Error al actualizar campo de hoja:", error);
   }
 }
 
@@ -2905,79 +3335,195 @@ function loadPatientDataInChart() {
   const selectedBed = localStorage.getItem("selectedBed");
 
   if (!selectedBed) {
-    console.log("No hay cama seleccionada, redirigiendo...");
-    window.location.href = "index.html";
+    console.log("No hay cama seleccionada");
     return;
   }
 
-  const patientData = loadPatientData(selectedBed);
+  try {
+    const patientData = loadPatientData(selectedBed);
 
-  if (patientData) {
-    if (patientData.name)
-      document.getElementById("patientName").value = patientData.name;
-    if (patientData.age)
-      document.getElementById("patientAge").value = patientData.age;
-    if (patientData.weight)
-      document.getElementById("patientPeso").value = patientData.weight;
-    if (patientData.history)
-      document.getElementById("patientHistory").value = patientData.history;
-    if (patientData.bed)
-      document.getElementById("patientBed").value = patientData.bed;
-    if (patientData.admission)
-      document.getElementById("patientIngreso").value = patientData.admission;
+    if (patientData) {
+      // Cargar datos de forma segura
+      setElementValue("patientName", patientData.name);
+      setElementValue("patientAge", patientData.age);
+      setElementValue("patientPeso", patientData.weight);
+      setElementValue("patientHistory", patientData.history);
+      setElementValue("patientBed", patientData.bed);
+      setElementValue("patientIngreso", patientData.admission);
 
-    console.log("Datos del paciente cargados:", patientData);
-  } else {
-    document.getElementById("patientBed").value = selectedBed;
+      console.log("Datos del paciente cargados:", patientData);
+    } else {
+      // Establecer valores por defecto
+      setElementValue("patientBed", selectedBed);
+    }
+
+    // Actualizar fecha lógica y hoja clínica
+    updateLogicalDateInput();
+    updateSheetField();
+  } catch (error) {
+    console.error("Error al cargar datos del paciente:", error);
   }
-
-  updateLogicalDateInput();
-  updateSheetField();
 }
 
 function saveCurrentPatientDataFromChart() {
   const selectedBed = localStorage.getItem("selectedBed");
   if (!selectedBed) return;
 
-  const currentData = {
-    name: document.getElementById("patientName")?.value || "",
-    age: document.getElementById("patientAge")?.value || "",
-    weight: document.getElementById("patientPeso")?.value || "",
-    history: document.getElementById("patientHistory")?.value || "",
-    bed: document.getElementById("patientBed")?.value || "",
-    admission: document.getElementById("patientIngreso")?.value || "",
-  };
+  try {
+    const currentData = {
+      name: getElementValue("patientName", ""),
+      age: getElementValue("patientAge", ""),
+      weight: getElementValue("patientPeso", ""),
+      history: getElementValue("patientHistory", ""),
+      bed: getElementValue("patientBed", ""),
+      admission: getElementValue("patientIngreso", ""),
+    };
 
-  savePatientData(selectedBed, currentData);
-  console.log("Datos guardados desde gráfica:", currentData);
+    // Guardar en el sistema unificado
+    savePatientData(selectedBed, currentData);
+
+    console.log("Datos del paciente guardados desde gráfica:", currentData);
+  } catch (error) {
+    console.error("Error al guardar datos del paciente:", error);
+  }
+}
+
+function getElementValue(elementId, defaultValue = "") {
+  try {
+    const element = document.getElementById(elementId);
+    return element ? element.value : defaultValue;
+  } catch (error) {
+    console.warn(
+      `No se pudo obtener el valor del elemento: ${elementId}`,
+      error
+    );
+    return defaultValue;
+  }
+}
+
+function setElementValue(elementId, value) {
+  try {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.value = value || "";
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.warn(
+      `No se pudo establecer el valor del elemento: ${elementId}`,
+      error
+    );
+    return false;
+  }
 }
 
 function setupPatientDataSyncEvents() {
   const selectedBed = localStorage.getItem("selectedBed");
   if (!selectedBed) return;
 
-  const patientFields = [
-    "patientName",
-    "patientAge",
-    "patientPeso",
-    "patientHistory",
-    "patientIngreso",
-  ];
+  try {
+    const patientFields = [
+      "patientName",
+      "patientAge",
+      "patientPeso",
+      "patientHistory",
+      "patientIngreso",
+    ];
 
-  patientFields.forEach((fieldId) => {
-    const field = document.getElementById(fieldId);
-    if (field) {
-      field.addEventListener("blur", () => {
-        saveCurrentPatientDataFromChart();
-      });
-    }
-  });
+    patientFields.forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        // Remover listeners existentes para evitar duplicados
+        field.removeEventListener("blur", saveCurrentPatientDataFromChart);
+        field.addEventListener("blur", saveCurrentPatientDataFromChart);
 
-  const ingresoInput = document.getElementById("patientIngreso");
-  if (ingresoInput) {
-    ingresoInput.addEventListener("change", () => {
-      updateSheetField();
-      saveCurrentPatientDataFromChart();
+        field.removeEventListener("keypress", handleEnterKey);
+        field.addEventListener("keypress", handleEnterKey);
+      }
     });
+
+    // Evento especial para fecha de ingreso
+    const ingresoInput = document.getElementById("patientIngreso");
+    if (ingresoInput) {
+      ingresoInput.removeEventListener("change", handleIngresoChange);
+      ingresoInput.addEventListener("change", handleIngresoChange);
+    }
+  } catch (error) {
+    console.error("Error al configurar eventos de sincronización:", error);
   }
+}
+
+// 10. Funciones auxiliares para eventos
+function handleEnterKey(e) {
+  if (e.key === "Enter") {
+    saveCurrentPatientDataFromChart();
+  }
+}
+
+function handleIngresoChange() {
+  try {
+    updateSheetField();
+    saveCurrentPatientDataFromChart();
+  } catch (error) {
+    console.error("Error al manejar cambio de ingreso:", error);
+  }
+}
+
+// 11. Función de inicialización mejorada
+function initializePatientDataSafely() {
+  try {
+    // Verificar que estamos en la página correcta
+    if (!window.location.pathname.includes("grafica.html")) {
+      return;
+    }
+
+    // Cargar datos del paciente
+    loadPatientDataInChart();
+
+    // Configurar eventos de sincronización
+    setupPatientDataSyncEvents();
+
+    console.log("Sistema de datos del paciente inicializado correctamente");
+  } catch (error) {
+    console.error("Error en inicialización de datos del paciente:", error);
+  }
+}
+
+// 11. VERIFICACIÓN DE ELEMENTOS CRÍTICOS
+function verifyAndFixCriticalElements() {
+  // Verificar que el chartGrid existe
+  const chartGrid = document.getElementById("chartGrid");
+  if (!chartGrid) {
+    console.error("CRÍTICO: chartGrid no encontrado");
+    return false;
+  }
+
+  // Verificar líneas verticales
+  const verticalLines = chartGrid.querySelectorAll(".vertical-line");
+  if (verticalLines.length === 0) {
+    console.warn(
+      "ADVERTENCIA: No se encontraron líneas verticales, forzando recreación"
+    );
+    forceVerticalLinesVisibility();
+  }
+
+  return true;
+}
+
+// 12. LLAMAR VERIFICACIÓN DESPUÉS DE INICIALIZACIÓN
+setTimeout(() => {
+  verifyAndFixCriticalElements();
+}, 1000);
+
+// 13. HACER FUNCIONES DISPONIBLES GLOBALMENTE (corregir las existentes)
+if (typeof window !== "undefined") {
+  window.saveCurrentPatientDataFromChart = saveCurrentPatientDataFromChart;
+  window.loadPatientDataInChart = loadPatientDataInChart;
+  window.hasUnsavedChanges = hasUnsavedChanges;
+  window.updateSheetField = updateSheetField;
+  window.calculateClinicalSheet = calculateClinicalSheet;
+  window.verifyPageElements = verifyPageElements;
+  window.forceVerticalLinesVisibility = forceVerticalLinesVisibility;
+  window.verifyAndFixCriticalElements = verifyAndFixCriticalElements;
 }

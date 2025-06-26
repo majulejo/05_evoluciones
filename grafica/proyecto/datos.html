@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ingreso del Paciente | UCI</title>
+  <link rel="stylesheet" href="navigation.css" />
+
   <style>
     :root {
       --primary-color: #2c3e50;
@@ -320,7 +322,7 @@
           </div>
         </div>
 
-        <!-- Reemplazar la section .button-group actual -->
+        <!-- BOTONES PRINCIPALES (mantener en el formulario) -->
         <div class="button-group">
           <button type="submit" class="btn btn-success">
             <i class="fas fa-save"></i> Guardar Paciente
@@ -328,20 +330,54 @@
           <button type="button" class="btn btn-secondary" onclick="goToIndex()">
             <i class="fas fa-arrow-left"></i> Volver a Inicio
           </button>
-          <button type="button" class="btn btn-primary" onclick="goToChart()">
+          <button type="button" class="btn btn-primary" onclick="goToChart()" id="chartBtn">
             <i class="fas fa-chart-line"></i> Ir a Gráfica
           </button>
         </div>
 
-        <!-- Agregar navegación flotante -->
-        <div class="navigation-container">
-          <a href="index.html" class="nav-button secondary">
-            <i class="fas fa-home"></i> Inicio
-          </a>
-          <button class="nav-button primary" onclick="goToChart()" id="chartNavBtn">
-            <i class="fas fa-chart-line"></i> Gráfica
-          </button>
+        <!-- NAVEGACIÓN FLOTANTE -->
+        <div class="floating-nav" id="floatingNav">
+          <div class="floating-nav-item" onclick="goToIndex()" data-tooltip="Inicio">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="floating-nav-item" onclick="goToChart()" data-tooltip="Ir a Gráfica">
+            <i class="fas fa-chart-line"></i>
+          </div>
         </div>
+
+        <!-- BOTONES PRINCIPALES AL FINAL -->
+        <div class="footer-navigation">
+          <div class="nav-buttons-container">
+            <button class="footer-btn secondary" onclick="goToIndex()">
+              <i class="fas fa-home"></i>
+              <span>Inicio</span>
+            </button>
+            <button class="footer-btn primary" onclick="goToChart()">
+              <i class="fas fa-chart-line"></i>
+              <span>Ir a Gráfica</span>
+            </button>
+            <button class="footer-btn success" onclick="saveCurrentData()">
+              <i class="fas fa-save"></i>
+              <span>Guardar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ICONOS FLOTANTES SIMPLIFICADOS -->
+        <div class="floating-nav floating-nav-simple">
+          <div class="floating-nav-item" onclick="goToIndex()" data-tooltip="Inicio">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="floating-nav-item" onclick="goToChart()" data-tooltip="Ir a Gráfica">
+            <i class="fas fa-chart-line"></i>
+          </div>
+        </div>
+
+        <!-- JavaScript específico -->
+        <script src="navigation-scroll.js"></script>
+
+        <!-- JavaScript específico -->
+        <script src="navigation-scroll.js"></script>
 
         <script>
           function goToIndex() {
@@ -351,7 +387,6 @@
           }
 
           function goToChart() {
-            // Verificar si hay datos mínimos
             const name = document.getElementById('patientName').value.trim();
             if (!name) {
               alert('Por favor, introduce al menos el nombre del paciente antes de ir a la gráfica.');
@@ -359,7 +394,7 @@
               return;
             }
 
-            // Guardar datos actuales antes de navegar
+            // Guardar datos actuales
             const selectedBed = localStorage.getItem('selectedBed');
             if (selectedBed) {
               const currentData = {
@@ -526,6 +561,8 @@
             }
           });
         </script>
+        <!-- JavaScript específico -->
+        <script src="navigation-scroll.js?v=5"></script>
 </body>
 
 </html>

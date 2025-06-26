@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UCI - Selección de Paciente</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="navigation.css" />
     <style>
       :root {
         --primary-color: #2c3e50;
@@ -292,10 +296,6 @@
         }
       }
     </style>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
   </head>
   <body>
     <div class="container">
@@ -312,11 +312,56 @@
         <i class="fas fa-question-circle"></i> Ayuda
       </button>
     </div>
+    <!-- BOTONES PRINCIPALES AL FINAL (OPCIONAL) -->
+    <div class="footer-navigation">
+      <div class="nav-buttons-container">
+        <button class="footer-btn secondary" onclick="showHelp()">
+          <i class="fas fa-question-circle"></i>
+          <span>Ayuda</span>
+        </button>
+        <button class="footer-btn primary" onclick="showStats()">
+          <i class="fas fa-chart-bar"></i>
+          <span>Estadísticas</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- NAVEGACIÓN FLOTANTE MINIMALISTA -->
+    <div class="floating-nav floating-nav-minimal">
+      <div class="floating-nav-item" onclick="showHelp()" data-tooltip="Ayuda">
+        <i class="fas fa-question-circle"></i>
+      </div>
+      <div
+        class="floating-nav-item"
+        onclick="showStats()"
+        data-tooltip="Estadísticas"
+      >
+        <i class="fas fa-chart-bar"></i>
+      </div>
+    </div>
 
     <script>
       function showHelp() {
         alert(
-          "UCI - Sistema de Gráficas de Enfermería\n\nSeleccione una cama para comenzar."
+          "UCI - Sistema de Gráficas de Enfermería\n\n" +
+            '• Seleccione "Nuevo Ingreso" para registrar un nuevo paciente\n' +
+            '• Seleccione "Paciente Ingresado" para ver datos existentes\n' +
+            "• Los datos se guardan automáticamente"
+        );
+      }
+
+      function showStats() {
+        const patients = JSON.parse(localStorage.getItem("patients")) || {};
+        const totalPatients = Object.keys(patients).length;
+        const occupiedBeds = Object.values(patients).filter(
+          (p) => p && p.name
+        ).length;
+
+        alert(
+          `Estadísticas UCI:\n\n` +
+            `• Camas ocupadas: ${occupiedBeds}/12\n` +
+            `• Pacientes registrados: ${totalPatients}\n` +
+            `• Camas libres: ${12 - occupiedBeds}`
         );
       }
 
@@ -388,5 +433,7 @@
         return patients[bedNumber] || null;
       }
     </script>
+    <!-- JavaScript específico -->
+    <script src="navigation-scroll.js?v=5"></script>
   </body>
 </html>

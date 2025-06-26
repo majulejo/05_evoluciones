@@ -22,25 +22,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gráfica de Enfermería UCI</title>
     <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="navigation.css?v=3" />
   </head>
 
   <body>
-    <!-- Botones de navegación -->
-    <div class="navigation-container">
-      <a href="index.html" class="nav-button secondary">
-        <i class="fas fa-home"></i> Inicio
-      </a>
-      <button class="nav-button warning" onclick="goToPatientData()">
-        <i class="fas fa-user-edit"></i> Editar Datos
-      </button>
-      <button class="nav-button success" onclick="saveCurrentData()">
-        <i class="fas fa-save"></i> Guardar Todo
-      </button>
-      <button class="nav-button primary" onclick="printChart()">
-        <i class="fas fa-print"></i> Imprimir
-      </button>
-    </div>
-
     <!-- Control de vista -->
     <div class="view-controls">
       <button id="toggleViewBtn" class="toggle-view-btn" data-view="compact">
@@ -1021,6 +1006,63 @@
         </div>
       </div>
     </div>
+
+    <!-- BOTONES PRINCIPALES AL FINAL -->
+    <div class="footer-navigation">
+      <div class="nav-buttons-container">
+        <button class="footer-btn secondary" onclick="goToIndex()">
+          <i class="fas fa-home"></i>
+          <span>Inicio</span>
+        </button>
+        <button class="footer-btn warning" onclick="goToPatientData()">
+          <i class="fas fa-user-edit"></i>
+          <span>Editar Datos</span>
+        </button>
+        <button class="footer-btn success" onclick="saveCurrentData()">
+          <i class="fas fa-save"></i>
+          <span>Guardar Todo</span>
+        </button>
+        <button class="footer-btn primary" onclick="printChart()">
+          <i class="fas fa-print"></i>
+          <span>Imprimir</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ICONOS FLOTANTES QUE SE MUEVEN CON SCROLL -->
+    <div class="floating-nav">
+      <div
+        class="floating-nav-item"
+        onclick="goToIndex()"
+        data-tooltip="Inicio"
+      >
+        <i class="fas fa-home"></i>
+      </div>
+      <div
+        class="floating-nav-item"
+        onclick="goToPatientData()"
+        data-tooltip="Editar Datos"
+      >
+        <i class="fas fa-user-edit"></i>
+      </div>
+      <div
+        class="floating-nav-item"
+        onclick="saveCurrentData()"
+        data-tooltip="Guardar Todo"
+      >
+        <i class="fas fa-save"></i>
+      </div>
+      <div
+        class="floating-nav-item"
+        onclick="printChart()"
+        data-tooltip="Imprimir"
+      >
+        <i class="fas fa-print"></i>
+      </div>
+    </div>
+
+    <!-- JavaScript específico -->
+    <script src="navigation-scroll.js?v=5"></script>
 
     <!-- Scripts JavaScript -->
     <script src="script.js?v=1"></script>
