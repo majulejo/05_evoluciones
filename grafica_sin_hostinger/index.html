@@ -1,0 +1,394 @@
+<!-- ==================================== -->
+<!--     index.html creado con deepseek   -->
+<!-- ==================================== -->
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="images/info_deep.png" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deep Gráfica de Enfermería UCI</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <div class="chart-container">
+      <!-- Información del paciente - más compacto como en documento físico -->
+      <div class="patient-info">
+        <div class="patient-field patient-name">
+          <strong>NOMBRE:</strong>
+          <input
+            type="text"
+            placeholder=""
+            maxlength="50"
+            id="patientName"
+            style="width: 220px"
+          />
+        </div>
+        <div class="patient-field patient-date">
+          <strong>FECHA:</strong>
+          <input type="date" id="patientDate" style="width: 80px" />
+        </div>
+        <div class="patient-field patient-age">
+          <strong>EDAD:</strong>
+          <input
+            type="number"
+            id="patientAge"
+            min="0"
+            max="999"
+            maxlength="3"
+            oninput="this.value=this.value.slice(0,3)"
+            style="width: 40px"
+          />
+        </div>
+        <div class="patient-field patient-history">
+          <strong>H.C.:</strong>
+          <input
+            type="number"
+            id="patientHistory"
+            min="0"
+            max="9999999"
+            maxlength="7"
+            oninput="this.value=this.value.slice(0,7)"
+            style="width: 80px"
+          />
+        </div>
+        <div class="patient-field patient-bed">
+          <strong>CAMA:</strong>
+          <input
+            type="number"
+            id="patientBed"
+            min="1"
+            max="12"
+            oninput="if(this.value<1)this.value=1;if(this.value>12)this.value=12"
+            style="width: 40px"
+          />
+        </div>
+        <div class="patient-field patient-sheet">
+          <strong>HOJA:</strong>
+          <input
+            type="number"
+            id="patientSheet"
+            min="1"
+            max="999"
+            maxlength="3"
+            oninput="this.value=this.value.slice(0,3)"
+            style="width: 40px"
+          />
+        </div>
+      </div>
+
+      <!-- Sección principal de gráfica -->
+      <div class="chart-main">
+        <!-- Sección de escalas con tooltips -->
+        <div class="scales-section">
+          <div class="scales-title">ESCALAS</div>
+          <div class="scales-grid">
+            <!-- Frecuencia Respiratoria -->
+            <div class="scale-column resp-scale">
+              <div class="scale-title">F.R.</div>
+              <div class="scale-value" data-tooltip="r.p.m.">50</div>
+              <div class="scale-value" data-tooltip="r.p.m.">45</div>
+              <div class="scale-value" data-tooltip="r.p.m.">40</div>
+              <div class="scale-value" data-tooltip="r.p.m.">35</div>
+              <div class="scale-value" data-tooltip="r.p.m.">30</div>
+              <div class="scale-value" data-tooltip="r.p.m.">25</div>
+              <div class="scale-value" data-tooltip="r.p.m.">20</div>
+              <div class="scale-value" data-tooltip="r.p.m.">15</div>
+              <div class="scale-value" data-tooltip="r.p.m.">10</div>
+              <div class="scale-value" data-tooltip="r.p.m.">5</div>
+              <div class="scale-value" data-tooltip="r.p.m.">0</div>
+            </div>
+
+            <!-- Temperatura -->
+            <div class="scale-column temperature-scale">
+              <div class="scale-title">°C</div>
+              <div class="scale-value" data-tooltip="ºC">42</div>
+              <div class="scale-value" data-tooltip="ºC">41</div>
+              <div class="scale-value" data-tooltip="ºC">40</div>
+              <div class="scale-value" data-tooltip="ºC">39</div>
+              <div class="scale-value" data-tooltip="ºC">38</div>
+              <div class="scale-value" data-tooltip="ºC">37</div>
+              <div class="scale-value" data-tooltip="ºC">36</div>
+              <div class="scale-value" data-tooltip="ºC">35</div>
+              <div class="scale-value" data-tooltip="ºC">34</div>
+              <div class="scale-value" data-tooltip="ºC">33</div>
+              <div class="scale-value" data-tooltip="ºC">32</div>
+            </div>
+
+            <!-- Frecuencia Cardíaca (antes Pulso) -->
+            <div class="scale-column pulse-scale">
+              <div class="scale-title">F.C.</div>
+              <!-- Cambiado de PULSO a F.C. -->
+              <div class="scale-value" data-tooltip="l/m">200</div>
+              <div class="scale-value" data-tooltip="l/m">180</div>
+              <div class="scale-value" data-tooltip="l/m">160</div>
+              <div class="scale-value" data-tooltip="l/m">140</div>
+              <div class="scale-value" data-tooltip="l/m">120</div>
+              <div class="scale-value" data-tooltip="l/m">100</div>
+              <div class="scale-value" data-tooltip="l/m">80</div>
+              <div class="scale-value" data-tooltip="l/m">60</div>
+              <div class="scale-value" data-tooltip="l/m">40</div>
+              <div class="scale-value" data-tooltip="l/m">20</div>
+              <div class="scale-value" data-tooltip="l/m">0</div>
+            </div>
+
+            <!-- Tensión Arterial -->
+            <div class="scale-column bp-scale">
+              <div class="scale-title">T.A.</div>
+              <div class="scale-value" data-tooltip="mmHg">250</div>
+              <div class="scale-value" data-tooltip="mmHg">225</div>
+              <div class="scale-value" data-tooltip="mmHg">200</div>
+              <div class="scale-value" data-tooltip="mmHg">175</div>
+              <div class="scale-value" data-tooltip="mmHg">150</div>
+              <div class="scale-value" data-tooltip="mmHg">125</div>
+              <div class="scale-value" data-tooltip="mmHg">100</div>
+              <div class="scale-value" data-tooltip="mmHg">75</div>
+              <div class="scale-value" data-tooltip="mmHg">50</div>
+              <div class="scale-value" data-tooltip="mmHg">25</div>
+              <div class="scale-value" data-tooltip="mmHg">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Área de gráfico -->
+        <div class="chart-area">
+          <!-- Cabecera de horas -->
+          <div class="hours-header">
+            <div class="hour-cell">8</div>
+            <div class="hour-cell">9</div>
+            <div class="hour-cell">10</div>
+            <div class="hour-cell">11</div>
+            <div class="hour-cell">12</div>
+            <div class="hour-cell">13</div>
+            <div class="hour-cell">14</div>
+            <div class="hour-cell">15</div>
+            <div class="hour-cell">16</div>
+            <div class="hour-cell">17</div>
+            <div class="hour-cell">18</div>
+            <div class="hour-cell">19</div>
+            <div class="hour-cell">20</div>
+            <div class="hour-cell">21</div>
+            <div class="hour-cell">22</div>
+            <div class="hour-cell">23</div>
+            <div class="hour-cell">0</div>
+            <div class="hour-cell">1</div>
+            <div class="hour-cell">2</div>
+            <div class="hour-cell">3</div>
+            <div class="hour-cell">4</div>
+            <div class="hour-cell">5</div>
+            <div class="hour-cell">6</div>
+            <div class="hour-cell">7</div>
+          </div>
+
+          <!-- Cuadrícula del gráfico -->
+          <div class="chart-grid" id="chartGrid">
+            <!-- Líneas horizontales de referencia -->
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+            <div class="horizontal-line"></div>
+
+            <!-- Celdas de la cuadrícula (24 celdas, una por hora) -->
+            <div class="grid-cell" data-hour="8" data-index="0">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="9" data-index="1">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="10" data-index="2">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="11" data-index="3">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="12" data-index="4">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="13" data-index="5">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="14" data-index="6">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="15" data-index="7">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="16" data-index="8">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="17" data-index="9">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="18" data-index="10">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="19" data-index="11">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="20" data-index="12">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="21" data-index="13">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="22" data-index="14">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="23" data-index="15">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+              <div class="tooltip-row"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="0" data-index="16">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="1" data-index="17">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="2" data-index="18">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="3" data-index="19">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="4" data-index="20">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="5" data-index="21">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="6" data-index="22">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <div class="grid-cell" data-hour="7" data-index="23">
+              <div class="hour-data-indicator"></div>
+              <div class="tooltip-container"></div>
+            </div>
+
+            <!-- Celdas de la cuadrícula -->
+            <div class="grid-cell" onclick="openDataModal(this, 8, 0)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 9, 1)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 10, 2)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 11, 3)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 12, 4)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 13, 5)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 14, 6)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 15, 7)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 16, 8)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 17, 9)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 18, 10)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 19, 11)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 20, 12)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 21, 13)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 22, 14)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 23, 15)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 0, 16)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 1, 17)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 2, 18)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 3, 19)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 4, 20)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 5, 21)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 6, 22)"></div>
+            <div class="grid-cell" onclick="openDataModal(this, 7, 23)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para introducir datos -->
+    <div id="dataModal" class="data-modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeDataModal()">&times;</span>
+        <h3>Introducir Constantes</h3>
+        <p>Hora: <span id="modalHour"></span></p>
+
+        <div class="form-field">
+          <label>Frecuencia Respiratoria (rpm):</label>
+          <input type="number" id="respRate" step="1" min="0" max="50" />
+        </div>
+
+        <div class="form-field">
+          <label>Temperatura (°C):</label>
+          <input type="number" id="temperature" step="0.1" min="32" max="42" />
+        </div>
+
+        <div class="form-field">
+          <label>Frecuencia Cardíaca (lpm):</label>
+          <input type="number" id="pulse" min="0" max="200" />
+        </div>
+
+        <div class="form-field">
+          <label>T.A. Sistólica (mmHg):</label>
+          <input type="number" id="systolic" min="0" max="250" />
+        </div>
+
+        <div class="form-field">
+          <label>T.A. Diastólica (mmHg):</label>
+          <input type="number" id="diastolic" min="0" max="250" />
+        </div>
+
+        <div class="button-group">
+          <button id="saveDataBtn" class="btn btn-save">Guardar</button>
+          <button id="deleteDataBtn" class="btn btn-delete">Eliminar</button>
+          <button id="cancelBtn" class="btn btn-cancel">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/grafica.js"></script>
+  </body>
+</html>

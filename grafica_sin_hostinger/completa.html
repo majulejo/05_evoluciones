@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfica de Enfermería UCI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            background-color: #f5f5f5;
+            padding: 10px;
+        }
+
+        .chart-container {
+            background-color: white;
+            border: 2px solid #333;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .chart-header {
+            display: flex;
+            background-color: #e8e8e8;
+            border-bottom: 2px solid #333;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .patient-info {
+            padding: 10px;
+            border-right: 2px solid #333;
+            min-width: 200px;
+        }
+
+        .date-section {
+            flex: 1;
+            display: flex;
+            border-right: 1px solid #333;
+        }
+
+        .date-header {
+            background-color: #d0d0d0;
+            padding: 5px;
+            border-right: 1px solid #333;
+            min-width: 80px;
+        }
+
+        .time-slots {
+            display: flex;
+            flex: 1;
+        }
+
+        .time-slot {
+            flex: 1;
+            min-width: 25px;
+            padding: 2px;
+            border-right: 1px solid #ccc;
+            font-size: 10px;
+        }
+
+        .section {
+            display: flex;
+            border-bottom: 1px solid #333;
+            min-height: 30px;
+        }
+
+        .section-label {
+            min-width: 200px;
+            padding: 5px 10px;
+            border-right: 2px solid #333;
+            background-color: #f8f8f8;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-content {
+            flex: 1;
+            display: flex;
+        }
+
+        .day-column {
+            flex: 1;
+            display: flex;
+            border-right: 1px solid #333;
+            min-width: 80px;
+        }
+
+        .date-label {
+            min-width: 80px;
+            padding: 5px;
+            border-right: 1px solid #333;
+            background-color: #e8e8e8;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .time-cells {
+            display: flex;
+            flex: 1;
+        }
+
+        .time-cell {
+            flex: 1;
+            min-width: 25px;
+            border-right: 1px solid #ccc;
+            padding: 2px;
+            text-align: center;
+        }
+
+        .constants-section {
+            background-color: #fff8f0;
+        }
+
+        .scale-labels {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            padding: 2px;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .temperature-scale {
+            background-color: #ffe6e6;
+        }
+
+        .pulse-scale {
+            background-color: #e6f3ff;
+        }
+
+        .bp-scale {
+            background-color: #f0fff0;
+        }
+
+        .losses-section {
+            background-color: #f8f8ff;
+        }
+
+        .intake-section {
+            background-color: #f0fff8;
+        }
+
+        .medication-section {
+            background-color: #fff8f8;
+        }
+
+        .subsection {
+            font-size: 11px;
+            color: #666;
+            padding-left: 20px;
+        }
+
+        .total-column {
+            min-width: 100px;
+            border-left: 2px solid #333;
+            background-color: #f0f0f0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .chart-grid {
+            position: relative;
+        }
+
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .horizontal-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .vertical-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: #ddd;
+        }
+
+        input[type="text"], input[type="number"] {
+            border: none;
+            background: transparent;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            background-color: #e6f3ff;
+            outline: 1px solid #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <!-- Header -->
+        <div class="chart-header">
+            <div class="patient-info">
+                <div><strong>NOMBRE:</strong></div>
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <div>Nº H.ª CLÍNICA:</div>
+                    <div>CAMA:</div>
+                    <div>HOJA Nº:</div>
+                </div>
+            </div>
+            <div class="date-section">
+                <div class="date-header">FECHA</div>
+                <div class="time-slots">
+                    <div class="time-slot">8</div>
+                    <div class="time-slot">9</div>
+                    <div class="time-slot">10</div>
+                    <div class="time-slot">11</div>
+                    <div class="time-slot">12</div>
+                    <div class="time-slot">13</div>
+                    <div class="time-slot">14</div>
+                    <div class="time-slot">15</div>
+                    <div class="time-slot">16</div>
+                    <div class="time-slot">17</div>
+                    <div class="time-slot">18</div>
+                    <div class="time-slot">19</div>
+                    <div class="time-slot">20</div>
+                    <div class="time-slot">21</div>
+                    <div class="time-slot">22</div>
+                    <div class="time-slot">23</div>
+                    <div class="time-slot">0</div>
+                    <div class="time-slot">1</div>
+                    <div class="time-slot">2</div>
+                    <div class="time-slot">3</div>
+                    <div class="time-slot">4</div>
+                    <div class="time-slot">5</div>
+                    <div class="time-slot">6</div>
+                    <div class="time-slot">7</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Constantes -->
+        <div class="section constants-section">
+            <div class="section-label">
+                <div>
+                    <div style="font-size: 14px; margin-bottom: 10px;">CONSTANTES</div>
+                    <div class="scale-labels temperature-scale">
+                        <div>50 — 40 — 250 — 250</div>
+                        <div>40 — 39 — 200 — 200</div>
+                        <div>30 — 38 — 150 — 150</div>
+                        <div>20 — 37 — 100 — 100</div>
+                        <div>10 — 36 — 50 — 50</div>
+                        <div>— 35 — 0 — 0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"><input type="date"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">INSULINA</div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Diuresis -->
+        <div class="section">
+            <div class="section-label">
+                <div>DIURESIS</div>
+                <div class="subsection">Parcial</div>
+                <div class="subsection">Total</div>
+            </div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Pérdidas -->
+        <div style="background-color: #f0f8ff; border-top: 2px solid #333;">
+            <div class="section losses-section">
+                <div class="section-label" style="background-color: #e6f3ff; writing-mode: vertical-lr; text-align: center; font-size: 14px; font-weight: bold;">PÉRDIDAS</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <!-- Múltiples filas para medicamentos -->
+            <div class="section">
+                <div class="section-label" style="font-size: 10px; min-height: 25px;"></div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label" style="font-size: 10px; min-height: 25px;"></div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label" style="font-size: 10px; min-height: 25px;"></div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label" style="font-size: 10px; min-height: 25px;"></div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label" style="font-size: 10px; min-height: 25px;"></div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance de líquidos -->
+        <div style="background-color: #f8f8f8; border-top: 2px solid #333; padding: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-weight: bold; font-size: 14px;">BALANCES</div>
+                <div style="display: flex; gap: 20px;">
+                    <div>
+                        <span style="font-weight: bold;">LÍQUIDOS:</span>
+                        <input type="number" style="margin-left: 10px; width: 80px; padding: 2px;">
+                    </div>
+                    <div>
+                        <span style="font-weight: bold;">DIURESIS:</span>
+                        <input type="number" style="margin-left: 10px; width: 80px; padding: 2px;">
+                    </div>
+                    <div>
+                        <span style="font-weight: bold;">BALANCE:</span>
+                        <input type="number" style="margin-left: 10px; width: 80px; padding: 2px; background-color: #ffffcc;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script para calcular automáticamente los totales
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateTotals);
+            });
+            
+            function calculateTotals() {
+                // Aquí se pueden agregar funciones de cálculo automático
+                console.log('Calculando totales...');
+            }
+        });
+    </script>
+</body>
+</html>time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Ingresos -->
+        <div style="background-color: #f0fff8; border-top: 2px solid #333;">
+            <div class="section intake-section">
+                <div class="section-label" style="background-color: #e6ffe6; writing-mode: vertical-lr; text-align: center; font-size: 14px; font-weight: bold;">INGRESOS</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column">
+                        <div style="padding: 5px; font-weight: bold;">TOTAL GANANCIAS</div>
+                        <input type="number" style="margin: 5px; width: 80px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">S.F. + MEDICACIÓN</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">SANGRE / PLASMA</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">AGUA ENDÓGENA</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">ORAL</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">ENTERAL</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">PARENTERAL</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Medicación -->
+        <div style="background-color: #fff8f8; border-top: 2px solid #333;">
+            <div class="section medication-section">
+                <div class="section-label" style="background-color: #ffe6e6; writing-mode: vertical-lr; text-align: center; font-size: 14px; font-weight: bold;">MEDICACIÓN</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column">
+                        <div style="padding: 5px; font-weight: bold;">TOTAL PÉRDIDAS</div>
+                        <input type="number" style="margin: 5px; width: 80px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">HECES</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">VÓMITOS / SUDOR / FIEBRE</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">S.N.G.</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">CONTROL DE RESIDUOS</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                        </div>
+                    </div>
+                    <div class="total-column"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">P.I.</div>
+                <div class="section-content">
+                    <div class="day-column">
+                        <div class="date-label"></div>
+                        <div class="time-cells">
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-cell"><input type="text"></div>
+                            <div class="time-<input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"><input type="date"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Oxigenación -->
+        <div class="section">
+            <div class="section-label">P.V.C.</div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">OXIGENACIÓN</div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">SATURACIÓN</div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">EVA/ESCIO</div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">GLUCEMIA</div>
+            <div class="section-content">
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                    </div>
+                </div>
+                <div class="day-column">
+                    <div class="date-label"></div>
+                    <div class="time-cells">
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell"><input type="text"></div>
+                        <div class="time-cell">
