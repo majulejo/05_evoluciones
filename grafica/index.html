@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Boxes Hospitalarios</title>
+    
+    <!-- Evitar caché -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .boxes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .box-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .box-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .box-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .patient-name {
+            color: #2c5aa0;
+            font-size: 1.6rem;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .buttons-container-occupied {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            color: white;
+        }
+
+        .nuevo-ingreso {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            margin-bottom: 15px;
+        }
+
+        .nuevo-ingreso:hover {
+            background: linear-gradient(45deg, #218838, #1ba085);
+            transform: translateY(-2px);
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .editar-datos {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            flex: 1;
+        }
+
+        .editar-datos:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+            transform: translateY(-2px);
+        }
+
+        .ir-grafica {
+            background: linear-gradient(45deg, #6f42c1, #5a32a3);
+            flex: 1;
+        }
+
+        .ir-grafica:hover {
+            background: linear-gradient(45deg, #5a32a3, #4c2a85);
+            transform: translateY(-2px);
+        }
+
+        .alta-paciente {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            margin-top: 5px;
+        }
+
+        .alta-paciente:hover {
+            background: linear-gradient(45deg, #c82333, #a71e2a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .occupied {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 5px solid #ffc107;
+        }
+
+        .occupied::before {
+            background: linear-gradient(90deg, #ffc107, #ff9800);
+        }
+
+        .empty {
+            background: linear-gradient(135deg, #d1ecf1, #b8daff);
+            border-left: 5px solid #17a2b8;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+
+        .occupied .status-indicator {
+            background: #ffc107;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .boxes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .box-card {
+                padding: 20px;
+            }
+            
+            .box-title {
+                font-size: 1.5rem;
+            }
+            
+            .button-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .alta-paciente {
+                margin-top: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+            
+            .box-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Gestión de Boxes</h1>
+        
+        <div class="boxes-grid" id="boxesGrid">
+            <!-- Los boxes se generarán dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Datos de pacientes cargados desde la base de datos
+        let pacientesData = {};
+
+        function crearBox(numeroBox, paciente) {
+            const hayPaciente = paciente !== null;
+            const claseEstado = hayPaciente ? 'occupied' : 'empty';
+            
+            return `
+                <div class="box-card ${claseEstado}">
+                    <div class="status-indicator"></div>
+                    <div class="box-title ${hayPaciente ? 'patient-name' : ''}">
+                        ${hayPaciente ? paciente : `BOX-${numeroBox}`}
+                    </div>
+                    <div class="buttons-container">
+                        ${!hayPaciente ? `
+                            <a href="datos.html?box=${numeroBox}&action=nuevo" class="button nuevo-ingreso">
+                                NUEVO INGRESO
+                            </a>
+                        ` : `
+                            <div class="buttons-container-occupied">
+                                <div class="button-row">
+                                    <a href="datos.html?box=${numeroBox}" class="button editar-datos">
+                                        Editar Datos
+                                    </a>
+                                    <a href="grafica.html?box=${numeroBox}" class="button ir-grafica">
+                                        Ir a Gráfica
+                                    </a>
+                                </div>
+                                <button class="button alta-paciente" onclick="altaPaciente(${numeroBox})">
+                                    ALTA MÉDICA
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function inicializarBoxes() {
+            cargarDatosPacientes();
+        }
+
+        async function cargarDatosPacientes() {
+            try {
+                // CORREGIDO: Usar gestionar_pacientes.php en lugar de cargar_pacientes.php
+                const response = await fetch('gestionar_pacientes.php?accion=obtener_pacientes_activos&t=' + new Date().getTime());
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Inicializar todos los boxes como vacíos
+                    pacientesData = {};
+                    for (let i = 1; i <= 12; i++) {
+                        pacientesData[i] = null;
+                    }
+                    
+                    // Llenar con pacientes activos
+                    data.pacientes.forEach(paciente => {
+                        const numeroBox = parseInt(paciente.numero_box);
+                        if (numeroBox >= 1 && numeroBox <= 12) {
+                            pacientesData[numeroBox] = paciente.nombre_completo;
+                        }
+                    });
+                    
+                    renderizarBoxes();
+                } else {
+                    console.error('Error al cargar pacientes:', data.error);
+                    // Inicializar con boxes vacíos en caso de error
+                    inicializarBoxesVacios();
+                }
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                // Inicializar con boxes vacíos en caso de error
+                inicializarBoxesVacios();
+            }
+        }
+
+        function inicializarBoxesVacios() {
+            pacientesData = {};
+            for (let i = 1; i <= 12; i++) {
+                pacientesData[i] = null;
+            }
+            renderizarBoxes();
+        }
+
+        function renderizarBoxes() {
+            const boxesGrid = document.getElementById('boxesGrid');
+            let htmlContent = '';
+            
+            for (let i = 1; i <= 12; i++) {
+                htmlContent += crearBox(i, pacientesData[i]);
+            }
+            
+            boxesGrid.innerHTML = htmlContent;
+            
+            // Debug: mostrar estado de los boxes
+            console.log('Boxes renderizados:', pacientesData);
+        }
+
+        // Función para dar de alta un paciente
+        async function altaPaciente(numeroBox) {
+            // Obtener nombre del paciente para confirmación
+            const nombrePaciente = pacientesData[numeroBox];
+            
+            if (confirm(`¿Está seguro de dar de ALTA MÉDICA al paciente "${nombrePaciente}" del Box ${numeroBox}?\n\n⚠️ Esta acción:\n• Liberará el box para nuevos ingresos\n• Guardará el historial del paciente\n• Generará reporte final`)) {
+                try {
+                    const formData = new FormData();
+                    formData.append('accion', 'alta_paciente');
+                    formData.append('box', numeroBox);
+                    
+                    const response = await fetch('gestionar_pacientes.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Actualizar datos locales
+                        pacientesData[numeroBox] = null;
+                        renderizarBoxes();
+                        
+                        // Mostrar mensaje de éxito
+                        alert(`✅ Alta médica realizada correctamente.\n\nPaciente: ${nombrePaciente}\nBox ${numeroBox} liberado para nuevos ingresos.`);
+                        
+                        console.log(`Paciente ${nombrePaciente} dado de alta del Box ${numeroBox}`);
+                    } else {
+                        alert('❌ Error al dar de alta: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Error al dar de alta:', error);
+                    alert('❌ Error de conexión al procesar el alta médica');
+                }
+            }
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarBoxes();
+        });
+
+        // Función para refrescar datos desde la base de datos
+        function refrescarDatos() {
+            cargarDatosPacientes();
+        }
+
+        // Actualizar cada 30 segundos
+        setInterval(refrescarDatos, 30000);
+    </script>
+</body>
+</html>

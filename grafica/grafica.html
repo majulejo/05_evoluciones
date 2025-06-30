@@ -1,0 +1,3256 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Gráficas del Paciente - Sistema Hospitalario</title>
+
+    <!-- Evitar caché -->
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 10px;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .patient-info-card {
+        background: white;
+        border-radius: 15px;
+        padding: clamp(15px, 3vw, 25px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 25px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .patient-info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .patient-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .edit-patient-btn {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .edit-patient-btn:hover {
+        background: linear-gradient(45deg, #0056b3, #004085);
+        transform: translateY(-2px);
+      }
+
+      .patient-data-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .data-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .data-item.editable {
+        border-left-color: #28a745;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .data-item.editable:hover {
+        background: #e8f5e8;
+        transform: translateY(-2px);
+      }
+
+      .data-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      .data-value {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .data-value.empty {
+        color: #999;
+        font-style: italic;
+      }
+
+      .charts-section {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 25px;
+        margin-bottom: 25px;
+      }
+
+      .constantes-vitales-card {
+        grid-column: 1 / -1;
+      }
+
+      .constantes-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-info {
+        background: linear-gradient(45deg, #17a2b8, #138496);
+        color: white;
+      }
+
+      .btn-info:hover {
+        background: linear-gradient(45deg, #138496, #117a8b);
+        transform: translateY(-2px);
+      }
+
+      .fecha-hoja {
+        font-weight: bold;
+        color: #333;
+        font-size: 14px;
+      }
+
+      /* Leyenda Minimalista */
+      .leyenda-minimal {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+      }
+
+      .minimal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+
+      .minimal-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .minimal-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .minimal-color {
+        width: 20px;
+        height: 4px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      .minimal-text {
+        flex: 1;
+        font-size: 13px;
+      }
+
+      .minimal-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 3px;
+      }
+
+      .minimal-warning {
+        font-size: 11px;
+        color: #ff4444;
+        font-weight: 500;
+      }
+
+      .color-box {
+        width: 15px;
+        height: 3px;
+        border-radius: 1px;
+      }
+
+      .constantes-chart-container {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .chart-grid-line {
+        stroke: #e0e0e0;
+        stroke-width: 0.5;
+      }
+
+      .chart-hour-line {
+        stroke: #e0e0e0;
+        stroke-width: 0.5;
+      }
+
+      .zona-hora-clickeable {
+        transition: all 0.2s ease;
+      }
+
+      .zona-hora-clickeable:hover {
+        stroke: #667eea !important;
+        stroke-width: 2 !important;
+      }
+
+      .chart-axis-text {
+        font-size: 11px;
+        fill: #666;
+        font-weight: 600;
+      }
+
+      .chart-hour-text {
+        font-size: 11px;
+        fill: #333;
+        cursor: pointer;
+        font-weight: normal;
+      }
+
+      .chart-hour-text:hover {
+        fill: #007bff;
+        font-weight: bold;
+      }
+
+      .warning-icon {
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+        transition: all 0.2s ease;
+      }
+
+      .warning-icon:hover {
+        filter: drop-shadow(0 0 4px rgba(255, 68, 68, 0.8));
+        transform: scale(1.1);
+      }
+
+      .chart-point {
+        cursor: pointer;
+        stroke-width: 2;
+        fill: white;
+        r: 3;
+        transition: all 0.2s ease;
+      }
+
+      .chart-point:hover {
+        r: 4;
+        stroke-width: 3;
+      }
+
+      .chart-line {
+        fill: none;
+        stroke-width: 1;
+      }
+
+      .chart-ta-line {
+        stroke-width: 1;
+        fill: none;
+      }
+
+      .chart-card {
+        background: white;
+        border-radius: 15px;
+        padding: clamp(15px, 3vw, 25px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        min-height: 700px;
+        display: flex;
+        flex-direction: column;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
+      .oxigenacion-card {
+        height: 400px;
+      }
+
+      .chart-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+
+      .chart-placeholder {
+        height: 300px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 16px;
+        text-align: center;
+        border: 2px dashed #dee2e6;
+      }
+
+      .buttons-section {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: inline-block;
+        min-width: 150px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: linear-gradient(45deg, #218838, #1ba085);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #5a6268);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: linear-gradient(45deg, #5a6268, #495057);
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: linear-gradient(45deg, #c82333, #a71e2a);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+      }
+
+      .status-message {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+        display: none;
+      }
+
+      .status-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .modal-form .form-group {
+        margin-bottom: 15px;
+      }
+
+      .modal-form label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .modal-form input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+
+      .modal-form input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 25px;
+      }
+
+      /* Modal para Constantes */
+      .constantes-modal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+
+      .constantes-modal-content {
+        background-color: white;
+        margin: 2% auto;
+        padding: 25px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .constantes-modal-header {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .constantes-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .constante-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .constante-group label {
+        font-weight: 600;
+        color: #333;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .constante-group input {
+        padding: 8px 10px;
+        border: 2px solid #e1e5e9;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .constante-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .ta-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .constantes-modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 25px;
+        flex-wrap: wrap;
+      }
+
+      /* Tooltip Modal */
+      .tooltip-modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .tooltip-modal-content {
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        min-width: 250px;
+        max-width: 300px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .tooltip-modal-header {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        text-align: center;
+        color: #667eea;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding-bottom: 8px;
+      }
+
+      .tooltip-constantes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .tooltip-constante-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .tooltip-constante-label {
+        font-size: 10px;
+        opacity: 0.8;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .tooltip-constante-valor {
+        font-size: 13px;
+        font-weight: bold;
+      }
+
+      .tooltip-ta-item {
+        grid-column: 1 / -1;
+      }
+
+      .tooltip-footer {
+        text-align: center;
+        opacity: 0.7;
+        font-size: 10px;
+        margin-top: 8px;
+        font-style: italic;
+      }
+
+      /* Oxigenación tabla */
+      .oxigenacion-table-container {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: auto;
+        position: relative;
+        width: 100%;
+        max-width: 1200px;
+        height: 100%;
+        max-height: 310px;
+        margin: 0 auto;
+      }
+
+      .oxigenacion-table {
+        width: 100%;
+        max-width: 1200px;
+        border-collapse: collapse;
+        font-size: clamp(10px, 2vw, 12px);
+        table-layout: fixed;
+      }
+
+      .oxigenacion-table th,
+      .oxigenacion-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        position: relative;
+      }
+
+      .oxigenacion-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+        font-size: clamp(9px, 1.8vw, 11px);
+        height: 45px;
+        vertical-align: middle;
+      }
+
+      .param-header {
+        background: #667eea !important;
+        color: white;
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        width: 140px;
+        min-width: 140px;
+        max-width: 140px;
+      }
+
+      .param-label {
+        background: #f8f9fa;
+        font-weight: bold;
+        text-align: left;
+        padding: 12px 8px;
+        position: sticky;
+        left: 0;
+        z-index: 5;
+        width: 140px;
+        border-right: 2px solid #667eea;
+      }
+
+      .param-color {
+        display: inline-block;
+        width: 12px;
+        height: 3px;
+        border-radius: 2px;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      .hour-header {
+        background: #f0f0f0 !important;
+        width: calc((1200px - 140px) / 24);
+        min-width: 40px;
+        max-width: 50px;
+        font-size: clamp(8px, 1.5vw, 10px);
+        font-weight: bold;
+      }
+
+      .data-cell {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        height: clamp(30px, 5vw, 35px);
+        vertical-align: middle;
+        width: calc((1200px - 140px) / 24);
+        min-width: 40px;
+        max-width: 50px;
+      }
+
+      .data-cell:hover {
+        background: #e3f2fd;
+        transform: scale(1.02);
+      }
+
+      .data-cell.has-data {
+        background: #e8f5e8;
+        font-weight: bold;
+      }
+
+      .data-cell.auto-value {
+        background: #f0f8ff;
+        font-style: italic;
+        cursor: default;
+      }
+
+      .data-cell.auto-value:hover {
+        background: #f0f8ff;
+        transform: none;
+      }
+
+      .data-input {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: transparent;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .data-input:focus {
+        outline: 2px solid #667eea;
+        background: white;
+      }
+
+      .alert-value {
+        background: #ffebee !important;
+        color: #c62828;
+        font-weight: bold;
+      }
+
+      .alert-icon {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        color: #f44336;
+        font-size: 10px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        .constantes-chart-container {
+          overflow-x: auto;
+        }
+
+        #constantesChart {
+          min-width: 800px;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .patient-info-header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .charts-section {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-card {
+          padding: 15px;
+        }
+
+        .buttons-section {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .modal-content {
+          margin: 10% auto;
+          width: 95%;
+          padding: 20px;
+        }
+
+        .patient-data-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .patient-data-summary {
+          background: #667eea;
+          color: white;
+          padding: 15px;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .patient-data-summary:hover {
+          background: #5a6fd8;
+          transform: translateY(-2px);
+        }
+
+        .patient-summary-text {
+          font-size: 16px;
+          font-weight: bold;
+        }
+
+        .expand-icon {
+          font-size: 18px;
+          transition: transform 0.3s ease;
+        }
+
+        .expand-icon.expanded {
+          transform: rotate(180deg);
+        }
+
+        .patient-data-details {
+          display: none;
+          margin-top: 10px;
+          gap: 10px;
+        }
+
+        .patient-data-details.expanded {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .data-item {
+          margin-bottom: 8px;
+          padding: 12px;
+        }
+
+        .oxigenacion-table-container {
+          overflow-y: auto;
+          overflow-x: hidden;
+          max-height: 80vh;
+        }
+
+        .oxigenacion-table {
+          min-width: 100% !important;
+          display: block;
+        }
+
+        .oxigenacion-table thead {
+          display: block;
+          width: 100%;
+        }
+
+        .oxigenacion-table tbody {
+          display: block;
+          width: 100%;
+        }
+
+        .oxigenacion-table tr {
+          display: flex;
+          flex-direction: column;
+          border: 1px solid #ddd;
+          margin-bottom: 15px;
+          border-radius: 8px;
+          background: #f9f9f9;
+          padding: 10px;
+        }
+
+        .oxigenacion-table thead tr {
+          background: #667eea;
+          color: white;
+          margin-bottom: 20px;
+        }
+
+        .oxigenacion-table th,
+        .oxigenacion-table td {
+          display: block;
+          width: 100%;
+          text-align: left;
+          padding: 8px 10px;
+          border: none;
+        }
+
+        .param-header {
+          display: none;
+        }
+
+        .param-label {
+          background: #667eea;
+          color: white;
+          font-weight: bold;
+          margin-bottom: 10px;
+          border-radius: 4px;
+          position: static;
+          width: 100%;
+        }
+
+        .hour-header {
+          background: #f0f0f0;
+          font-weight: bold;
+          padding: 5px 10px;
+          border-radius: 4px;
+          margin: 2px 0;
+          min-height: auto;
+        }
+
+        .data-cell {
+          background: white;
+          border: 1px solid #e0e0e0;
+          border-radius: 4px;
+          margin: 2px 0;
+          padding: 10px;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .data-cell::before {
+          content: attr(data-hora);
+          font-weight: bold;
+          color: #667eea;
+          margin-right: 10px;
+        }
+
+        .data-cell.auto-value {
+          background: #f0f8ff;
+        }
+
+        .data-cell.has-data {
+          background: #e8f5e8;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .container {
+          padding: 15px;
+        }
+
+        .patient-data-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+        }
+
+        .data-item {
+          padding: 12px;
+        }
+
+        .data-value {
+          font-size: 16px;
+        }
+
+        #constantesChart {
+          min-width: 700px;
+        }
+
+        .oxigenacion-table {
+          min-width: 700px;
+          font-size: 11px;
+        }
+
+        .param-label {
+          width: 110px;
+          font-size: 10px;
+        }
+
+        .hour-header {
+          width: 38px;
+          font-size: 10px;
+        }
+
+        .data-cell {
+          height: 30px;
+          font-size: 11px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 10px 5px;
+        }
+
+        .header h1 {
+          font-size: 1.5rem;
+        }
+
+        .chart-card {
+          padding: 12px 8px;
+          margin: 10px 2px;
+        }
+
+        .chart-title {
+          font-size: 1rem;
+          margin-bottom: 10px;
+        }
+
+        .patient-summary-text {
+          font-size: 14px;
+        }
+
+        .data-item {
+          padding: 10px;
+        }
+
+        .data-label {
+          font-size: 10px;
+        }
+
+        .data-value {
+          font-size: 14px;
+        }
+
+        .constantes-controls {
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+        }
+
+        .btn-small {
+          padding: 8px 12px;
+          font-size: 11px;
+        }
+
+        .constantes-modal-content {
+          width: 98%;
+          padding: 15px 10px;
+        }
+
+        .constantes-form {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .constante-group label {
+          font-size: 11px;
+        }
+
+        .constante-group input {
+          padding: 10px 8px;
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Gráficas y Monitoreo del Paciente</h1>
+      </div>
+
+      <!-- Información del Paciente -->
+      <div class="patient-info-card">
+        <div class="patient-info-header">
+          <div class="patient-title" id="patientTitle">Datos del Paciente</div>
+          <button class="edit-patient-btn" onclick="abrirModalEdicion()">
+            ✏️ Editar Datos
+          </button>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <div class="patient-data-grid" id="patientDataGrid">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </div>
+
+      <!-- Sección de Gráficas -->
+      <div class="charts-section">
+        <!-- Constantes Vitales -->
+        <div class="chart-card constantes-vitales-card">
+          <h3 class="chart-title">📊 Constantes Vitales</h3>
+          <div class="constantes-controls">
+            <button class="btn-small btn-info" onclick="toggleLeyenda()">
+              📋 Leyenda
+            </button>
+            <div class="fecha-hoja">
+              Hoja: <span id="hojaConstantes">1</span>
+            </div>
+          </div>
+
+          <!-- Leyenda Minimalista -->
+          <div
+            class="leyenda-minimal"
+            id="leyendaConstantes"
+            style="display: none"
+          >
+            <div class="minimal-grid">
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: black"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">FR - Frecuencia Respiratoria</div>
+                  <div class="minimal-warning">⚠ Warning: < 10 o > 30 rpm</div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: red"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">Tª - Temperatura</div>
+                  <div class="minimal-warning">
+                    ⚠ Warning: < 35°C o > 38.5°C
+                  </div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: blue"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">FC - Frecuencia Cardíaca</div>
+                  <div class="minimal-warning">⚠ Warning: < 50 o > 130 lpm</div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: green"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">TA - Tensión Arterial</div>
+                  <div class="minimal-warning">
+                    ⚠ Warning: Sist < 80 o > 170 | Diast < 40 o > 90
+                  </div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: lime"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">SatO₂ - Saturación de Oxígeno</div>
+                  <div class="minimal-warning">⚠ Warning: < 85%</div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: orange"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">Glucemia - Nivel de Glucosa</div>
+                  <div class="minimal-warning">
+                    ⚠ Warning: < 70 o > 351 mg/dL
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfica de Constantes -->
+          <div class="constantes-chart-container">
+            <svg
+              id="constantesChart"
+              width="100%"
+              height="600"
+              viewBox="0 0 1200 600"
+            >
+              <!-- Se generará dinámicamente -->
+            </svg>
+          </div>
+        </div>
+
+        <!-- Oxigenación, Dolor y Glucemias -->
+        <div class="chart-card oxigenacion-card">
+          <h3 class="chart-title">
+            🫁 Oxigenación, 🩹 Dolor, 🩸 Control de Glucemias
+          </h3>
+
+          <div class="constantes-controls">
+            <button
+              class="btn-small btn-info"
+              onclick="toggleInfoOxigenacion()"
+            >
+              ℹ️ Información
+            </button>
+            <div class="fecha-hoja">
+              Hoja: <span id="hojaOxigenacion">1</span>
+            </div>
+          </div>
+
+          <!-- Panel de información -->
+          <div
+            class="leyenda-minimal"
+            id="infoOxigenacion"
+            style="display: none"
+          >
+            <div class="minimal-grid">
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: #8e44ad"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">
+                    P. NEUMO - Presión Neumática (0-100)
+                  </div>
+                  <div class="minimal-warning">Valor numérico directo</div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: #3498db"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">OXIGENACIÓN - Tipo de soporte</div>
+                  <div class="minimal-warning">VMI, VMNI, O₂, Sin soporte</div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: #2ecc71"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">
+                    SATURACIÓN - Automática desde constantes
+                  </div>
+                  <div class="minimal-warning">
+                    Se actualiza automáticamente
+                  </div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: #e74c3c"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">
+                    EVA/ESCID/RASS - Escalas especializadas
+                  </div>
+                  <div class="minimal-warning">
+                    Click para acceder a escalas detalladas
+                  </div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: #f39c12"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">
+                    GLUCEMIA - Automática desde constantes
+                  </div>
+                  <div class="minimal-warning">
+                    Se actualiza automáticamente
+                  </div>
+                </div>
+              </div>
+
+              <div class="minimal-item">
+                <div class="minimal-color" style="background: #9b59b6"></div>
+                <div class="minimal-text">
+                  <div class="minimal-name">
+                    INSULINA - Con recomendaciones automáticas
+                  </div>
+                  <div class="minimal-warning">
+                    Hover para ver protocolo recomendado
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de datos de oxigenación -->
+          <div class="oxigenacion-table-container">
+            <table class="oxigenacion-table" id="oxigenacionTable">
+              <thead>
+                <tr>
+                  <th class="param-header">PARÁMETRO</th>
+                  <!-- Las horas se generarán dinámicamente -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="param-row" data-param="pNeumo">
+                  <td class="param-label">
+                    <span
+                      class="param-color"
+                      style="background: #8e44ad"
+                    ></span>
+                    P. NEUMO
+                  </td>
+                  <!-- Las celdas se generarán dinámicamente -->
+                </tr>
+                <tr class="param-row" data-param="oxigenacion">
+                  <td class="param-label">
+                    <span
+                      class="param-color"
+                      style="background: #3498db"
+                    ></span>
+                    OXIGENACIÓN
+                  </td>
+                </tr>
+                <tr class="param-row" data-param="saturacion">
+                  <td class="param-label">
+                    <span
+                      class="param-color"
+                      style="background: #2ecc71"
+                    ></span>
+                    SATURACIÓN
+                  </td>
+                </tr>
+                <tr class="param-row" data-param="evaRass">
+                  <td class="param-label">
+                    <span
+                      class="param-color"
+                      style="background: #e74c3c"
+                    ></span>
+                    EVA/ESCID/RASS
+                  </td>
+                </tr>
+                <tr class="param-row" data-param="glucemia">
+                  <td class="param-label">
+                    <span
+                      class="param-color"
+                      style="background: #f39c12"
+                    ></span>
+                    GLUCEMIA
+                  </td>
+                </tr>
+                <tr class="param-row" data-param="insulina">
+                  <td class="param-label">
+                    <span
+                      class="param-color"
+                      style="background: #9b59b6"
+                    ></span>
+                    INSULINA
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        
+        <!-- Pérdidas -->
+
+        <div class="chart-card perdidas-card">
+          <h3 class="chart-title">💊 Pérdidas</h3>
+          <div class="chart-placeholder">
+            <div>
+              <p>💉 Pérdidas</p>
+              <p style="font-size: 14px; margin-top: 10px">
+                (Próximamente: Horarios, dosis, efectos)
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- Ingresos -->
+
+        <div class="chart-card ingresos-card">
+          <h3 class="chart-title">💊 Ingresos y Nutrición</h3>
+          <div class="chart-placeholder">
+            <div>
+              <p>💉 Ingresos </p>
+              <p style="font-size: 14px; margin-top: 10px">
+                (Próximamente: Horarios, dosis, efectos)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mecicación -->
+
+        <div class="chart-card medicacion-card">
+          <h3 class="chart-title">💊 Medicación</h3>
+          <div class="chart-placeholder">
+            <div>
+              <p>💉 Control de medicamentos</p>
+              <p style="font-size: 14px; margin-top: 10px">
+                (Próximamente: Horarios, dosis, efectos)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card estancia-card">
+          <h3 class="chart-title">🏥 Tiempo de Estancia Hospitalaria</h3>
+          <div class="chart-placeholder">
+            <div>
+              <p
+                style="font-size: 18px; margin-bottom: 15px"
+                id="tiempoEstancia"
+              >
+                Calculando...
+              </p>
+              <div
+                style="
+                  font-size: 12px;
+                  color: #666;
+                  text-align: left;
+                  max-width: 300px;
+                "
+              >
+                <strong>Sistema de turnos:</strong><br />
+                • Día hospitalario: 8:00 AM - 7:59 AM<br />
+                • Hoja = Día de internación<br />
+                • Fecha ajustada para balances<br />
+                • Ejemplo: Ingreso 2:15 AM → Hoja del día anterior
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="buttons-section">
+        <button class="btn btn-primary" onclick="abrirDatosCompletos()">
+          📋 Editar Datos Completos
+        </button>
+
+        <button class="btn btn-success" onclick="imprimirGraficas()">
+          🖨️ Imprimir Gráficas
+        </button>
+
+        <button class="btn btn-danger" onclick="altaCompleta()">
+          🏠 Alta Médica Completa
+        </button>
+
+        <button class="btn btn-secondary" onclick="volverAlInicio()">
+          ← Volver al Inicio
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Tooltip para ver constantes (solo lectura) -->
+    <div id="tooltipModal" class="tooltip-modal">
+      <div class="tooltip-modal-content">
+        <div class="tooltip-modal-header" id="tooltipModalHeader">
+          Constantes - Hora: 08:00
+        </div>
+
+        <div class="tooltip-constantes-grid" id="tooltipConstantesGrid">
+          <!-- Se llenará dinámicamente -->
+        </div>
+
+        <div class="tooltip-footer">
+          <small>Haz clic para editar</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Constantes Vitales -->
+    <div id="constantesModal" class="constantes-modal">
+      <div class="constantes-modal-content">
+        <div class="constantes-modal-header" id="constantesModalHeader">
+          Constantes Vitales - Hora: 08:00
+        </div>
+
+        <form id="constantesForm" class="constantes-form">
+          <div class="constante-group">
+            <label for="fr">
+              <span class="color-box" style="background: black"></span>
+              FR (Frecuencia Respiratoria)
+            </label>
+            <input type="number" id="fr" min="0" max="50" placeholder="0-50" />
+          </div>
+
+          <div class="constante-group">
+            <label for="temperatura">
+              <span class="color-box" style="background: red"></span>
+              Tª (Temperatura °C)
+            </label>
+            <input
+              type="number"
+              id="temperatura"
+              min="33"
+              max="42"
+              step="0.1"
+              placeholder="33-42"
+            />
+          </div>
+
+          <div class="constante-group">
+            <label for="fc">
+              <span class="color-box" style="background: blue"></span>
+              FC (Frecuencia Cardíaca)
+            </label>
+            <input
+              type="number"
+              id="fc"
+              min="0"
+              max="250"
+              placeholder="0-250"
+            />
+          </div>
+
+          <div class="constante-group">
+            <label>
+              <span class="color-box" style="background: green"></span>
+              TA (Tensión Arterial)
+            </label>
+            <div class="ta-group">
+              <input
+                type="number"
+                id="taSistolica"
+                min="0"
+                max="250"
+                placeholder="Sistólica"
+              />
+              <input
+                type="number"
+                id="taDiastolica"
+                min="0"
+                max="250"
+                placeholder="Diastólica"
+              />
+            </div>
+          </div>
+
+          <div class="constante-group">
+            <label for="satO2">
+              <span class="color-box" style="background: lime"></span>
+              Sat O₂ (%)
+            </label>
+            <input
+              type="number"
+              id="satO2"
+              min="0"
+              max="100"
+              placeholder="0-100"
+            />
+          </div>
+
+          <div class="constante-group">
+            <label for="glucemia">
+              <span class="color-box" style="background: orange"></span>
+              Glucemia (mg/dL)
+            </label>
+            <input
+              type="number"
+              id="glucemia"
+              min="0"
+              max="999"
+              placeholder="0-999"
+            />
+          </div>
+
+          <div class="constantes-modal-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="cerrarModalConstantes()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="eliminarConstantes()"
+              id="eliminarBtn"
+              style="display: none"
+            >
+              🗑️ Eliminar
+            </button>
+            <button type="submit" class="btn btn-success">💾 Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Edición Rápida -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Editar Datos del Paciente</div>
+
+        <form id="editForm" class="modal-form">
+          <div class="form-group">
+            <label for="editNombre">Nombre Completo:</label>
+            <input type="text" id="editNombre" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editEdad">Edad:</label>
+            <input type="number" id="editEdad" min="0" max="120" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editPeso">Peso (kg):</label>
+            <input type="number" id="editPeso" min="0" step="1" />
+          </div>
+
+          <div class="form-group">
+            <label for="editHistoria">Número de Historia:</label>
+            <input type="text" id="editHistoria" required />
+          </div>
+
+          <div class="modal-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="cerrarModal()"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-success">💾 Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Variables globales
+      let numeroBoxActual = null;
+      let datosPaciente = {};
+      let constantesData = {};
+      let oxigenacionData = {};
+      let horaSeleccionada = null;
+      let tooltipTimeout = null;
+      let modalTooltipActivo = false;
+
+      // Configuración de escalas para la gráfica
+      const escalas = {
+        FR: { min: 0, max: 50, step: 10, color: "black", name: "FR" },
+        temperatura: { min: 35, max: 40, step: 1, color: "red", name: "Tª" },
+        FC: { min: 0, max: 250, step: 50, color: "blue", name: "FC" },
+        TA: { min: 0, max: 250, step: 50, color: "green", name: "TA" },
+        satO2: { min: 60, max: 100, step: 10, color: "lime", name: "SatO₂" },
+        glucemia: {
+          min: 0,
+          max: 500,
+          step: 100,
+          color: "orange",
+          name: "Gluc",
+        },
+      };
+
+      // Inicializar página
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          inicializarPagina();
+          configurarResponsive();
+        } catch (error) {
+          console.error("Error al inicializar la página:", error);
+          mostrarMensaje("Error al cargar la página", "error");
+        }
+      });
+
+      function inicializarPagina() {
+        // Obtener parámetro box de URL
+        const urlParams = new URLSearchParams(window.location.search);
+        numeroBoxActual = urlParams.get("box");
+
+        if (!numeroBoxActual) {
+          alert("Error: No se especificó el número de box");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Cargar datos reales del paciente
+        cargarDatosPaciente()
+          .then(() => {
+            console.log("Datos del paciente cargados");
+            inicializarGraficaConstantes();
+            setTimeout(() => {
+              inicializarTablaOxigenacion();
+            }, 300);
+          })
+          .catch((error) => {
+            console.error("Error en inicialización:", error);
+            mostrarMensaje("Error al cargar los datos", "error");
+          });
+      }
+
+      function inicializarGraficaConstantes() {
+        const { hojaActual } = calcularTurnoHospitalario();
+        document.getElementById("hojaConstantes").textContent = hojaActual;
+
+        cargarConstantesVitales();
+        generarGraficaConstantes();
+      }
+
+      async function cargarConstantesVitales() {
+        try {
+          // Datos demo para constantes
+          constantesData = {
+            "08:00": {
+              FR: 18,
+              temperatura: 36.5,
+              FC: 75,
+              taSistolica: 120,
+              taDiastolica: 80,
+              satO2: 98,
+              glucemia: 110,
+            },
+            "12:00": {
+              FR: 20,
+              temperatura: 36.8,
+              FC: 82,
+              satO2: 97,
+              glucemia: 130,
+            },
+            "16:00": { temperatura: 37.1, FC: 88, satO2: 96, glucemia: 145 },
+            "20:00": {
+              FR: 22,
+              temperatura: 37.2,
+              FC: 90,
+              taSistolica: 130,
+              taDiastolica: 85,
+              satO2: 95,
+              glucemia: 160,
+            },
+          };
+
+          console.log("Constantes cargadas:", constantesData);
+          generarGraficaConstantes();
+          actualizarValoresAutomaticos();
+        } catch (error) {
+          console.error("Error al cargar constantes:", error);
+          constantesData = {};
+          generarGraficaConstantes();
+        }
+      }
+
+      function generarGraficaConstantes() {
+        const svg = document.getElementById("constantesChart");
+
+        if (esMobil()) {
+          generarGraficaConstantesVertical(svg);
+        } else {
+          generarGraficaConstantesHorizontal(svg);
+        }
+      }
+
+      function generarGraficaConstantesHorizontal(svg) {
+        const width = 1200;
+        const height = 500;
+        const margin = { top: 20, right: 60, bottom: 40, left: 90 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        svg.innerHTML = "";
+        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+        // Generar horas
+        const horas = [];
+        for (let i = 8; i < 24; i++) {
+          horas.push(`${i.toString().padStart(2, "0")}:00`);
+        }
+        for (let i = 0; i < 8; i++) {
+          horas.push(`${i.toString().padStart(2, "0")}:00`);
+        }
+
+        const horaWidth = chartWidth / horas.length;
+
+        // Crear gradiente de fondo
+        const defs = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "defs"
+        );
+        const gradient = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "linearGradient"
+        );
+        gradient.setAttribute("id", "bgGradient");
+        gradient.setAttribute("x1", "0%");
+        gradient.setAttribute("y1", "0%");
+        gradient.setAttribute("x2", "0%");
+        gradient.setAttribute("y2", "100%");
+
+        const stop1 = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "stop"
+        );
+        stop1.setAttribute("offset", "0%");
+        stop1.setAttribute("stop-color", "#f8f9fa");
+
+        const stop2 = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "stop"
+        );
+        stop2.setAttribute("offset", "100%");
+        stop2.setAttribute("stop-color", "#ffffff");
+
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        defs.appendChild(gradient);
+        svg.appendChild(defs);
+
+        // Fondo
+        const background = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect"
+        );
+        background.setAttribute("x", margin.left);
+        background.setAttribute("y", margin.top);
+        background.setAttribute("width", chartWidth);
+        background.setAttribute("height", chartHeight);
+        background.setAttribute("fill", "url(#bgGradient)");
+        svg.appendChild(background);
+
+        // Generar líneas de escala y etiquetas
+        Object.entries(escalas).forEach(([tipo, config], index) => {
+          const yOffset = (chartHeight / 6) * index;
+          const sectionHeight = chartHeight / 6;
+
+          // Línea divisoria entre secciones
+          if (index > 0) {
+            const dividerLine = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line"
+            );
+            dividerLine.setAttribute("x1", margin.left);
+            dividerLine.setAttribute("y1", margin.top + yOffset);
+            dividerLine.setAttribute("x2", margin.left + chartWidth);
+            dividerLine.setAttribute("y2", margin.top + yOffset);
+            dividerLine.setAttribute("stroke", "#333");
+            dividerLine.setAttribute("stroke-width", "2");
+            svg.appendChild(dividerLine);
+          }
+
+          // Líneas horizontales de escala
+          for (
+            let valor = config.min;
+            valor <= config.max;
+            valor += config.step
+          ) {
+            const y =
+              margin.top +
+              yOffset +
+              sectionHeight -
+              ((valor - config.min) / (config.max - config.min)) *
+                sectionHeight;
+
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line"
+            );
+            line.setAttribute("x1", margin.left);
+            line.setAttribute("y1", y);
+            line.setAttribute("x2", margin.left + chartWidth);
+            line.setAttribute("y2", y);
+            line.setAttribute("stroke", "#f0f0f0");
+            line.setAttribute("stroke-width", "0.5");
+            svg.appendChild(line);
+
+            // Etiqueta del valor
+            const mostrarValor = !(tipo === "FC" && valor === 250);
+            if (mostrarValor) {
+              const text = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "text"
+              );
+              text.setAttribute("x", margin.left - 10);
+              text.setAttribute("y", y + 4);
+              text.setAttribute("text-anchor", "end");
+              text.setAttribute("font-size", "11");
+              text.setAttribute("fill", config.color);
+              text.setAttribute("font-weight", "600");
+              text.textContent = valor;
+              svg.appendChild(text);
+            }
+          }
+
+          // Etiqueta del tipo de constante
+          const label = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          label.setAttribute("x", margin.left - 50);
+          label.setAttribute("y", margin.top + yOffset + sectionHeight / 2);
+          label.setAttribute("text-anchor", "middle");
+          label.setAttribute("font-size", "15");
+          label.setAttribute("font-weight", "bold");
+          label.setAttribute("fill", config.color);
+          label.textContent = config.name;
+          svg.appendChild(label);
+        });
+
+        // Líneas verticales de horas y etiquetas
+        horas.forEach((hora, index) => {
+          const x = margin.left + index * horaWidth + horaWidth / 2;
+          const tieneConstantes =
+            constantesData[hora] &&
+            Object.keys(constantesData[hora]).length > 0;
+
+          // Zona clickeable
+          const zonaClick = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect"
+          );
+          zonaClick.setAttribute("x", margin.left + index * horaWidth);
+          zonaClick.setAttribute("y", margin.top);
+          zonaClick.setAttribute("width", horaWidth);
+          zonaClick.setAttribute("height", chartHeight);
+          zonaClick.setAttribute(
+            "fill",
+            tieneConstantes ? "rgba(102, 126, 234, 0.1)" : "transparent"
+          );
+          zonaClick.setAttribute(
+            "stroke",
+            tieneConstantes ? "rgba(102, 126, 234, 0.3)" : "transparent"
+          );
+          zonaClick.setAttribute("stroke-width", "1");
+          zonaClick.style.cursor = "pointer";
+          zonaClick.addEventListener("click", () => abrirModalConstantes(hora));
+          zonaClick.addEventListener("mouseenter", function () {
+            this.setAttribute(
+              "fill",
+              tieneConstantes
+                ? "rgba(102, 126, 234, 0.2)"
+                : "rgba(102, 126, 234, 0.05)"
+            );
+            if (tieneConstantes) mostrarTooltipConstantes(hora);
+          });
+          zonaClick.addEventListener("mouseleave", function () {
+            this.setAttribute(
+              "fill",
+              tieneConstantes ? "rgba(102, 126, 234, 0.1)" : "transparent"
+            );
+            ocultarTooltipConstantes();
+          });
+          svg.appendChild(zonaClick);
+
+          // Línea vertical de hora
+          const line = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
+          line.setAttribute("x1", x);
+          line.setAttribute("y1", margin.top);
+          line.setAttribute("x2", x);
+          line.setAttribute("y2", margin.top + chartHeight);
+          line.setAttribute("stroke", tieneConstantes ? "#667eea" : "#e0e0e0");
+          line.setAttribute("stroke-width", tieneConstantes ? "1.5" : "0.5");
+          svg.appendChild(line);
+
+          // Etiqueta de hora
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          text.setAttribute("x", x);
+          text.setAttribute("y", margin.top + chartHeight + 15);
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("font-size", "11");
+          text.setAttribute("fill", tieneConstantes ? "#667eea" : "#666");
+          text.setAttribute("font-weight", tieneConstantes ? "bold" : "normal");
+          text.textContent = hora.replace(":00", "");
+          text.style.cursor = "pointer";
+          text.addEventListener("click", () => abrirModalConstantes(hora));
+          svg.appendChild(text);
+        });
+
+        // Dibujar puntos y líneas de constantes
+        dibujarConstantesHorizontal(
+          svg,
+          horas,
+          margin,
+          chartWidth,
+          chartHeight
+        );
+      }
+
+      function generarGraficaConstantesVertical(svg) {
+        const width = 400;
+        const height = 800;
+        const margin = { top: 60, right: 20, bottom: 20, left: 60 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        svg.innerHTML = "";
+        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+        // Generar horas
+        const horas = [];
+        for (let i = 8; i < 24; i++) {
+          horas.push(`${i.toString().padStart(2, "0")}:00`);
+        }
+        for (let i = 0; i < 8; i++) {
+          horas.push(`${i.toString().padStart(2, "0")}:00`);
+        }
+
+        const horaHeight = chartHeight / horas.length;
+
+        // Líneas horizontales de horas y etiquetas
+        horas.forEach((hora, index) => {
+          const y = margin.top + index * horaHeight + horaHeight / 2;
+          const tieneConstantes =
+            constantesData[hora] &&
+            Object.keys(constantesData[hora]).length > 0;
+
+          // Zona clickeable
+          const zonaClick = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect"
+          );
+          zonaClick.setAttribute("x", margin.left);
+          zonaClick.setAttribute("y", margin.top + index * horaHeight);
+          zonaClick.setAttribute("width", chartWidth);
+          zonaClick.setAttribute("height", horaHeight);
+          zonaClick.setAttribute(
+            "fill",
+            tieneConstantes ? "rgba(102, 126, 234, 0.1)" : "transparent"
+          );
+          zonaClick.style.cursor = "pointer";
+          zonaClick.addEventListener("click", () => abrirModalConstantes(hora));
+          svg.appendChild(zonaClick);
+
+          // Etiqueta de hora
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          text.setAttribute("x", margin.left - 10);
+          text.setAttribute("y", y + 4);
+          text.setAttribute("text-anchor", "end");
+          text.setAttribute("font-size", "11");
+          text.setAttribute("fill", tieneConstantes ? "#667eea" : "#666");
+          text.setAttribute("font-weight", tieneConstantes ? "bold" : "normal");
+          text.textContent = hora.replace(":00", "");
+          text.style.cursor = "pointer";
+          text.addEventListener("click", () => abrirModalConstantes(hora));
+          svg.appendChild(text);
+        });
+      }
+
+      function dibujarConstantesHorizontal(
+        svg,
+        horas,
+        margin,
+        chartWidth,
+        chartHeight
+      ) {
+        const horaWidth = chartWidth / horas.length;
+
+        Object.entries(escalas).forEach(([tipo, config], sectionIndex) => {
+          const yOffset = (chartHeight / 6) * sectionIndex;
+          const sectionHeight = chartHeight / 6;
+          const puntos = [];
+
+          horas.forEach((hora, horaIndex) => {
+            const datos = constantesData[hora];
+            if (datos) {
+              const x = margin.left + horaIndex * horaWidth + horaWidth / 2;
+              let y;
+
+              if (tipo === "TA") {
+                const sistolica = datos.taSistolica;
+                const diastolica = datos.taDiastolica;
+
+                if (sistolica !== undefined && diastolica !== undefined) {
+                  const sistolicaExtrema = sistolica < 80 || sistolica > 170;
+                  const diastolicaExtrema = diastolica < 40 || diastolica > 90;
+                  const esValorExtremo = sistolicaExtrema || diastolicaExtrema;
+
+                  const ySistolica =
+                    margin.top +
+                    yOffset +
+                    sectionHeight -
+                    ((sistolica - config.min) / (config.max - config.min)) *
+                      sectionHeight;
+                  const yDiastolica =
+                    margin.top +
+                    yOffset +
+                    sectionHeight -
+                    ((diastolica - config.min) / (config.max - config.min)) *
+                      sectionHeight;
+
+                  // Línea vertical uniendo sistólica y diastólica
+                  const lineTA = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "line"
+                  );
+                  lineTA.setAttribute("x1", x);
+                  lineTA.setAttribute("y1", ySistolica);
+                  lineTA.setAttribute("x2", x);
+                  lineTA.setAttribute("y2", yDiastolica);
+                  lineTA.setAttribute(
+                    "stroke",
+                    esValorExtremo ? "#ff4444" : config.color
+                  );
+                  lineTA.setAttribute(
+                    "stroke-width",
+                    esValorExtremo ? "4" : "3"
+                  );
+                  svg.appendChild(lineTA);
+
+                  // Puntos sistólica y diastólica
+                  [
+                    { y: ySistolica, extremo: sistolicaExtrema },
+                    { y: yDiastolica, extremo: diastolicaExtrema },
+                  ].forEach((punto) => {
+                    const circulo = document.createElementNS(
+                      "http://www.w3.org/2000/svg",
+                      "circle"
+                    );
+                    circulo.setAttribute("cx", x);
+                    circulo.setAttribute("cy", punto.y);
+                    circulo.setAttribute("r", "4");
+                    circulo.setAttribute(
+                      "fill",
+                      punto.extremo ? "#ff4444" : "white"
+                    );
+                    circulo.setAttribute("stroke", config.color);
+                    circulo.setAttribute(
+                      "stroke-width",
+                      punto.extremo ? "3" : "2"
+                    );
+                    circulo.setAttribute("class", "chart-point");
+                    circulo.style.cursor = "pointer";
+                    circulo.addEventListener("click", () =>
+                      abrirModalConstantes(hora)
+                    );
+                    svg.appendChild(circulo);
+                  });
+
+                  if (esValorExtremo) {
+                    const yWarning = ySistolica - 15;
+                    const warning = document.createElementNS(
+                      "http://www.w3.org/2000/svg",
+                      "polygon"
+                    );
+                    warning.setAttribute(
+                      "points",
+                      `${x - 6},${yWarning - 9} ${x + 6},${
+                        yWarning - 9
+                      } ${x},${yWarning}`
+                    );
+                    warning.setAttribute("fill", "#ff4444");
+                    warning.setAttribute("stroke", "#ffffff");
+                    warning.setAttribute("stroke-width", "1");
+                    warning.style.cursor = "pointer";
+                    warning.addEventListener("click", () =>
+                      abrirModalConstantes(hora)
+                    );
+                    svg.appendChild(warning);
+
+                    const exclamation = document.createElementNS(
+                      "http://www.w3.org/2000/svg",
+                      "text"
+                    );
+                    exclamation.setAttribute("x", x);
+                    exclamation.setAttribute("y", yWarning - 2);
+                    exclamation.setAttribute("text-anchor", "middle");
+                    exclamation.setAttribute("font-size", "8");
+                    exclamation.setAttribute("font-weight", "bold");
+                    exclamation.setAttribute("fill", "white");
+                    exclamation.textContent = "!";
+                    exclamation.style.cursor = "pointer";
+                    exclamation.addEventListener("click", () =>
+                      abrirModalConstantes(hora)
+                    );
+                    svg.appendChild(exclamation);
+                  }
+                }
+              } else if (datos[tipo] !== undefined) {
+                let valorReal = datos[tipo];
+                let valorParaGrafica = valorReal;
+                let esValorExtremo = false;
+
+                // Detectar valores extremos
+                if (tipo === "temperatura") {
+                  if (valorReal < config.min) {
+                    valorParaGrafica = config.min;
+                    esValorExtremo = true;
+                  } else if (valorReal > config.max) {
+                    valorParaGrafica = config.max;
+                    esValorExtremo = true;
+                  } else if (valorReal < 35 || valorReal > 38.5) {
+                    esValorExtremo = true;
+                  }
+                } else if (tipo === "satO2") {
+                  if (valorReal < config.min) {
+                    valorParaGrafica = config.min;
+                    esValorExtremo = true;
+                  }
+                } else if (tipo === "glucemia") {
+                  if (valorReal > config.max) {
+                    valorParaGrafica = config.max;
+                    esValorExtremo = true;
+                  } else if (valorReal < 70 || valorReal > 351) {
+                    esValorExtremo = true;
+                  }
+                } else if (tipo === "FC") {
+                  if (valorReal < 50 || valorReal > 130) {
+                    esValorExtremo = true;
+                  }
+                } else if (tipo === "FR") {
+                  if (valorReal < 10 || valorReal > 30) {
+                    esValorExtremo = true;
+                  }
+                }
+
+                y =
+                  margin.top +
+                  yOffset +
+                  sectionHeight -
+                  ((valorParaGrafica - config.min) /
+                    (config.max - config.min)) *
+                    sectionHeight;
+
+                // Punto individual
+                const punto = document.createElementNS(
+                  "http://www.w3.org/2000/svg",
+                  "circle"
+                );
+                punto.setAttribute("cx", x);
+                punto.setAttribute("cy", y);
+                punto.setAttribute("r", "4");
+                punto.setAttribute(
+                  "fill",
+                  esValorExtremo ? "#ff4444" : "white"
+                );
+                punto.setAttribute("stroke", config.color);
+                punto.setAttribute("stroke-width", esValorExtremo ? "3" : "2");
+                punto.setAttribute("class", "chart-point");
+                punto.style.cursor = "pointer";
+                punto.addEventListener("click", () =>
+                  abrirModalConstantes(hora)
+                );
+                svg.appendChild(punto);
+
+                // Agregar icono de warning para valores extremos
+                if (esValorExtremo) {
+                  const warning = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "polygon"
+                  );
+                  warning.setAttribute(
+                    "points",
+                    `${x - 6},${y - 12} ${x + 6},${y - 12} ${x},${y - 3}`
+                  );
+                  warning.setAttribute("fill", "#ff4444");
+                  warning.setAttribute("stroke", "#ffffff");
+                  warning.setAttribute("stroke-width", "1");
+                  warning.style.cursor = "pointer";
+                  warning.addEventListener("click", () =>
+                    abrirModalConstantes(hora)
+                  );
+                  svg.appendChild(warning);
+
+                  const exclamation = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "text"
+                  );
+                  exclamation.setAttribute("x", x);
+                  exclamation.setAttribute("y", y - 5);
+                  exclamation.setAttribute("text-anchor", "middle");
+                  exclamation.setAttribute("font-size", "8");
+                  exclamation.setAttribute("font-weight", "bold");
+                  exclamation.setAttribute("fill", "white");
+                  exclamation.textContent = "!";
+                  exclamation.style.cursor = "pointer";
+                  exclamation.addEventListener("click", () =>
+                    abrirModalConstantes(hora)
+                  );
+                  svg.appendChild(exclamation);
+                }
+
+                puntos.push({ x, y, hora });
+              }
+            }
+          });
+
+          // Líneas conectando puntos (excepto TA)
+          if (tipo !== "TA" && puntos.length > 1) {
+            for (let i = 0; i < puntos.length - 1; i++) {
+              const punto1 = puntos[i];
+              const punto2 = puntos[i + 1];
+
+              const line = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+              );
+              line.setAttribute("x1", punto1.x);
+              line.setAttribute("y1", punto1.y);
+              line.setAttribute("x2", punto2.x);
+              line.setAttribute("y2", punto2.y);
+              line.setAttribute("stroke", config.color);
+              line.setAttribute("stroke-width", "1.5");
+              line.setAttribute("class", "chart-line");
+              svg.appendChild(line);
+            }
+          }
+        });
+      }
+
+      function mostrarTooltipConstantes(hora) {
+        const datos = constantesData[hora];
+        if (!datos || Object.keys(datos).length <= 1) return;
+
+        if (tooltipTimeout) {
+          clearTimeout(tooltipTimeout);
+          tooltipTimeout = null;
+        }
+
+        const tooltip = document.getElementById("tooltipModal");
+        const header = document.getElementById("tooltipModalHeader");
+        const grid = document.getElementById("tooltipConstantesGrid");
+
+        header.textContent = `Constantes - Hora: ${hora}`;
+
+        function esValorExtremo(
+          tipo,
+          valor,
+          sistolica = null,
+          diastolica = null
+        ) {
+          switch (tipo) {
+            case "FR":
+              return valor < 10 || valor > 30;
+            case "temperatura":
+              return valor < 35 || valor > 38.5;
+            case "FC":
+              return valor < 50 || valor > 130;
+            case "satO2":
+              return valor < 85;
+            case "glucemia":
+              return valor < 70 || valor > 351;
+            case "TA":
+              if (sistolica !== null && diastolica !== null) {
+                const sistolicaExtrema = sistolica < 80 || sistolica > 170;
+                const diastolicaExtrema = diastolica < 40 || diastolica > 90;
+                return sistolicaExtrema || diastolicaExtrema;
+              }
+              return false;
+            default:
+              return false;
+          }
+        }
+
+        let htmlContent = "";
+
+        // FR
+        if (datos.FR !== undefined) {
+          const extremo = esValorExtremo("FR", datos.FR);
+          htmlContent += `
+                          <div class="tooltip-constante-item">
+                            <div class="tooltip-constante-label">
+                              <span class="color-box" style="background: black;"></span>
+                              FR ${extremo ? "⚠️" : ""}
+                            </div>
+                            <div class="tooltip-constante-valor" style="${
+                              extremo ? "color: #ff6b6b;" : ""
+                            }">${datos.FR}</div>
+                          </div>
+                        `;
+        }
+
+        // Temperatura
+        if (datos.temperatura !== undefined) {
+          const extremo = esValorExtremo("temperatura", datos.temperatura);
+          htmlContent += `
+                          <div class="tooltip-constante-item">
+                            <div class="tooltip-constante-label">
+                              <span class="color-box" style="background: red;"></span>
+                              Tª ${extremo ? "⚠️" : ""}
+                            </div>
+                            <div class="tooltip-constante-valor" style="${
+                              extremo ? "color: #ff6b6b;" : ""
+                            }">${datos.temperatura}°C</div>
+                          </div>
+                        `;
+        }
+
+        // FC
+        if (datos.FC !== undefined) {
+          const extremo = esValorExtremo("FC", datos.FC);
+          htmlContent += `
+                          <div class="tooltip-constante-item">
+                            <div class="tooltip-constante-label">
+                              <span class="color-box" style="background: blue;"></span>
+                              FC ${extremo ? "⚠️" : ""}
+                            </div>
+                            <div class="tooltip-constante-valor" style="${
+                              extremo ? "color: #ff6b6b;" : ""
+                            }">${datos.FC}</div>
+                          </div>
+                        `;
+        }
+
+        // TA
+        if (
+          datos.taSistolica !== undefined &&
+          datos.taDiastolica !== undefined
+        ) {
+          const extremo = esValorExtremo(
+            "TA",
+            null,
+            datos.taSistolica,
+            datos.taDiastolica
+          );
+
+          htmlContent += `
+                          <div class="tooltip-constante-item tooltip-ta-item">
+                            <div class="tooltip-constante-label">
+                              <span class="color-box" style="background: green;"></span>
+                              TA ${extremo ? "⚠️" : ""}
+                            </div>
+                            <div class="tooltip-constante-valor" style="${
+                              extremo ? "color: #ff6b6b;" : ""
+                            }">${datos.taSistolica}/${datos.taDiastolica}</div>
+                          </div>
+                        `;
+        }
+
+        // SatO2
+        if (datos.satO2 !== undefined) {
+          const extremo = esValorExtremo("satO2", datos.satO2);
+          htmlContent += `
+                          <div class="tooltip-constante-item">
+                            <div class="tooltip-constante-label">
+                              <span class="color-box" style="background: lime;"></span>
+                              SatO₂ ${extremo ? "⚠️" : ""}
+                            </div>
+                            <div class="tooltip-constante-valor" style="${
+                              extremo ? "color: #ff6b6b;" : ""
+                            }">${datos.satO2}%</div>
+                          </div>
+                        `;
+        }
+
+        // Glucemia
+        if (datos.glucemia !== undefined) {
+          const extremo = esValorExtremo("glucemia", datos.glucemia);
+          htmlContent += `
+                          <div class="tooltip-constante-item">
+                            <div class="tooltip-constante-label">
+                              <span class="color-box" style="background: orange;"></span>
+                              Glucemia ${extremo ? "⚠️" : ""}
+                            </div>
+                            <div class="tooltip-constante-valor" style="${
+                              extremo ? "color: #ff6b6b;" : ""
+                            }">${datos.glucemia}</div>
+                          </div>
+                        `;
+        }
+
+        grid.innerHTML = htmlContent;
+
+        tooltip.style.display = "block";
+        modalTooltipActivo = true;
+
+        document.addEventListener("mousemove", posicionarTooltip);
+      }
+
+      function posicionarTooltip(e) {
+        const tooltip = document.getElementById("tooltipModal");
+        if (!modalTooltipActivo) return;
+
+        const offset = 15;
+        let left = e.clientX + offset;
+        let top = e.clientY + offset;
+
+        const tooltipRect = tooltip.getBoundingClientRect();
+        if (left + tooltipRect.width > window.innerWidth) {
+          left = e.clientX - tooltipRect.width - offset;
+        }
+        if (top + tooltipRect.height > window.innerHeight) {
+          top = e.clientY - tooltipRect.height - offset;
+        }
+
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      }
+
+      function ocultarTooltipConstantes() {
+        tooltipTimeout = setTimeout(() => {
+          const tooltip = document.getElementById("tooltipModal");
+          tooltip.style.display = "none";
+          modalTooltipActivo = false;
+          document.removeEventListener("mousemove", posicionarTooltip);
+        }, 200);
+      }
+
+      function toggleLeyenda() {
+        const leyenda = document.getElementById("leyendaConstantes");
+        leyenda.style.display =
+          leyenda.style.display === "none" ? "block" : "none";
+      }
+
+      function abrirModalConstantes(hora) {
+        ocultarTooltipConstantes();
+
+        horaSeleccionada = hora;
+        document.getElementById(
+          "constantesModalHeader"
+        ).textContent = `Constantes Vitales - Hora: ${hora}`;
+
+        const datos = constantesData[hora] || {};
+        document.getElementById("fr").value = datos.FR || "";
+        document.getElementById("temperatura").value = datos.temperatura || "";
+        document.getElementById("fc").value = datos.FC || "";
+        document.getElementById("taSistolica").value = datos.taSistolica || "";
+        document.getElementById("taDiastolica").value =
+          datos.taDiastolica || "";
+        document.getElementById("satO2").value = datos.satO2 || "";
+        document.getElementById("glucemia").value = datos.glucemia || "";
+
+        const eliminarBtn = document.getElementById("eliminarBtn");
+        eliminarBtn.style.display =
+          Object.keys(datos).length > 0 ? "inline-block" : "none";
+
+        document.getElementById("constantesModal").style.display = "block";
+      }
+
+      function cerrarModalConstantes() {
+        document.getElementById("constantesModal").style.display = "none";
+        horaSeleccionada = null;
+        ocultarTooltipConstantes();
+      }
+
+      // Event listeners para modales
+      window.addEventListener("click", function (event) {
+        const modalConstantes = document.getElementById("constantesModal");
+        const modalEdit = document.getElementById("editModal");
+
+        if (event.target === modalConstantes) {
+          cerrarModalConstantes();
+        }
+        if (event.target === modalEdit) {
+          cerrarModal();
+        }
+      });
+
+      // Manejar envío del formulario de constantes
+      document
+        .getElementById("constantesForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          if (!horaSeleccionada) return;
+
+          const fr = document.getElementById("fr").value;
+          const temperatura = document.getElementById("temperatura").value;
+          const fc = document.getElementById("fc").value;
+          const taSistolica = document.getElementById("taSistolica").value;
+          const taDiastolica = document.getElementById("taDiastolica").value;
+          const satO2 = document.getElementById("satO2").value;
+          const glucemia = document.getElementById("glucemia").value;
+
+          if (!constantesData[horaSeleccionada])
+            constantesData[horaSeleccionada] = {};
+
+          if (fr) constantesData[horaSeleccionada].FR = parseInt(fr);
+          if (temperatura)
+            constantesData[horaSeleccionada].temperatura =
+              parseFloat(temperatura);
+          if (fc) constantesData[horaSeleccionada].FC = parseInt(fc);
+          if (taSistolica)
+            constantesData[horaSeleccionada].taSistolica =
+              parseInt(taSistolica);
+          if (taDiastolica)
+            constantesData[horaSeleccionada].taDiastolica =
+              parseInt(taDiastolica);
+          if (satO2) constantesData[horaSeleccionada].satO2 = parseInt(satO2);
+          if (glucemia)
+            constantesData[horaSeleccionada].glucemia = parseInt(glucemia);
+
+          console.log(
+            "Constantes guardadas:",
+            constantesData[horaSeleccionada]
+          );
+
+          generarGraficaConstantes();
+          actualizarValoresAutomaticos();
+
+          mostrarMensaje("✅ Constantes guardadas correctamente", "success");
+          cerrarModalConstantes();
+        });
+
+      function eliminarConstantes() {
+        if (!horaSeleccionada) return;
+
+        if (
+          confirm(
+            `¿Está seguro de eliminar las constantes de la hora ${horaSeleccionada}?`
+          )
+        ) {
+          delete constantesData[horaSeleccionada];
+          generarGraficaConstantes();
+          actualizarValoresAutomaticos();
+          mostrarMensaje("✅ Constantes eliminadas correctamente", "success");
+          cerrarModalConstantes();
+        }
+      }
+
+      async function cargarDatosPaciente() {
+        try {
+          // Cargar datos reales según el box
+          const pacientesData = {
+            1: {
+              nombre_completo: "Plinicio Ruiz Ruiz",
+              edad: 86,
+              peso: 100,
+              numero_historia: "10000",
+              fecha_ingreso: "2025-06-30T17:09:44",
+            },
+          };
+
+          // Obtener datos del paciente según el box actual
+          datosPaciente = pacientesData[numeroBoxActual];
+
+          if (!datosPaciente) {
+            // Si no hay datos para este box, mostrar error
+            mostrarMensaje("No hay paciente ingresado en este box", "error");
+            setTimeout(() => (window.location.href = "index.html"), 2000);
+            return Promise.reject();
+          }
+          mostrarDatosPaciente();
+          calcularTiempoEstancia();
+          return Promise.resolve();
+        } catch (error) {
+          console.error("Error al cargar datos:", error);
+          mostrarMensaje(
+            "Error de conexión al cargar los datos del paciente",
+            "error"
+          );
+          return Promise.reject();
+        }
+      }
+
+      function calcularTiempoEstancia() {
+        if (!datosPaciente.fecha_ingreso) {
+          document.getElementById("tiempoEstancia").textContent =
+            "Fecha de ingreso no disponible";
+          return;
+        }
+
+        const ahora = new Date();
+        const ingreso = new Date(datosPaciente.fecha_ingreso);
+        const diferencia = ahora - ingreso;
+
+        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor(
+          (diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+
+        let texto = "";
+        if (dias > 0) {
+          texto = `${dias} día${dias > 1 ? "s" : ""} y ${horas} hora${
+            horas !== 1 ? "s" : ""
+          }`;
+        } else {
+          texto = `${horas} hora${horas !== 1 ? "s" : ""}`;
+        }
+
+        document.getElementById(
+          "tiempoEstancia"
+        ).textContent = `⏱️ Estancia: ${texto}`;
+      }
+
+      function calcularTurnoHospitalario() {
+        const ahora = new Date();
+        const fechaIngreso = datosPaciente.fecha_ingreso
+          ? new Date(datosPaciente.fecha_ingreso)
+          : ahora;
+
+        function obtenerFechaTurno(fecha) {
+          const fechaTurno = new Date(fecha);
+          const hora = fechaTurno.getHours();
+
+          if (hora < 8) {
+            fechaTurno.setDate(fechaTurno.getDate() - 1);
+          }
+
+          fechaTurno.setHours(0, 0, 0, 0);
+          return fechaTurno;
+        }
+
+        const fechaTurnoActual = obtenerFechaTurno(ahora);
+        const fechaIngresoTurno = obtenerFechaTurno(fechaIngreso);
+
+        const diferenciaMs =
+          fechaTurnoActual.getTime() - fechaIngresoTurno.getTime();
+        const diasTranscurridos = Math.floor(
+          diferenciaMs / (1000 * 60 * 60 * 24)
+        );
+        const hojaActual = diasTranscurridos + 1;
+
+        return {
+          fechaActualTurno: fechaTurnoActual.toLocaleDateString("es-ES"),
+          hojaActual,
+          fechaIngresoAjustada: fechaIngreso.toLocaleString("es-ES"),
+          fechaTurnoActual,
+          fechaIngresoTurno,
+        };
+      }
+
+      function mostrarDatosPaciente() {
+        document.getElementById("patientTitle").textContent = `${
+          datosPaciente.nombre_completo || "Paciente"
+        } - BOX-${numeroBoxActual}`;
+
+        const { fechaActualTurno, hojaActual, fechaIngresoAjustada } =
+          calcularTurnoHospitalario();
+
+        const dataGrid = document.getElementById("patientDataGrid");
+
+        if (esMobil()) {
+          dataGrid.innerHTML = `
+                          <div class="patient-data-summary" onclick="togglePatientDetails()">
+                            <div class="patient-summary-text">
+                              ${
+                                datosPaciente.nombre_completo || "Paciente"
+                              } - ${datosPaciente.edad || "??"} años
+                            </div>
+                            <div class="expand-icon" id="expandIcon">▼</div>
+                          </div>
+
+                          <div class="patient-data-details" id="patientDetails">
+                            <div class="data-item">
+                              <div class="data-label">Número de Box</div>
+                              <div class="data-value">BOX-${numeroBoxActual}</div>
+                            </div>
+
+                            <div class="data-item editable" onclick="abrirModalEdicion()">
+                              <div class="data-label">Nombre Completo ✏️</div>
+                              <div class="data-value">${
+                                datosPaciente.nombre_completo || "No registrado"
+                              }</div>
+                            </div>
+
+                            <div class="data-item editable" onclick="abrirModalEdicion()">
+                              <div class="data-label">Edad ✏️</div>
+                              <div class="data-value">${
+                                datosPaciente.edad || "No registrada"
+                              } años</div>
+                            </div>
+
+                            <div class="data-item editable" onclick="abrirModalEdicion()">
+                              <div class="data-label">Peso ✏️</div>
+                              <div class="data-value">${
+                                datosPaciente.peso
+                                  ? Math.round(datosPaciente.peso) + " kg"
+                                  : "No registrado"
+                              }</div>
+                            </div>
+
+                            <div class="data-item editable" onclick="abrirModalEdicion()">
+                              <div class="data-label">Número de Historia ✏️</div>
+                              <div class="data-value">${
+                                datosPaciente.numero_historia || "No registrado"
+                              }</div>
+                            </div>
+
+                            <div class="data-item" style="border-left-color: #4ecdc4;">
+                              <div class="data-label">Fecha (Turno Actual)</div>
+                              <div class="data-value">${fechaActualTurno}</div>
+                            </div>
+
+                            <div class="data-item" style="border-left-color: #45b7d1;">
+                              <div class="data-label">Hoja</div>
+                              <div class="data-value">Día ${hojaActual}</div>
+                            </div>
+                          </div>
+                        `;
+        } else {
+          dataGrid.innerHTML = `
+                          <div class="data-item">
+                            <div class="data-label">Número de Box</div>
+                            <div class="data-value">BOX-${numeroBoxActual}</div>
+                          </div>
+
+                          <div class="data-item editable" onclick="abrirModalEdicion()">
+                            <div class="data-label">Nombre Completo ✏️</div>
+                            <div class="data-value">${
+                              datosPaciente.nombre_completo || "No registrado"
+                            }</div>
+                          </div>
+
+                          <div class="data-item" style="border-left-color: #4ecdc4;">
+                            <div class="data-label">Fecha (Turno Actual)</div>
+                            <div class="data-value">${fechaActualTurno}</div>
+                          </div>
+                          
+                          <div class="data-item editable" onclick="abrirModalEdicion()">
+                            <div class="data-label">Edad ✏️</div>
+                            <div class="data-value">${
+                              datosPaciente.edad || "No registrada"
+                            } años</div>
+                          </div>
+
+                          <div class="data-item editable" onclick="abrirModalEdicion()">
+                            <div class="data-label">Peso ✏️</div>
+                            <div class="data-value">${
+                              datosPaciente.peso
+                                ? Math.round(datosPaciente.peso) + " kg"
+                                : "No registrado"
+                            }</div>
+                          </div>
+
+                          <div class="data-item editable" onclick="abrirModalEdicion()">
+                              <div class="data-label">Número de Historia ✏️</div>
+                              <div class="data-value">${
+                              datosPaciente.numero_historia || "No registrado"
+                            }</div>
+                          </div>
+                          
+
+                          
+                          <div class="data-item" style="border-left-color: #45b7d1;">
+                            <div class="data-label">Hoja</div>
+                            <div class="data-value">Día ${hojaActual}</div>
+                          </div>
+
+                          
+                          
+                          
+                          <div class="data-item">
+                            <div class="data-label">Fecha de Ingreso</div>
+                            <div class="data-value">${
+                              datosPaciente.fecha_ingreso
+                                ? new Date(
+                                    datosPaciente.fecha_ingreso
+                                  ).toLocaleString("es-ES")
+                                : "No registrada"
+                            }</div>
+                          </div>
+
+                          
+                          
+                        `;
+        }
+      }
+
+      function togglePatientDetails() {
+        const details = document.getElementById("patientDetails");
+        const icon = document.getElementById("expandIcon");
+
+        if (details.classList.contains("expanded")) {
+          details.classList.remove("expanded");
+          icon.classList.remove("expanded");
+          icon.textContent = "▼";
+        } else {
+          details.classList.add("expanded");
+          icon.classList.add("expanded");
+          icon.textContent = "▲";
+        }
+      }
+
+      function abrirModalEdicion() {
+        document.getElementById("editNombre").value =
+          datosPaciente.nombre_completo || "";
+        document.getElementById("editEdad").value = datosPaciente.edad || "";
+        document.getElementById("editPeso").value = datosPaciente.peso || "";
+        document.getElementById("editHistoria").value =
+          datosPaciente.numero_historia || "";
+
+        document.getElementById("editModal").style.display = "block";
+      }
+
+      function cerrarModal() {
+        document.getElementById("editModal").style.display = "none";
+      }
+
+      // Manejar envío del formulario de edición
+      document
+        .getElementById("editForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          // Actualizar datos localmente (en producción sería una llamada al servidor)
+          datosPaciente.nombre_completo = document
+            .getElementById("editNombre")
+            .value.trim();
+          datosPaciente.edad = parseInt(
+            document.getElementById("editEdad").value
+          );
+          datosPaciente.peso = parseFloat(
+            document.getElementById("editPeso").value
+          );
+          datosPaciente.numero_historia = document
+            .getElementById("editHistoria")
+            .value.trim();
+
+          mostrarMensaje("✅ Datos actualizados correctamente", "success");
+          cerrarModal();
+          mostrarDatosPaciente();
+        });
+
+      // Inicialización de la tabla de oxigenación
+      function inicializarTablaOxigenacion() {
+        try {
+          const { hojaActual } = calcularTurnoHospitalario();
+          document.getElementById("hojaOxigenacion").textContent = hojaActual;
+
+          generarTablaOxigenacion();
+          cargarDatosOxigenacion();
+        } catch (error) {
+          console.error("Error al inicializar tabla de oxigenación:", error);
+        }
+      }
+
+      function generarTablaOxigenacion() {
+        const table = document.getElementById("oxigenacionTable");
+        if (!table) return;
+
+        const thead = table.querySelector("thead tr");
+        const tbody = table.querySelector("tbody");
+
+        // Generar horas
+        const horas = [];
+        for (let i = 8; i < 24; i++) {
+          horas.push(`${i.toString().padStart(2, "0")}:00`);
+        }
+        for (let i = 0; i < 8; i++) {
+          horas.push(`${i.toString().padStart(2, "0")}:00`);
+        }
+
+        // Limpiar y regenerar headers
+        thead.innerHTML = '<th class="param-header">PARÁMETRO</th>';
+        horas.forEach((hora) => {
+          const th = document.createElement("th");
+          th.className = "hour-header";
+          th.textContent = hora.replace(":00", "");
+          thead.appendChild(th);
+        });
+
+        // Regenerar filas
+        const parametros = [
+          { key: "pNeumo", label: "P. NEUMO", color: "#8e44ad" },
+          { key: "oxigenacion", label: "OXIGENACIÓN", color: "#3498db" },
+          { key: "saturacion", label: "SATURACIÓN", color: "#2ecc71" },
+          { key: "evaRass", label: "EVA/ESCID/RASS", color: "#e74c3c" },
+          { key: "glucemia", label: "GLUCEMIA", color: "#f39c12" },
+          { key: "insulina", label: "INSULINA", color: "#9b59b6" },
+        ];
+
+        tbody.innerHTML = "";
+
+        parametros.forEach((param) => {
+          const row = document.createElement("tr");
+          row.className = "param-row";
+          row.dataset.param = param.key;
+
+          // Celda del parámetro
+          const labelCell = document.createElement("td");
+          labelCell.className = "param-label";
+          labelCell.innerHTML = `
+                          <span class="param-color" style="background: ${param.color};"></span>
+                          ${param.label}
+                        `;
+          row.appendChild(labelCell);
+
+          // Celdas de horas
+          horas.forEach((hora) => {
+            const cell = document.createElement("td");
+            cell.className = "data-cell";
+            cell.dataset.hora = hora;
+            cell.dataset.param = param.key;
+            cell.textContent = "—";
+
+            // Configurar eventos según el parámetro
+            configurarCeldaOxigenacion(cell, hora, param.key);
+
+            row.appendChild(cell);
+          });
+
+          tbody.appendChild(row);
+        });
+
+        console.log("Tabla de oxigenación generada correctamente");
+      }
+
+      function configurarCeldaOxigenacion(cell, hora, param) {
+        if (param === "saturacion" || param === "glucemia") {
+          // Estas son automáticas, no editables
+          cell.classList.add("auto-value");
+          return;
+        }
+
+        if (param === "evaRass") {
+          cell.addEventListener("click", () => {
+            const valor = prompt(
+              `Ingrese valor para EVA/ESCID/RASS en hora ${hora}:`
+            );
+            if (valor !== null && valor.trim() !== "") {
+              guardarDatoOxigenacion(hora, "evaRass", valor.trim());
+              actualizarCelda(cell, valor.trim(), param);
+            }
+          });
+          return;
+        }
+
+        if (param === "insulina") {
+          cell.addEventListener("click", () => {
+            const valor = prompt(
+              `Ingrese unidades de insulina para hora ${hora}:`
+            );
+            if (valor !== null && valor.trim() !== "") {
+              const valorEntero = Math.round(parseInt(valor));
+              guardarDatoOxigenacion(hora, "insulina", valorEntero);
+              actualizarCelda(cell, valorEntero + " U.I.", param);
+            }
+          });
+          return;
+        }
+
+        // Para otros parámetros editables
+        cell.addEventListener("click", () => {
+          if (param === "oxigenacion") {
+            const opciones = ["", "VMI", "VMNI", "O2"];
+            const valor = prompt(
+              `Seleccione tipo de oxigenación para hora ${hora}:\n1. Sin especificar\n2. VMI\n3. VMNI\n4. O₂\n\nIngrese el número:`
+            );
+
+            if (valor !== null) {
+              const indice = parseInt(valor) - 1;
+              if (indice >= 0 && indice < opciones.length) {
+                const nuevoValor = opciones[indice];
+                guardarDatoOxigenacion(hora, "oxigenacion", nuevoValor);
+                actualizarCelda(cell, nuevoValor, param);
+              }
+            }
+          } else if (param === "pNeumo") {
+            const valor = prompt(
+              `Ingrese presión neumática (0-100) para hora ${hora}:`
+            );
+            if (valor !== null && valor.trim() !== "") {
+              const valorNum = parseInt(valor);
+              if (valorNum >= 0 && valorNum <= 100) {
+                guardarDatoOxigenacion(hora, "pNeumo", valorNum);
+                actualizarCelda(cell, valorNum, param);
+              }
+            }
+          }
+        });
+      }
+
+      function actualizarCelda(cell, valor, param) {
+        cell.classList.remove("has-data", "alert-value", "auto-value");
+
+        if (!valor || valor === "") {
+          cell.textContent = "—";
+        } else {
+          cell.textContent = valor;
+          cell.classList.add("has-data");
+        }
+      }
+
+      async function guardarDatoOxigenacion(hora, campo, valor) {
+        if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+        oxigenacionData[hora][campo] = valor;
+
+        console.log(`Guardado: ${hora} - ${campo}: ${valor}`);
+        return Promise.resolve({ success: true });
+      }
+
+      async function cargarDatosOxigenacion() {
+        try {
+          oxigenacionData = {
+            "08:00": { pNeumo: 25, oxigenacion: "O2" },
+            "12:00": { pNeumo: 30, evaRass: "2/0" },
+            "16:00": { oxigenacion: "VMI", insulina: 6 },
+            "20:00": { pNeumo: 20, evaRass: "1/-1" },
+          };
+
+          console.log("Datos de oxigenación cargados:", oxigenacionData);
+          actualizarTablaOxigenacion();
+          actualizarValoresAutomaticos();
+        } catch (error) {
+          console.error("Error al cargar datos de oxigenación:", error);
+          oxigenacionData = {};
+        }
+      }
+
+      function actualizarTablaOxigenacion() {
+        Object.keys(oxigenacionData).forEach((hora) => {
+          const datos = oxigenacionData[hora];
+
+          Object.keys(datos).forEach((param) => {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="${param}"]`
+            );
+            if (cell) {
+              let valor = datos[param];
+              if (param === "insulina") {
+                valor = valor + " U.I.";
+              }
+              actualizarCelda(cell, valor, param);
+            }
+          });
+        });
+
+        actualizarValoresAutomaticos();
+      }
+
+      function actualizarValoresAutomaticos() {
+        Object.keys(constantesData).forEach((hora) => {
+          const constantes = constantesData[hora];
+
+          // SATURACIÓN
+          if (constantes.satO2) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="saturacion"]`
+            );
+            if (cell) {
+              cell.classList.add("auto-value");
+              cell.classList.remove("has-data", "alert-value");
+              cell.textContent = `${constantes.satO2}%`;
+              if (constantes.satO2 < 85) {
+                cell.classList.add("alert-value");
+                cell.innerHTML = `${constantes.satO2}% <span class="alert-icon">⚠️</span>`;
+              }
+            }
+          }
+
+          // GLUCEMIA
+          if (constantes.glucemia) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="glucemia"]`
+            );
+            if (cell) {
+              cell.classList.add("auto-value");
+              cell.classList.remove("has-data", "alert-value");
+              cell.textContent = `${constantes.glucemia}`;
+              if (constantes.glucemia > 351) {
+                cell.classList.add("alert-value");
+                cell.innerHTML = `${constantes.glucemia} <span class="alert-icon">⚠️</span>`;
+              }
+            }
+          }
+        });
+      }
+
+      function toggleInfoOxigenacion() {
+        const info = document.getElementById("infoOxigenacion");
+        info.style.display = info.style.display === "none" ? "block" : "none";
+      }
+
+      function imprimirGraficas() {
+        // Simular impresión o descarga de PDF
+        mostrarMensaje("🖨️ Preparando impresión de gráficas...", "success");
+        // En producción aquí iría la lógica de impresión real
+      }
+
+      function altaCompleta() {
+        const nombrePaciente = datosPaciente.nombre_completo;
+
+        if (
+          confirm(
+            `¿Está seguro de dar de ALTA MÉDICA COMPLETA al paciente "${nombrePaciente}"?\n\n⚠️ Esta acción:\n• Liberará el box para nuevos ingresos\n• Guardará el historial completo\n• Generará reporte final`
+          )
+        ) {
+          alert(
+            "✅ Alta médica procesada correctamente\n\nRedirigiendo al inicio..."
+          );
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 2000);
+        }
+      }
+
+      function abrirDatosCompletos() {
+        // Ir directamente a la página de datos completos
+        window.location.href = `datos.html?box=${numeroBoxActual}`;
+      }
+      function volverAlInicio() {
+        // Ir directamente al inicio sin confirmación
+        window.location.href = "index.html";
+      }
+
+      function mostrarMensaje(mensaje, tipo) {
+        const statusMessage = document.getElementById("statusMessage");
+        statusMessage.textContent = mensaje;
+        statusMessage.className = `status-message status-${tipo}`;
+        statusMessage.style.display = "block";
+
+        setTimeout(() => {
+          statusMessage.style.display = "none";
+        }, 5000);
+      }
+
+      // Función para detectar si estamos en dispositivo móvil
+      function esMobil() {
+        return window.innerWidth <= 768;
+      }
+
+      function configurarResponsive() {
+        function actualizarVisibilidad() {
+          // Función placeholder para responsive
+        }
+
+        actualizarVisibilidad();
+
+        window.addEventListener("resize", () => {
+          clearTimeout(this.resizeTimeout);
+          this.resizeTimeout = setTimeout(() => {
+            actualizarVisibilidad();
+            if (numeroBoxActual) {
+              generarGraficaConstantes();
+              generarTablaOxigenacion();
+            }
+          }, 250);
+        });
+      }
+
+      // Validación para campo peso - solo números enteros
+      document
+        .getElementById("editPeso")
+        .addEventListener("input", function (e) {
+          this.value = this.value.replace(/\./g, "");
+          if (this.value && parseInt(this.value) < 0) {
+            this.value = "";
+          }
+        });
+
+      document
+        .getElementById("editPeso")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "." || e.key === "," || e.key === "-") {
+            e.preventDefault();
+          }
+        });
+    </script>
+  </body>
+</html>
