@@ -3,6 +3,11 @@
 /* =============================== */
 /* variables de color */
 :root {
+    
+    /* body */
+    --body: #f4f7fa;
+   
+      
     /* dark */
     --texto-1: #272626;
     --texto-2: #072664;
@@ -20,8 +25,7 @@
     --dark-shadow: #e1e1e114;
     --light-shadow: #00000011;
     --button: #ebebeb66;
-    /* body */
-    --body: #e3f2fa;
+    
     /* losses */
     --losses-bc: #e3f2fd;
     --losses-cabecera-2: #d2ebf9;
@@ -36,6 +40,26 @@
     --summary: #ebf4f4;
     --summary-dark: #a5a5a7;
     --summary-bc: #EBF4F4;
+    
+    
+    /* ------------------- */
+      --fuente: #368f3f;
+      --fuente-active: #2e2925;
+      --principal: #92c99b;
+      --hover: #d9ebd8;
+      --borde: #4fa66a;
+      --fuente15: #79b47f;
+      --btn: #489950;
+      --text-area:#ffffff;
+      
+      --color-fondo: #f4f7fa;
+      --color-primario: #2d6b3a;
+      --color-secundario: #368f3f;
+      --color-hover: #489950;
+      --color-texto: #2e2925;
+      --color-blanco: #fff;
+      --radio: 10px;
+    
 
 }
 
@@ -98,10 +122,10 @@ section {
   position: fixed;
   top: 1rem;
   left: 1rem;
-  background: var(--hover-input);
+  background: var(--body);
   color:    var(--texto-1);
   padding:  clamp(0.25rem, 1.5vw, 0.5rem)  clamp(0.5rem, 3vw, 1rem);
-  border:   1px solid var(--borde);
+  border:   2px solid var(--borde);
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.15);
   font-weight: bold;
@@ -160,7 +184,8 @@ section {
 .sangre-icon, 
 .oral-icon,
 .sng-icon,
-.drenajes-icon {
+.drenajes-icon, 
+.vomitos-icon {
     color: var(--borde);
     background-color: transparent;
     border: 1px solid var(--borde);
@@ -173,7 +198,8 @@ body.active .medicacion-icon,
 body.active .sangre-icon,
 body.active .oral-icon,
 body.active .sng-icon,
-body.active .drenajes-icon {
+body.active .drenajes-icon,
+body.active .vomitos-icon {
     color: var(--dark-1);
     background-color: var(--hover);
     border: 1px solid var(--borde);
@@ -235,6 +261,10 @@ body.active .drenajes-icon {
     border-top: 4px solid #77b0b3;
 }
 
+.calculadora-vomitos {
+    border-top: 4px solid #574002;
+}
+
 body.active .calculadora-container {
     background-color: var(--fondo-1);
     border: 1px solid var(--borde);
@@ -257,7 +287,11 @@ body.active .calculadora-sng {
     border-top: 4px solid var(--dark-1);
 }
 
-body.active .calculadora-drenajes {
+body.active .calculadora-drenajes{
+    border-top: 4px solid var(--borde);
+}
+
+body.active .calculadora-vomitos {
     border-top: 4px solid var(--borde);
 }
 
@@ -345,11 +379,19 @@ body.active .calculadora-btn:hover {
     color: white;
 }
 
+.calculadora-vomitos .calculadora-btn.igual {
+    background-color: #574002;
+    color: white;
+}
+
+
+
 body.active .calculadora-medicacion .calculadora-btn.igual,
 body.active .calculadora-sangre .calculadora-btn.igual,
 body.active .calculadora-oral .calculadora-btn.igual,
 body.active .calculadora-sng .calculadora-btn.igual,
-body.active .calculadora-drenajes .calculadora-btn.igual {
+body.active .calculadora-drenajes .calculadora-btn.igual, 
+body.active .calculadora-vomitos .calculadora-btn.igual{
     background-color: var(--button);
     color: var(--dark-1);
 }
@@ -358,7 +400,8 @@ body.active .calculadora-medicacion .calculadora-btn.igual:hover,
 body.active .calculadora-sangre .calculadora-btn.igual:hover,
 body.active .calculadora-oral .calculadora-btn.igual:hover,
 body.active .calculadora-sng .calculadora-btn.igual:hover,
-body.active .calculadora-drenajes .calculadora-btn.igual:hover {
+body.active .calculadora-drenajes .calculadora-btn.igual:hover,
+body.active .calculadora-vomitos .calculadora-btn.igual:hover{
     background-color: var(--dark-1);
     color: var(--texto-1);
     transform: scale(.9);
@@ -443,7 +486,7 @@ body.active .calculadora-btn.limpiar {
     transform: scale(1.1);
 }
 
-. .calculadora-cerrar i {
+.calculadora-cerrar i {
     display: block;
 }
 
@@ -1019,7 +1062,7 @@ body.active .icono-container:hover {
 
 
 #box-summary {
-    background-color: var(--summary);
+    background-color: var(--body);
     border-top: 2px solid var(--losses-borde);
     box-shadow: 0 -4px 6px var(--light-shadow);
     position: fixed;
@@ -1160,6 +1203,7 @@ footer {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 

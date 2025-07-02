@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="description" content="Información relacionada con el Buscador de Antiinfecciosos UCI.">
+  <meta name="author" content="Equipo de Desarrollo - Evolución UCI">
+  <link rel="icon" href="../img/antiinfecciosos.png?v=3" type="image/png" />
+
+  <title>Info – Antiinfecciosos UCI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #f4f7fa;
+      --primary: #2d6b3a;
+      --secondary: #368f3f;
+      --text: #2e2925;
+      --white: #fff;
+      --radius: 8px;
+      --antiinfeccioso-primary: #368f3f;
+      --antiinfeccioso-secondary: #92c99b;
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:"Montserrat",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
+      line-height:1.5;
+    }
+    h1 {
+      text-align:center;
+      margin-bottom:10px;
+      font-size:2rem;
+      color:var(--primary);
+    }
+    .subtitle {
+      text-align:center;
+      color:#666;
+      margin-bottom:30px;
+    }
+    .features {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      max-width:1000px;
+      margin:0 auto 40px;
+    }
+    .feature {
+      background:var(--white);
+      border-radius:var(--radius);
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      padding:20px;
+      transition:transform .2s;
+    }
+    .feature:hover { transform:translateY(-5px); }
+    .feature i {
+      font-size:2rem;
+      color:var(--antiinfeccioso-primary);
+      margin-bottom:10px;
+    }
+    .feature h3 {
+      font-size:1.1rem;
+      margin-bottom:8px;
+      color:var(--primary);
+    }
+    .feature p { font-size:.95rem; color:#444; }
+    
+    /* Categorías especiales */
+    .feature.navigation {
+      border-left: 4px solid #4CAF50;
+    }
+    .feature.search {
+      border-left: 4px solid #2196F3;
+    }
+    .feature.information {
+      border-left: 4px solid #FF9800;
+    }
+    .feature.usability {
+      border-left: 4px solid #9C27B0;
+    }
+    
+    footer {
+      text-align:center;
+      margin-top:40px;
+      font-size:.8rem;
+      color:#999;
+    }
+    
+    /* Botón Volver */
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 8px 15px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: bold;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .back-button:hover {
+      transform: translateX(-3px);
+    }
+
+    /* Ajuste para el título principal */
+    body {
+      padding-top: 60px;
+    }
+
+    @media (max-width: 600px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Botón Volver -->
+  <a href="https://jolejuma.es/evolucion-uci/index.html" class="back-button">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+
+  <h1><i class="fas fa-shield-virus"></i> Antiinfecciosos UCI</h1>
+  <p class="subtitle">Funcionalidades del buscador de antiinfecciosos más utilizados</p>
+
+  <div class="features">
+    <!-- NAVEGACIÓN POR INICIALES -->
+    <div class="feature navigation">
+      <i class="fas fa-sort-alpha-down"></i>
+      <h3>Navegación Alfabética</h3>
+      <p>Botones organizados por iniciales para acceso rápido a antiinfecciosos por primera letra.</p>
+    </div>
+    
+    <div class="feature navigation">
+      <i class="fas fa-list"></i>
+      <h3>Listado Dinámico</h3>
+      <p>Al seleccionar una inicial, se despliega automáticamente la lista de antiinfecciosos disponibles.</p>
+    </div>
+    
+    <div class="feature navigation">
+      <i class="fas fa-mouse-pointer"></i>
+      <h3>Selección Intuitiva</h3>
+      <p>Un clic en cualquier antiinfeccioso muestra instantáneamente toda su información detallada.</p>
+    </div>
+    
+    <!-- BÚSQUEDA -->
+    <div class="feature search">
+      <i class="fas fa-search"></i>
+      <h3>Búsqueda por Texto</h3>
+      <p>Campo de búsqueda inteligente que filtra antiinfecciosos escribiendo parte del nombre.</p>
+    </div>
+    
+    <div class="feature search">
+      <i class="fas fa-filter"></i>
+      <h3>Filtrado en Tiempo Real</h3>
+      <p>Resultados instantáneos mientras escribes, sin necesidad de pulsar Enter.</p>
+    </div>
+    
+    <div class="feature search">
+      <i class="fas fa-spell-check"></i>
+      <h3>Búsqueda Flexible</h3>
+      <p>Encuentra medicamentos incluso con escritura parcial o sin tildes.</p>
+    </div>
+    
+    <!-- INFORMACIÓN DETALLADA -->
+    <div class="feature information">
+      <i class="fas fa-pills"></i>
+      <h3>Presentación</h3>
+      <p>Información sobre la forma farmacéutica y presentación comercial del antiinfeccioso.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-dna"></i>
+      <h3>Tipo de Antiinfeccioso</h3>
+      <p>Clasificación farmacológica: antibiótico, antifúngico, antiviral, etc.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-weight-hanging"></i>
+      <h3>Dosis Recomendada</h3>
+      <p>Pautas de dosificación específicas para pacientes críticos en UCI.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-flask"></i>
+      <h3>Preparación</h3>
+      <p>Instrucciones detalladas para la reconstitución y dilución del medicamento.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-eye"></i>
+      <h3>Aspecto Visual</h3>
+      <p>Descripción del aspecto de la solución preparada para verificación visual.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-clock"></i>
+      <h3>Tiempo de Administración</h3>
+      <p>Duración recomendada para la infusión intravenosa del antiinfeccioso.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-thermometer-half"></i>
+      <h3>Conservación</h3>
+      <p>Condiciones de almacenamiento y estabilidad una vez preparado.</p>
+    </div>
+    
+    <div class="feature information">
+      <i class="fas fa-file-medical"></i>
+      <h3>Ficha Técnica</h3>
+      <p>Enlace directo a la ficha técnica oficial del medicamento para consulta completa.</p>
+    </div>
+    
+    <!-- USABILIDAD -->
+    <div class="feature usability">
+      <i class="fas fa-home"></i>
+      <h3>Botón de Inicio</h3>
+      <p>Regreso rápido a la pantalla principal para comenzar una nueva búsqueda.</p>
+    </div>
+    
+    <div class="feature usability">
+      <i class="fas fa-mobile-alt"></i>
+      <h3>Diseño Responsive</h3>
+      <p>Interfaz adaptada para uso en móviles, tablets y ordenadores.</p>
+    </div>
+    
+    <div class="feature usability">
+      <i class="fas fa-palette"></i>
+      <h3>Interfaz Intuitiva</h3>
+      <p>Colores y diseño pensados para facilitar la lectura en entornos hospitalarios.</p>
+    </div>
+    
+    <div class="feature usability">
+      <i class="fas fa-external-link-alt"></i>
+      <h3>Enlaces Seguros</h3>
+      <p>Acceso a fichas técnicas con seguridad noreferrer para protección de datos.</p>
+    </div>
+    
+    <!-- CARACTERÍSTICAS TÉCNICAS -->
+    <div class="feature">
+      <i class="fas fa-database"></i>
+      <h3>Base de Datos JSON</h3>
+      <p>Información estructurada y actualizable de antiinfecciosos específicos de UCI.</p>
+    </div>
+    
+    <div class="feature">
+      <i class="fas fa-sync-alt"></i>
+      <h3>Carga Dinámica</h3>
+      <p>Los datos se cargan de forma asíncrona para mejor rendimiento.</p>
+    </div>
+    
+    <div class="feature">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Sin Almacenamiento Local</h3>
+      <p>No guarda información en el dispositivo, garantizando privacidad y actualizaciones.</p>
+    </div>
+    
+    <div class="feature">
+      <i class="fas fa-users-cog"></i>
+      <h3>Específico para UCI</h3>
+      <p>Selección curada de antiinfecciosos más relevantes en cuidados intensivos.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      &copy; 2025 Antiinfecciosos UCI. Herramienta para profesionales sanitarios.
+      <br>C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br>
+    </p>
+  </footer>
+
+</body>
+</html>

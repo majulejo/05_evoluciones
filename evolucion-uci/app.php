@@ -42,14 +42,21 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
 
   <style>
     :root {
-      --fuente: #2e2925;
-      --pantone: #368f3f;
-      --principal: #92c99b;
+      --fuente: #368f3f;
+      --fuente-active: #2e2925;
       --hover: #d9ebd8;
       --borde: #4fa66a;
-      --pantone15: #79b47f;
+      --fuente15: #79b47f;
       --btn: #489950;
-      --text-area:#d1e5d3;
+      --text-area:#ffffff;
+      
+      --color-fondo: #f4f7fa;
+      --color-primario: #2d6b3a;
+      --color-secundario: #368f3f;
+      --color-hover: #489950;
+      --color-texto: #2e2925;
+      --color-blanco: #fff;
+      --radio: 10px;
     }
 
     * {
@@ -66,7 +73,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: var(--principal);
+      background-color: var(--color-fondo);
     }
 
     h1 {
@@ -99,19 +106,20 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
       cursor: pointer;
       border: none;
       border-radius: 5px;
-      background-color: var(--pantone15);
+      background-color: var(--fuente15);
       color: white;
       min-width: 80px;
     }
 
     .box-selector button:hover {
-      background-color: white;
+      background-color: var(--text-area);
       color: var(--fuente);
       transition: all 0.5s ease;
     }
 
     .box-selector button.active {
-      background-color: var(--pantone);
+      background-color: var(--fuente);
+      color: var(--fuente-active);
       box-shadow: 0 0 5px #0000004d;
       transition: all 0.5s ease;
     }
@@ -143,7 +151,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
       border: 1px solid var(--borde);
       border-radius: 5px;
       resize: vertical;
-      background-color: var(--text-area);
+      background-color: var(--color-blanco);
       color: var(--fuente);
       outline: none;
       overflow: auto;
@@ -158,13 +166,13 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
 }
 
 .campo textarea:not(:disabled) {
-  background-color: var(--text-area) !important;
+  background-color: var(--color-blanco) !important;
   color: var(--fuente) !important;
   cursor: text !important;
 }
 
     .campo textarea:disabled {
-  background-color: var(--principal) !important;
+  background-color: var(--color-fondo) !important;
   border: 1px solid var(--borde) !important;
   color: #6c757d !important;
   cursor: not-allowed;
@@ -216,13 +224,13 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
     .main-actions-container button:hover,
     .print-actions-container button:hover,
     .print-actions-container .btn-alternativo:hover {
-      background-color: var(--pantone15);
+      background-color: var(--fuente15);
       color: var(--fuente);
     }
 
     .print-actions-container .btn-alternativo {
       background-color: white;
-      color: var(--pantone);
+      color: var(--fuente);
     }
 
     /* Estilo para los iconos dentro de los botones en pantallas grandes */
@@ -251,7 +259,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
   word-wrap: break-word;
   white-space: pre-wrap;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none !important;
 }
 
 /* Cabecera del informe (BOX y turno) */
@@ -321,7 +329,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
   font-weight: bold;
   margin-top: 5px;
   margin-bottom: 20px;
-  color: white;
+  color: var(--fuente);
   background-color: var(--text-area);
   border: 1px solid var(--fuente);
   border-radius: 8px;
@@ -331,7 +339,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: none !important;
 }
 
 /* INDICADOR FLOTANTE (a la izquierda) - Versión mejorada */
@@ -345,13 +353,13 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
   padding: 4px 8px;
   font-size: 12px;
   font-weight: normal;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.3); /* Fondo transparente */
+  color: var(--fuente);
+  background-color: transparent; /* Fondo transparente */
   border-radius: 4px;
   text-align: center;
   line-height: 1.3;
   backdrop-filter: blur(2px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--fuente);
   max-width: 100px;
 }
 
@@ -470,7 +478,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
       cursor: pointer;
       border: none;
       border-radius: 5px;
-      background-color: var(--pantone15);
+      background-color: var(--fuente15);
       /* Color de fondo consistente */
       color: var(--fuente);
       /* Color de texto consistente */
@@ -528,7 +536,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
     }
 
     .contador-aviso {
-      color: var(--pantone) !important;
+      color: var(--fuente) !important;
     }
 
     .contador-alerta {
@@ -552,7 +560,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
     }
 
     .copiar-btn:hover {
-      background-color: var(--pantone15);
+      background-color: var(--fuente15);
     }
 
     /* listado informes guardados */
@@ -561,7 +569,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
       font-weight: bold;
       line-height: 1.6;
       color: white;
-      background-color: var(--pantone15);
+      background-color: var(--fuente15);
       padding: 4px 12px;
     }
 
@@ -685,7 +693,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
       margin: 20px auto 0px;
       width: 100%;
       z-index: 50;
-      border-top: 1px solid var(--pantone);
+      border-top: 1px solid var(--fuente);
     }
 
     /* fin del footer */
@@ -794,151 +802,105 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
     }
 
 
-   /* =============================== */
-/* MEDIA PRINT CORREGIDO - CONTENIDO COMPLETO VISIBLE */
+  /* =============================== */
+/* CSS DE IMPRESIÓN MEJORADO - GARANTIZA UNA SOLA PÁGINA */
 /* =============================== */
+/* ESTILOS DE IMPRESIÓN CORREGIDOS - Reemplazar en app.php */
 @media print {
   @page {
     size: A4 portrait;
     margin: 0;
   }
-  
-  body * {
-    visibility: hidden !important;
-  }
-  
-  html, body {
-    height: 100vh !important;
-    max-height: 100vh !important;
+
+  body {
+    visibility: hidden;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
   }
-  
-  #resultado, #resultado * {
+
+  body > * {
+    display: none !important;
+  }
+
+  .resultado {
     visibility: visible !important;
-  }
-  
-  /* CONFIGURACIÓN BASE - TURNO DIURNO */
-  #resultado {
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    
-    background: white !important;
-    box-shadow: none !important;
-    border: none !important;
-    box-sizing: border-box !important;
-    
-    /* DIMENSIONES EXACTAS DE UNA PÁGINA A4 */
-    width: 210mm !important;
-    height: 297mm !important;
-    max-width: 210mm !important;
-    max-height: 297mm !important;
-    
-    /* MÁRGENES TURNO DIURNO */
-    padding-top: 2cm !important;
-    padding-left: 3cm !important;
-    padding-right: 1.5cm !important;
-    padding-bottom: 1cm !important;
-    
-    /* CONTENIDO MÁS LEGIBLE */
-    font-size: 10px !important;         /* Fuente ligeramente más grande */
-    line-height: 1.1 !important;        /* Interlineado más legible */
-    
-    /* PREVENIR DESBORDAMIENTO */
-    overflow: visible !important;        /* Cambiar a visible para ver contenido */
-    
-    /* FLEXBOX PARA CONTROL DE POSICIÓN */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    
-    /* FORZAR UNA SOLA PÁGINA */
-    page-break-after: avoid !important;
-    page-break-before: avoid !important;
-    page-break-inside: avoid !important;
-  }
-  
-  /* TURNO NOCTURNO - CONTENIDO ABAJO */
-  #resultado.nocturno-print {
-    /* MÁRGENES TURNO NOCTURNO */
-    padding-top: 1cm !important;        /* Espacio mínimo arriba */
-    padding-bottom: 2cm !important;     /* 2cm del borde inferior */
-    
-    /* EMPUJAR TODO EL CONTENIDO HACIA ABAJO */
-    justify-content: flex-end !important;
-    
-    /* MANTENER TAMAÑO LEGIBLE */
-    font-size: 9px !important;          /* Reducir un poco para que quepa */
-    line-height: 1.0 !important;        /* Compactar líneas */
-  }
-  
-  /* PÁRRAFOS CON ALTURA SUFICIENTE */
-  #resultado p {
-    margin: 1px 0 !important;           /* Pequeño margen para separación */
-    padding: 0 !important;
-    line-height: inherit !important;
-    
-    /* PERMITIR QUE SE VEA EL CONTENIDO */
-    max-height: none !important;        /* Quitar límite de altura */
-    overflow: visible !important;       /* Permitir que se vea */
-    
-    /* EVITAR SALTOS DE PÁGINA */
-    page-break-inside: avoid !important;
-    page-break-after: avoid !important;
-    page-break-before: avoid !important;
-  }
-  
-  /* CABECERA VISIBLE */
-  #resultado .cabecera {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    line-height: 1.1 !important;
-    margin-bottom: 3px !important;      /* Más separación */
-  }
-  
-  /* FIRMA VISIBLE - SIN RESTRICCIONES DE ALTURA */
-  #resultado .firma-alineada {
-    position: relative !important;
-    text-align: right !important;
-    margin-top: 5px !important;         /* Más espacio */
-    font-size: inherit !important;      /* Mismo tamaño que el resto */
-    width: 100% !important;
-    padding-right: 1.5cm !important;
-    
-    /* ASEGURAR VISIBILIDAD */
-    max-height: none !important;        /* Sin límite de altura */
-    overflow: visible !important;       /* Siempre visible */
-    
-    /* NO PERMITIR SALTO DE PÁGINA */
-    page-break-before: avoid !important;
-    page-break-after: avoid !important;
-    page-break-inside: avoid !important;
-  }
-  
-  /* ASEGURAR QUE TODOS LOS ELEMENTOS SEAN VISIBLES */
-  #resultado * {
-    max-height: none !important;        /* Sin restricciones */
-    overflow: visible !important;       /* Todo visible */
-  }
-  
-  /* ETIQUETAS FUERTES VISIBLES */
-  #resultado .label-strong {
-    font-weight: 700;
-    display: inline;
-  }
-  
-  /* ESPECÍFICO PARA CAMPOS QUE FALTAN */
-  #resultado p:contains("ESPECIAL VIGILANCIA"),
-  #resultado p:contains("FIRMADO") {
     display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    position: absolute;
+    left: 3cm;
+    right: 0.5cm;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+    background: white !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .resultado.diurno-print {
+    top: 2cm;
+  }
+
+  .resultado.nocturno-print {
+    top: auto;
+    bottom: 2cm;
+  }
+
+  .resultado p {
+    margin: 2px 0 !important;
+    page-break-inside: avoid;
+    line-height: 1.2;
+    margin-right: 1.5cm !important;
+    box-shadow: none !important;
+
+  }
+
+  .resultado p:first-of-type {
+    margin-bottom: 0px !important;
+  }
+
+  /* Estilos específicos para la firma */
+  .resultado .firma-alineada {
+    text-align: right !important;
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Cabecera del informe */
+  .resultado .cabecera {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    margin-bottom: 4px !important;
+    margin-top: 0 !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Etiquetas en negrita */
+  .resultado .label-strong {
+    font-weight: 700 !important;
+    font-size: inherit !important;
+  }
+
+  /* Texto "sin especificar" */
+  .resultado .no-especificado {
+    font-style: italic !important;
+    color: #666 !important;
+    font-size: inherit !important;
   }
 }
+/* =============================== */
+/* FINAL DEL MEDIA PRINT */
+/* =============================== */
+
 
 /* =========================================== */
 /*  POSICIÓN Y ESTILO FINAL  #logoutBtn        */
@@ -953,11 +915,11 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
   transform:none!important;
 
   /* apariencia coherente con la paleta verde */
-  background:var(--pantone15);
+  background:var(--fuente15);
   color:#fff;
   border:1px solid var(--borde);
   padding:8px 14px;
-  font:700 .9rem/1 "Montserrat",sans-serif;
+  font:700 .7rem/1 "Montserrat",sans-serif;
   display:flex;
   align-items:center;
   gap:.5rem;
@@ -1033,7 +995,7 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
 }
 
 .clear-btn:hover {
-  color: var(--pantone);
+  color: var(--fuente);
   background-color: rgba(0,0,0,0.05);
 }
 
@@ -1060,11 +1022,51 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
 #indicador-guardando {
     position: fixed; top: 30%; 
     right: 20px; 
-    background: var(--pantone); 
+    background: var(--fuente); 
     color: white; 
     padding: 8px 16px; 
     border-radius: 4px; 
     display: none; z-index: 1000;
+}
+
+/* ================================== */
+/* ================================== */
+/* ICONO DE INFORMACIÓN INGRESO     */
+/* ================================== */
+/* ================================== */
+
+
+/* Estilo para el icono de información */
+.info-icon {
+  color: #666;
+  font-size: 12px;
+  margin-left: 5px;
+  cursor: help;
+  transition: color 0.3s ease;
+}
+
+.info-icon:hover {
+  color: var(--fuente);
+}
+
+/* Ajuste para el contenedor del label cuando hay icono de info */
+.label-and-clear .fa-info-circle {
+  color: #666;
+  font-size: 12px;
+  margin-left: 5px;
+  cursor: help;
+  transition: color 0.3s ease;
+}
+
+.label-and-clear .fa-info-circle:hover {
+  color: var(--fuente);
+}
+
+/* Responsive para móviles - ocultar icono de info si es necesario */
+@media (max-width: 480px) {
+  .label-and-clear .fa-info-circle {
+    display: none;
+  }
 }
   </style>
 </head>
@@ -1104,6 +1106,23 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
 
   <div id="mensajeConfirmacion"></div>
   <form class="formulario" id="formulario">
+      
+        <!-- Ejemplo para el campo INGRESO -->
+  
+      <div class="campo">
+  <div class="label-and-clear">
+    <label for="ingreso">INGRESO</label>
+    <button class="clear-btn" onclick="limpiarCampo('ingreso')" title="Borrar contenido">
+      <i class="fas fa-eraser"></i>
+    </button>
+    <i class="fas fa-info-circle" 
+       title="Si está vacío, no se imprimirá en el informe" 
+       style="color: #666; font-size: 12px; margin-left: 5px; cursor: help;">
+    </i>
+  </div>
+  <textarea id="ingreso" disabled placeholder="Dejar vacío para no imprimir"></textarea>
+</div>
+
     <!-- Ejemplo para el campo NEUROLÓGICO -->
 <div class="campo">
   <div class="label-and-clear">
@@ -1194,21 +1213,29 @@ $username = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : '';
     <button class="clear-btn" onclick="limpiarCampo('otros')" title="Borrar contenido">
       <i class="fas fa-eraser"></i>
     </button>
+    <i class="fas fa-info-circle" 
+       title="Si está vacío, no se imprimirá en el informe" 
+       style="color: #666; font-size: 12px; margin-left: 5px; cursor: help;">
+    </i>
   </div>
-  <textarea id="otros" disabled></textarea>
+  <textarea id="otros" disabled placeholder="Dejar vacío para no imprimir"></textarea>
 </div>
 
  <!-- Ejemplo para el campo    ESPECIAL VIGILANCIA             -->
  <!-- Campo 10 -->
   <div class="campo">
-    <div class="label-and-clear">
-      <label for="especial" class="centered-label">10. ESPECIAL VIGILANCIA</label>
-      <button class="clear-btn" onclick="limpiarCampo('especial')" title="Borrar contenido">
-        <i class="fas fa-eraser"></i> <!-- Icono de goma de borrar -->
-      </button>
-    </div>
-    <textarea id="especial" disabled></textarea>
+  <div class="label-and-clear">
+    <label for="especial" class="centered-label">10. ESPECIAL VIGILANCIA</label>
+    <button class="clear-btn" onclick="limpiarCampo('especial')" title="Borrar contenido">
+      <i class="fas fa-eraser"></i>
+    </button>
+    <i class="fas fa-info-circle" 
+       title="Si está vacío, no se imprimirá en el informe" 
+       style="color: #666; font-size: 12px; margin-left: 5px; cursor: help;">
+    </i>
   </div>
+  <textarea id="especial" disabled placeholder="Dejar vacío para no imprimir"></textarea>
+</div>
 
 <!-- Ejemplo para el campo                 -->
   <!-- Campo Firma -->
@@ -1312,11 +1339,12 @@ let firmaCompartida = "";
 
 const DEBOUNCE_MS = 800;
 const todosLosCampos = [
-  "neurologico", "cardiovascular", "respiratorio", "renal",
+  "ingreso", "neurologico", "cardiovascular", "respiratorio", "renal",
   "gastrointestinal", "nutricional", "termorregulacion",
   "piel", "otros", "especial", "firma"
 ];
 
+const camposCondicionales = ['ingreso', 'otros', 'especial'];
 const camposBorrables = todosLosCampos.filter(c => c !== 'firma');
 
 // Polyfill para compatibilidad
@@ -2226,7 +2254,6 @@ function informeHaSidoModificado(datosOriginales) {
 // FUNCIONES DE IMPRESIÓN SIMPLIFICADAS
 // =====================================================
 
-// Función para imprimir automáticamente (según turno actual)
 async function imprimirAuto() {
     if (selectedBox) await saveDraft();
     
@@ -2240,26 +2267,23 @@ async function imprimirAuto() {
     const horaActual = new Date().getHours();
     const esTurnoDiurnoActual = horaActual >= 8 && horaActual < 20;
     
-    // Limpiar clases previas
-    resultado.classList.remove('nocturno-print');
+    // Limpiar clases previas y aplicar clase según turno actual
+    resultado.classList.remove('diurno-print', 'nocturno-print');
     
-    // Aplicar clase según turno actual
-    if (!esTurnoDiurnoActual) {
+    if (esTurnoDiurnoActual) {
+        resultado.classList.add('diurno-print');
+    } else {
         resultado.classList.add('nocturno-print');
     }
     
-    // Imprimir
-    window.print();
-    
-    // Restaurar (aunque no debería ser necesario para turno actual)
+    // Pequeña pausa para asegurar que las clases se apliquen
     setTimeout(() => {
-        if (!esTurnoDiurnoActual) {
-            resultado.classList.remove('nocturno-print');
-        }
-    }, 1000);
+        window.print();
+    }, 100);
 }
 
-// Función para imprimir en turno alternativo - VERSIÓN SIMPLE
+
+// Función para imprimir en turno alternativo
 async function imprimirAlternativo() {
     if (selectedBox) await saveDraft();
     
@@ -2275,40 +2299,36 @@ async function imprimirAlternativo() {
     
     // Guardar contenido original
     const contenidoOriginal = resultado.innerHTML;
+    const clasesOriginales = resultado.className;
     
-    // ⭐ SOLO CAMBIAR EL TEXTO DEL TURNO (sin comprimir nada)
+    // Cambiar el texto del turno y aplicar clase correspondiente
     let nuevoContenido = contenidoOriginal;
+    
+    resultado.classList.remove('diurno-print', 'nocturno-print');
     
     if (esTurnoDiurnoActual) {
         // Estamos en turno diurno → imprimir como nocturno
         nuevoContenido = nuevoContenido.replace('Turno de 8 a 20 horas', 'Turno de 20 a 8 horas');
-        
-        // Aplicar formato nocturno (contenido abajo)
         resultado.classList.add('nocturno-print');
     } else {
         // Estamos en turno nocturno → imprimir como diurno  
         nuevoContenido = nuevoContenido.replace('Turno de 20 a 8 horas', 'Turno de 8 a 20 horas');
-        
-        // Aplicar formato diurno (contenido arriba)
-        resultado.classList.remove('nocturno-print');
+        resultado.classList.add('diurno-print');
     }
     
     // Aplicar el nuevo contenido
     resultado.innerHTML = nuevoContenido;
     
-    // Imprimir
-    window.print();
-    
-    // ⭐ RESTAURAR TODO al estado original
+    // Pequeña pausa antes de imprimir
     setTimeout(() => {
-        resultado.innerHTML = contenidoOriginal;
+        window.print();
         
-        // Restaurar clases según turno actual
-        resultado.classList.remove('nocturno-print');
-        if (!esTurnoDiurnoActual) {
-            resultado.classList.add('nocturno-print');
-        }
-    }, 1000);
+        // Restaurar contenido y clases originales
+        setTimeout(() => {
+            resultado.innerHTML = contenidoOriginal;
+            resultado.className = clasesOriginales;
+        }, 1000);
+    }, 100);
 }
 
 // Funciones auxiliares para compatibilidad
@@ -2342,26 +2362,29 @@ function generarHTMLDesdeDatos(datos, forzarTurno = null) {
     
     let html = `<p class="cabecera">BOX ${selectedBox} – ${turnoTexto}</p>`;
     
+    // Procesar todos los campos excepto la firma
     todosLosCampos.forEach(campoId => {
-        let etiqueta;
+        if (campoId === 'firma') return; // Saltar la firma, se procesará al final
         
-        // Cambiar "FIRMA" por "FIRMADO"
-        if (campoId === 'firma') {
-            etiqueta = 'FIRMADO';
-        } else {
-            etiqueta = document.querySelector(`label[for='${campoId}']`).innerText;
-        }
+        const etiqueta = document.querySelector(`label[for='${campoId}']`).innerText;
         
-        let valor;
-        if (campoId === 'firma') {
-            valor = firmaCompartida || '<span class="no-especificado">Sin especificar</span>';
-            // Agregar clase especial para la firma
-            html += `<p class="firma-alineada"><span class="label-strong">${etiqueta}:</span> ${valor}</p>`;
+        if (camposCondicionales.includes(campoId)) {
+            // CAMPOS CONDICIONALES: Solo se imprimen si tienen contenido
+            const valor = datos[campoId]?.trim();
+            if (valor && valor !== '') {
+                html += `<p><span class="label-strong">${etiqueta}:</span> ${valor}</p>`;
+            }
+            // Si está vacío, no se añade nada al HTML
         } else {
-            valor = datos[campoId]?.trim() || '<span class="no-especificado">Sin especificar</span>';
+            // CAMPOS NORMALES: Siempre se imprimen
+            const valor = datos[campoId]?.trim() || '<span class="no-especificado">Sin especificar</span>';
             html += `<p><span class="label-strong">${etiqueta}:</span> ${valor}</p>`;
         }
     });
+
+    // Agregar la firma al final con alineación a la derecha
+    const valorFirma = firmaCompartida?.trim() || datos.firma?.trim() || '<span class="no-especificado">Sin especificar</span>';
+    html += `<p class="firma-alineada"><span class="label-strong">FIRMADO:</span> ${valorFirma}</p>`;
 
     return html;
 }
@@ -2654,6 +2677,323 @@ window.addEventListener('beforeunload', async (e) => {
         return e.returnValue;
     }
 });
+
+// =====================================================
+// AUTO-GUARDADO COMPATIBLE - AGREGAR AL FINAL DEL SCRIPT
+// NO modificar funciones existentes, solo agregar esto
+// =====================================================
+
+// Variables para el auto-guardado
+let autoSaveEnabled = false;
+let autoSaveTimer = null;
+let forceTimer = null;
+let isPageClosing = false;
+
+// =====================================================
+// FUNCIÓN DE AUTO-GUARDADO PRINCIPAL
+// =====================================================
+async function autoSaveDraftNew() {
+    if (!selectedBox || !currentUserId || isPageClosing) {
+        return false;
+    }
+    
+    try {
+        const datos = {};
+        todosLosCampos.forEach(id => {
+            const campo = document.getElementById(id);
+            if (id === 'firma') {
+                datos[id] = firmaCompartida || '';
+            } else {
+                datos[id] = campo ? campo.value.trim() : '';
+            }
+        });
+
+        const payload = {
+            box: selectedBox,
+            datos: datos,
+            user_id: currentUserId,
+            timestamp: Date.now()
+        };
+
+        const response = await fetch('save_draft.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                console.log(`💾 Auto-guardado: Box ${selectedBox} (${result.caracteres || 0} chars)`);
+                
+                // Backup en localStorage
+                localStorage.setItem(`backup_${currentUserId}_box${selectedBox}`, JSON.stringify({
+                    datos: datos,
+                    timestamp: Date.now()
+                }));
+                
+                return true;
+            }
+        }
+        
+        throw new Error('Error en respuesta del servidor');
+        
+    } catch (error) {
+        console.error('❌ Error auto-guardado:', error);
+        
+        // Guardar en localStorage como emergencia
+        try {
+            const datos = {};
+            todosLosCampos.forEach(id => {
+                const campo = document.getElementById(id);
+                datos[id] = campo ? campo.value.trim() : '';
+            });
+            
+            localStorage.setItem(`backup_${currentUserId}_box${selectedBox}`, JSON.stringify({
+                datos: datos,
+                timestamp: Date.now(),
+                backup: true
+            }));
+            
+            console.log('💾 Backup de emergencia guardado');
+        } catch (e) {
+            console.error('❌❌ Falló backup:', e);
+        }
+        
+        return false;
+    }
+}
+
+// =====================================================
+// FUNCIÓN PARA GUARDAR AL CERRAR NAVEGADOR
+// =====================================================
+function saveOnPageClose() {
+    if (!selectedBox || !currentUserId) return;
+    
+    isPageClosing = true;
+    
+    const datos = {};
+    todosLosCampos.forEach(id => {
+        const campo = document.getElementById(id);
+        if (id === 'firma') {
+            datos[id] = firmaCompartida || '';
+        } else {
+            datos[id] = campo ? campo.value.trim() : '';
+        }
+    });
+
+    const payload = {
+        box: selectedBox,
+        datos: datos,
+        user_id: currentUserId,
+        timestamp: Date.now()
+    };
+
+    // Método 1: sendBeacon (más confiable para cerrar)
+    if (navigator.sendBeacon) {
+        const formData = new FormData();
+        formData.append('data', JSON.stringify(payload));
+        const sent = navigator.sendBeacon('save_draft.php', formData);
+        console.log('📡 sendBeacon enviado:', sent);
+    }
+    
+    // Método 2: fetch con keepalive (backup)
+    fetch('save_draft.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+    }).catch(() => {
+        console.log('💾 Fetch falló, guardando en localStorage');
+        localStorage.setItem(`backup_${currentUserId}_box${selectedBox}`, JSON.stringify({
+            datos: datos,
+            timestamp: Date.now(),
+            fromClose: true
+        }));
+    });
+}
+
+// =====================================================
+// FUNCIÓN PARA ACTIVAR AUTO-GUARDADO EN CAMPOS
+// =====================================================
+function activateAutoSave() {
+    if (autoSaveEnabled) return;
+    
+    console.log('🚀 Activando auto-guardado...');
+    autoSaveEnabled = true;
+    
+    // Agregar listeners a todos los campos
+    todosLosCampos.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) {
+            // Al escribir - con delay
+            campo.addEventListener('input', () => {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(() => {
+                    autoSaveDraftNew();
+                }, 1000);
+            });
+            
+            // Al cambiar - inmediato
+            campo.addEventListener('change', () => {
+                clearTimeout(autoSaveTimer);
+                autoSaveDraftNew();
+            });
+            
+            // Al perder foco - inmediato
+            campo.addEventListener('blur', () => {
+                clearTimeout(autoSaveTimer);
+                autoSaveDraftNew();
+            });
+        }
+    });
+    
+    // Guardado forzado cada 15 segundos
+    if (forceTimer) clearInterval(forceTimer);
+    forceTimer = setInterval(() => {
+        if (selectedBox && !isPageClosing) {
+            console.log('⏰ Guardado periódico forzado');
+            autoSaveDraftNew();
+        }
+    }, 15000);
+}
+
+// =====================================================
+// FUNCIÓN PARA CARGAR DATOS CON BACKUP
+// =====================================================
+async function loadDraftWithBackup(boxNumber) {
+    try {
+        // Primero intentar cargar desde servidor
+        const response = await fetch(`get_draft.php?box=${boxNumber}`, {
+            credentials: "same-origin"
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.datos) {
+                console.log('✅ Datos cargados desde servidor');
+                return result.datos;
+            }
+        }
+        
+        // Si no hay datos en servidor, buscar en localStorage
+        const backupKey = `backup_${currentUserId}_box${boxNumber}`;
+        const backup = localStorage.getItem(backupKey);
+        
+        if (backup) {
+            try {
+                const parsedBackup = JSON.parse(backup);
+                console.log('🔄 Datos recuperados desde backup localStorage');
+                
+                // Sincronizar con servidor
+                setTimeout(() => autoSaveDraftNew(), 2000);
+                
+                return parsedBackup.datos;
+            } catch (e) {
+                console.error('Error al parsear backup:', e);
+            }
+        }
+        
+        console.log('ℹ️ No hay datos guardados para este box');
+        return null;
+        
+    } catch (error) {
+        console.error('❌ Error al cargar draft:', error);
+        return null;
+    }
+}
+
+// =====================================================
+// EVENTOS DE CIERRE DE PÁGINA
+// =====================================================
+window.addEventListener('beforeunload', (e) => {
+    console.log('🚨 beforeunload - guardando datos...');
+    saveOnPageClose();
+});
+
+window.addEventListener('unload', () => {
+    console.log('🚨 unload - guardando datos...');
+    saveOnPageClose();
+});
+
+window.addEventListener('pagehide', () => {
+    console.log('🚨 pagehide - guardando datos...');
+    saveOnPageClose();
+});
+
+// Para móviles - cuando se oculta la página
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && selectedBox) {
+        console.log('👁️ Página oculta - guardando...');
+        autoSaveDraftNew();
+    }
+});
+
+// =====================================================
+// MODIFICAR LA FUNCIÓN selectBox EXISTENTE
+// =====================================================
+// Interceptar la función selectBox original para agregar funcionalidad
+const originalSelectBox = window.selectBox;
+window.selectBox = async function(boxNumber) {
+    console.log(`📦 Interceptando selectBox(${boxNumber})`);
+    
+    // Llamar a la función original primero
+    await originalSelectBox(boxNumber);
+    
+    // Luego activar auto-guardado y cargar datos con backup
+    activateAutoSave();
+    
+    // Intentar cargar datos con sistema de backup
+    const datosConBackup = await loadDraftWithBackup(boxNumber);
+    if (datosConBackup) {
+        console.log('📋 Aplicando datos recuperados...');
+        todosLosCampos.forEach(id => {
+            const campo = document.getElementById(id);
+            if (campo && datosConBackup[id]) {
+                if (id === 'firma') {
+                    firmaCompartida = datosConBackup[id];
+                    campo.value = firmaCompartida;
+                } else {
+                    campo.value = datosConBackup[id];
+                }
+            }
+        });
+        
+        // Actualizar contador
+        if (typeof actualizarContadorTotal === 'function') {
+            actualizarContadorTotal();
+        }
+    }
+};
+
+// =====================================================
+// FUNCIÓN DE DEBUG
+// =====================================================
+function debugAutoSave() {
+    console.log('=== DEBUG AUTO-GUARDADO ===');
+    console.log('selectedBox:', selectedBox);
+    console.log('currentUserId:', currentUserId);
+    console.log('autoSaveEnabled:', autoSaveEnabled);
+    console.log('isPageClosing:', isPageClosing);
+    
+    if (selectedBox && currentUserId) {
+        const backup = localStorage.getItem(`backup_${currentUserId}_box${selectedBox}`);
+        if (backup) {
+            const data = JSON.parse(backup);
+            console.log('Backup local:', new Date(data.timestamp).toLocaleTimeString());
+        } else {
+            console.log('No hay backup local');
+        }
+    }
+    console.log('========================');
+}
+
+// Exponer funciones para debugging
+window.debugAutoSave = debugAutoSave;
+window.autoSaveDraftNew = autoSaveDraftNew;
+
+console.log('🚀 Sistema de auto-guardado compatible inicializado');
 </script>
 </body>
 </html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="description" content="Información relacionada con la Calculadora de Dosis Farmacológicas.">
+  <meta name="author" content="Equipo de Desarrollo - Evolución UCI">
+  <link rel="icon" href="../img/calculadora.png?v=3" type="image/png" />
+
+  <title>Info – Calculadora de Dosis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #f4f7fa;
+      --primary: #2d6b3a;
+      --secondary: #368f3f;
+      --text: #2e2925;
+      --white: #fff;
+      --radius: 8px;
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:"Montserrat",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
+      line-height:1.5;
+    }
+    h1 {
+      text-align:center;
+      margin-bottom:10px;
+      font-size:2rem;
+      color:var(--primary);
+    }
+    .subtitle {
+      text-align:center;
+      color:#666;
+      margin-bottom:30px;
+    }
+    .features {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      max-width:1000px;
+      margin:0 auto 40px;
+    }
+    .feature {
+      background:var(--white);
+      border-radius:var(--radius);
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      padding:20px;
+      transition:transform .2s;
+    }
+    .feature:hover { transform:translateY(-5px); }
+    .feature i {
+      font-size:2rem;
+      color:var(--secondary);
+      margin-bottom:10px;
+    }
+    .feature h3 {
+      font-size:1.1rem;
+      margin-bottom:8px;
+      color:var(--primary);
+    }
+    .feature p { font-size:.95rem; color:#444; }
+    
+    /* Categorías especiales */
+    .feature.predefined {
+      border-left: 4px solid #4CAF50;
+    }
+    .feature.manual {
+      border-left: 4px solid #2196F3;
+    }
+    .feature.safety {
+      border-left: 4px solid #FF9800;
+    }
+    .feature.technical {
+      border-left: 4px solid #9C27B0;
+    }
+    
+    footer {
+      text-align:center;
+      margin-top:40px;
+      font-size:.8rem;
+      color:#999;
+    }
+    
+    /* Botón Volver */
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 8px 15px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: bold;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .back-button:hover {
+      transform: translateX(-3px);
+    }
+
+    /* Ajuste para el título principal */
+    body {
+      padding-top: 60px;
+    }
+
+    @media (max-width: 600px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Botón Volver -->
+  <a href="https://jolejuma.es/evolucion-uci/index.html" class="back-button">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+
+  <h1><i class="fas fa-pills"></i> Calculadora de Dosis</h1>
+  <p class="subtitle">Funcionalidades disponibles en esta herramienta</p>
+
+  <div class="features">
+    <!-- FÁRMACOS PREDEFINIDOS -->
+    <div class="feature predefined">
+      <i class="fas fa-database"></i>
+      <h3>Base de Datos de Fármacos</h3>
+      <p>17 medicamentos predefinidos con concentraciones estándar de UCI: Noradrenalina, Dopamina, Propofol, Fentanilo, Midazolam y más.</p>
+    </div>
+    
+    <div class="feature predefined">
+      <i class="fas fa-search"></i>
+      <h3>Búsqueda Inteligente</h3>
+      <p>Encuentra rápidamente cualquier fármaco escribiendo su nombre. Filtrado dinámico en tiempo real.</p>
+    </div>
+    
+    <div class="feature predefined">
+      <i class="fas fa-info-circle"></i>
+      <h3>Información Detallada</h3>
+      <p>Visualiza cantidad total, volumen de disolución y concentración de cada fármaco seleccionado.</p>
+    </div>
+    
+    <!-- CALCULADORA MANUAL -->
+    <div class="feature manual">
+      <i class="fas fa-edit"></i>
+      <h3>Calculadora Manual</h3>
+      <p>Introduce manualmente cualquier medicamento con sus propios valores de concentración y volumen.</p>
+    </div>
+    
+    <div class="feature manual">
+      <i class="fas fa-calculator"></i>
+      <h3>Cálculo Automático de Concentración</h3>
+      <p>La concentración se calcula automáticamente al introducir cantidad total y volumen de disolución.</p>
+    </div>
+    
+    <div class="feature manual">
+      <i class="fas fa-flask"></i>
+      <h3>Preparaciones Personalizadas</h3>
+      <p>Ideal para medicamentos no incluidos en la base de datos o preparaciones especiales.</p>
+    </div>
+    
+    <!-- CÁLCULOS -->
+    <div class="feature technical">
+      <i class="fas fa-microscope"></i>
+      <h3>μg/kg/min</h3>
+      <p>Cálculo preciso de microgramos por kilogramo por minuto, estándar en cuidados intensivos.</p>
+    </div>
+    
+    <div class="feature technical">
+      <i class="fas fa-weight-hanging"></i>
+      <h3>mg/kg/h</h3>
+      <p>Conversión automática a miligramos por kilogramo por hora para comparación de dosis.</p>
+    </div>
+    
+    <div class="feature technical">
+      <i class="fas fa-clock"></i>
+      <h3>mg/h</h3>
+      <p>Dosis total por hora independiente del peso del paciente para control de infusión.</p>
+    </div>
+    
+    <!-- CARACTERÍSTICAS TÉCNICAS -->
+    <div class="feature technical">
+      <i class="fas fa-tachometer-alt"></i>
+      <h3>Cálculo en Tiempo Real</h3>
+      <p>Resultados instantáneos al modificar peso del paciente o velocidad de infusión.</p>
+    </div>
+    
+    <div class="feature technical">
+      <i class="fas fa-decimal"></i>
+      <h3>Precisión Decimal</h3>
+      <p>Cálculos con 6 decimales para máxima precisión en dosis críticas.</p>
+    </div>
+    
+    <div class="feature technical">
+      <i class="fas fa-mobile-alt"></i>
+      <h3>Responsive Design</h3>
+      <p>Funciona perfectamente en ordenadores, tablets y móviles con interfaz adaptativa.</p>
+    </div>
+    
+    <!-- SEGURIDAD Y VALIDACIÓN -->
+    <div class="feature safety">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Validación de Datos</h3>
+      <p>Verifica que todos los campos estén completos antes de realizar cálculos.</p>
+    </div>
+    
+    <div class="feature safety">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Advertencias de Seguridad</h3>
+      <p>Recordatorios sobre verificación de cálculos antes de la administración.</p>
+    </div>
+    
+    <div class="feature safety">
+      <i class="fas fa-user-md"></i>
+      <h3>Herramienta de Apoyo</h3>
+      <p>Diseñada como soporte para profesionales sanitarios, no sustituye el juicio clínico.</p>
+    </div>
+    
+    <!-- USABILIDAD -->
+    <div class="feature">
+      <i class="fas fa-eye"></i>
+      <h3>Interfaz Intuitiva</h3>
+      <p>Diseño limpio y profesional que facilita el uso durante situaciones críticas.</p>
+    </div>
+    
+    <div class="feature">
+      <i class="fas fa-history"></i>
+      <h3>Sin Almacenamiento</h3>
+      <p>No guarda datos del paciente, garantizando privacidad y cumplimiento normativo.</p>
+    </div>
+    
+    <div class="feature">
+      <i class="fas fa-home"></i>
+      <h3>Navegación Rápida</h3>
+      <p>Botón de vuelta a Evolución UCI siempre visible para navegación fluida.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      &copy; 2025 Calculadora de Dosis Farmacológicas. Herramienta para profesionales sanitarios.
+      <br>C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br>
+    </p>
+  </footer>
+
+</body>
+</html>

@@ -318,8 +318,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Crear notificación
     const notification = document.createElement('div');
     notification.style.cssText = `
-      background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-      color: white;
+      background: ${type === 'success' ? '#f4f7fa' : type === 'error' ? '#f44336' : '#f4f7fa'};
+      color: #272626;
+      border:   1px solid var(--borde);
       padding: 12px 16px;
       margin-bottom: 10px;
       border-radius: 4px;

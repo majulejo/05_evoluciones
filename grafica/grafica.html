@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="format-detection" content="telephone=no" />
-    <title>Gráficas del Paciente - Sistema Hospitalario</title>
+    <link rel="shortcut icon" href="admin.png" type="image/png" />
+    <title>Gráficas del Paciente</title>
 
     <!-- Evitar caché -->
     <meta
@@ -324,15 +325,18 @@
         border-radius: 15px;
         padding: clamp(15px, 3vw, 25px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        min-height: 700px;
+        /*min-height: 700px;*/
+        height: auto;
         display: flex;
         flex-direction: column;
         max-width: 1200px;
         margin: 0 auto;
+        overflow-x: hidden; /* Añadir esta línea */
       }
-      
+
       .oxigenacion-card {
-        height: 400px;
+        height: auto;
+        overflow-x: hidden; /* Añadir esta línea */
       }
 
       .chart-title {
@@ -665,8 +669,9 @@
         width: 100%;
         max-width: 1200px;
         height: 100%;
-        max-height: 310px;
+        /* max-height: 310px; */
         margin: 0 auto;
+        overflow-x: hidden; /* Añadir esta línea */
       }
 
       .oxigenacion-table {
@@ -699,9 +704,9 @@
         position: sticky;
         left: 0;
         z-index: 10;
-        width: 140px;
-        min-width: 140px;
-        max-width: 140px;
+        width: 110px;
+        min-width: 110px;
+        max-width: 110px;
       }
 
       .param-label {
@@ -712,7 +717,7 @@
         position: sticky;
         left: 0;
         z-index: 5;
-        width: 140px;
+        width: 110px;
         border-right: 2px solid #667eea;
       }
 
@@ -728,8 +733,8 @@
       .hour-header {
         background: #f0f0f0 !important;
         width: calc((1200px - 140px) / 24);
-        min-width: 40px;
-        max-width: 50px;
+        min-width: 30px;
+        max-width: 40px;
         font-size: clamp(8px, 1.5vw, 10px);
         font-weight: bold;
       }
@@ -740,9 +745,9 @@
         position: relative;
         height: clamp(30px, 5vw, 35px);
         vertical-align: middle;
-        width: calc((1200px - 140px) / 24);
-        min-width: 40px;
-        max-width: 50px;
+        width: calc((1200px - 110px) / 24);
+        min-width: 30px;
+        max-width: 40px;
       }
 
       .data-cell:hover {
@@ -896,8 +901,8 @@
         }
 
         .oxigenacion-table-container {
-          overflow-y: auto;
-          overflow-x: hidden;
+          overflow-y: hidden;
+          overflow-x: auto;
           max-height: 80vh;
         }
 
@@ -1376,8 +1381,7 @@
             </table>
           </div>
         </div>
-        
-        
+
         <!-- Pérdidas -->
 
         <div class="chart-card perdidas-card">
@@ -1391,15 +1395,14 @@
             </div>
           </div>
         </div>
-        
-        
+
         <!-- Ingresos -->
 
         <div class="chart-card ingresos-card">
           <h3 class="chart-title">💊 Ingresos y Nutrición</h3>
           <div class="chart-placeholder">
             <div>
-              <p>💉 Ingresos </p>
+              <p>💉 Ingresos</p>
               <p style="font-size: 14px; margin-top: 10px">
                 (Próximamente: Horarios, dosis, efectos)
               </p>
@@ -1600,9 +1603,20 @@
             >
               🗑️ Eliminar
             </button>
-            <button type="submit" class="btn btn-success">💾 Guardar</button>
           </div>
         </form>
+        <div class="modal-footer" style="margin-top: 1em; text-align: right">
+          <button id="guardarConstantesBtn" class="btn btn-primary">
+            💾 Guardar
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="cerrarModalConstantes()"
+          >
+            Cerrar
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1655,6 +1669,8 @@
       let horaSeleccionada = null;
       let tooltipTimeout = null;
       let modalTooltipActivo = false;
+      let horaActual = null; // se actualizará cada vez que se abra el modal
+      let constantesPorHora = {}; // almacén temporal local (opcional)
 
       // Configuración de escalas para la gráfica
       const escalas = {
@@ -1674,6 +1690,8 @@
 
       // Inicializar página
       document.addEventListener("DOMContentLoaded", function () {
+        inicializarTablaOxigenacion();
+
         try {
           inicializarPagina();
           configurarResponsive();
@@ -2061,6 +2079,18 @@
           svg.appendChild(text);
         });
       }
+      // Activar clic en celdas de glucemia y saturación
+      document
+        .querySelectorAll(
+          '.param-row[data-param="glucemia"] .data-cell, .param-row[data-param="saturacion"] .data-cell'
+        )
+        .forEach((celda) => {
+          celda.style.cursor = "pointer";
+          celda.addEventListener("click", function () {
+            const hora = this.getAttribute("data-hora");
+            if (hora) abrirModalConstantes(hora);
+          });
+        });
 
       function dibujarConstantesHorizontal(
         svg,
@@ -2518,6 +2548,8 @@
       }
 
       function abrirModalConstantes(hora) {
+        horaActual = hora;
+
         ocultarTooltipConstantes();
 
         horaSeleccionada = hora;
@@ -2831,8 +2863,8 @@
                           <div class="data-item editable" onclick="abrirModalEdicion()">
                               <div class="data-label">Número de Historia ✏️</div>
                               <div class="data-value">${
-                              datosPaciente.numero_historia || "No registrado"
-                            }</div>
+                                datosPaciente.numero_historia || "No registrado"
+                              }</div>
                           </div>
                           
 
@@ -2919,15 +2951,93 @@
 
       // Inicialización de la tabla de oxigenación
       function inicializarTablaOxigenacion() {
-        try {
-          const { hojaActual } = calcularTurnoHospitalario();
-          document.getElementById("hojaOxigenacion").textContent = hojaActual;
+        const tabla = document.querySelector(".oxigenacion-table");
+        if (!tabla) return;
 
-          generarTablaOxigenacion();
-          cargarDatosOxigenacion();
-        } catch (error) {
-          console.error("Error al inicializar tabla de oxigenación:", error);
+        const tbody = tabla.querySelector("tbody");
+        if (!tbody) return;
+
+        // Elimina fila de horas si ya existe
+        const filaHorasExistente = tbody.querySelector(".hora-row");
+        if (filaHorasExistente) filaHorasExistente.remove();
+
+        // Crear fila de horas (de 08:00 a 23:00)
+        const filaHoras = document.createElement("tr");
+        filaHoras.classList.add("hora-row");
+
+        const thVacio = document.createElement("th");
+        filaHoras.appendChild(thVacio);
+
+        const horas = [];
+        for (let h = 8; h <= 23; h++) {
+          const hora = h.toString().padStart(2, "0") + ":00";
+          horas.push(hora);
+          const th = document.createElement("th");
+          th.textContent = hora;
+          filaHoras.appendChild(th);
         }
+
+        tbody.prepend(filaHoras);
+
+        // Generar celdas para cada parámetro
+        for (const row of document.querySelectorAll(".param-row")) {
+          const parametro = row.getAttribute("data-param");
+          row.querySelectorAll(".data-cell").forEach((td) => td.remove());
+
+          for (const hora of horas) {
+            const celda = document.createElement("td");
+            celda.classList.add("data-cell");
+            celda.setAttribute("data-hora", hora);
+
+            if (["eva", "escid", "rass"].includes(parametro)) {
+              const select = document.createElement("select");
+              select.classList.add("form-select");
+              select.setAttribute("data-param", parametro);
+              select.setAttribute("data-hora", hora);
+
+              let opciones = [];
+              if (parametro === "eva")
+                opciones = Array.from({ length: 11 }, (_, i) => i);
+              if (parametro === "escid") opciones = ["0", "1", "2", "3", "4"];
+              if (parametro === "rass")
+                opciones = [
+                  "-5",
+                  "-4",
+                  "-3",
+                  "-2",
+                  "-1",
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                ];
+
+              for (const op of opciones) {
+                const option = document.createElement("option");
+                option.value = op;
+                option.textContent = op;
+                select.appendChild(option);
+              }
+
+              celda.appendChild(select);
+            }
+
+            row.appendChild(celda);
+          }
+        }
+
+        // Reactivar clics en glucemia y saturación para abrir el modal
+        document
+          .querySelectorAll(
+            '.param-row[data-param="glucemia"] .data-cell, .param-row[data-param="saturacion"] .data-cell'
+          )
+          .forEach((celda) => {
+            celda.addEventListener("click", function () {
+              const hora = this.getAttribute("data-hora");
+              if (hora) abrirModalConstantes(hora);
+            });
+          });
       }
 
       function generarTablaOxigenacion() {
@@ -3251,6 +3361,88 @@
             e.preventDefault();
           }
         });
+      function actualizarCeldaOxigenacion(
+        param,
+        hora,
+        valor,
+        editable = false
+      ) {
+        const fila = document.querySelector(
+          `.param-row[data-param="${param}"]`
+        );
+        if (!fila) return;
+
+        const celdas = fila.querySelectorAll(".data-cell");
+        for (const celda of celdas) {
+          if (celda.getAttribute("data-hora") === hora) {
+            celda.textContent = valor;
+            if (editable) {
+              celda.contentEditable = true;
+              celda.classList.add("editable");
+            } else {
+              celda.removeAttribute("contentEditable");
+              celda.classList.remove("editable");
+            }
+            break;
+          }
+        }
+      }
+
+      document
+        .querySelectorAll(
+          '.param-row[data-param="saturacion"] .data-cell, .param-row[data-param="glucemia"] .data-cell'
+        )
+        .forEach((celda) => {
+          celda.addEventListener("click", function () {
+            const hora = this.getAttribute("data-hora");
+            if (hora) abrirModalConstantes(hora);
+          });
+        });
+
+      function guardarConstantes() {
+        const hora = document
+          .querySelector("#constantesModal h3")
+          .textContent.split("Hora: ")[1];
+
+        const glucemia = document.querySelector(
+          '#constantesModal [data-param="glucemia"]'
+        ).value;
+        const saturacion = document.querySelector(
+          '#constantesModal [data-param="saturacion"]'
+        ).value;
+
+        const celdaGlucemia = document.querySelector(
+          `.param-row[data-param="glucemia"] .data-cell[data-hora="${hora}"]`
+        );
+        const celdaSaturacion = document.querySelector(
+          `.param-row[data-param="saturacion"] .data-cell[data-hora="${hora}"]`
+        );
+
+        if (celdaGlucemia) celdaGlucemia.textContent = glucemia;
+        if (celdaSaturacion) celdaSaturacion.textContent = saturacion;
+
+        cerrarModalConstantes(); // Si existe esta función, cierra el modal tras guardar
+      }
+
+      function enviarConstantesABaseDeDatos() {
+        const datos = constantesPorHora[horaActual];
+        datos.hora = horaActual;
+
+        fetch("guardar_constantes.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(datos),
+        })
+          .then((response) => response.json())
+          .then((respuesta) => {
+            console.log("Guardado en BD:", respuesta);
+          })
+          .catch((error) => {
+            console.error("Error al guardar en BD:", error);
+          });
+      }
     </script>
   </body>
 </html>

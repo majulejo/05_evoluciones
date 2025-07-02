@@ -3,24 +3,23 @@
 ====================================
 ARCHIVO: delete_box_reports.php
 ====================================
+Elimina todos los informes de un box específico
+Busca y elimina de ambas tablas: informes_guardados e informes
+Zona horaria: Madrid (Europe/Madrid)
 */
 
 session_start();
-date_default_timezone_set('Europe/Madrid'); // ⭐ ZONA HORARIA DE MADRID
+date_default_timezone_set('Europe/Madrid');
 
 header('Content-Type: application/json');
 header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
 
-// Verificar autenticación
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'No autenticado']);
     exit();
 }
 
 try {
-    // Leer datos JSON del POST
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
     
@@ -30,71 +29,76 @@ try {
     
     $box = $data['box'];
     
-    // Validar que el box sea un número válido
     if (!is_numeric($box) || $box < 1 || $box > 12) {
         throw new Exception('Número de Box inválido');
     }
     
-    // Configuración de base de datos
-    $host = 'localhost';
-    $dbname = 'u724879249_evolucion_uci';
-    $username = 'u724879249_jamarquez06';
-    $password = 'Farolill01.';
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
+    $pdo = new PDO("mysql:host=localhost;dbname=u724879249_evolucion_uci;charset=utf8mb4", 
+                   'u724879249_jamarquez06', 'Farolill01.', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
     
-    // Establecer zona horaria en MySQL
     $pdo->exec("SET time_zone = '+02:00'");
     
-    // Contar informes que se van a eliminar
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) as total 
-        FROM informes 
-        WHERE box = ? AND user_id = ? AND activo = 1
-    ");
-    $stmt->execute([$box, $_SESSION['user_id']]);
-    $count = $stmt->fetch()['total'];
+    $totalDeleted = 0;
+    $tablesUsed = [];
     
-    if ($count == 0) {
-        echo json_encode([
-            'success' => true,
-            'message' => "No hay informes activos en el Box {$box} para eliminar",
-            'deleted_count' => 0
-        ]);
-        exit();
+    // Eliminar de informes_guardados
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM informes_guardados WHERE box = ? AND user_id = ?");
+        $stmt->execute([$box, $_SESSION['user_id']]);
+        $count1 = $stmt->fetch()['total'];
+        
+        if ($count1 > 0) {
+            $deleteStmt = $pdo->prepare("DELETE FROM informes_guardados WHERE box = ? AND user_id = ?");
+            $deleteStmt->execute([$box, $_SESSION['user_id']]);
+            $deleted1 = $deleteStmt->rowCount();
+            if ($deleted1 > 0) {
+                $totalDeleted += $deleted1;
+                $tablesUsed[] = "informes_guardados ($deleted1)";
+            }
+        }
+    } catch (PDOException $e) {
+        // Tabla no existe, continuar
     }
     
-    // Marcar todos los informes del box como inactivos
-    $stmt = $pdo->prepare("
-        UPDATE informes 
-        SET activo = 0, fecha_eliminacion = ? 
-        WHERE box = ? AND user_id = ? AND activo = 1
-    ");
+    // Eliminar de informes
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM informes WHERE box = ? AND user_id = ?");
+        $stmt->execute([$box, $_SESSION['user_id']]);
+        $count2 = $stmt->fetch()['total'];
+        
+        if ($count2 > 0) {
+            $deleteStmt = $pdo->prepare("DELETE FROM informes WHERE box = ? AND user_id = ?");
+            $deleteStmt->execute([$box, $_SESSION['user_id']]);
+            $deleted2 = $deleteStmt->rowCount();
+            if ($deleted2 > 0) {
+                $totalDeleted += $deleted2;
+                $tablesUsed[] = "informes ($deleted2)";
+            }
+        }
+    } catch (PDOException $e) {
+        // Tabla no existe, continuar
+    }
     
-    $timestamp = date('Y-m-d H:i:s');
-    $result = $stmt->execute([$timestamp, $box, $_SESSION['user_id']]);
-    
-    if ($result) {
-        $deleted_count = $stmt->rowCount();
+    if ($totalDeleted > 0) {
         echo json_encode([
             'success' => true,
-            'message' => "Se eliminaron {$deleted_count} informes del Box {$box}",
-            'deleted_count' => $deleted_count,
+            'message' => "Se eliminaron {$totalDeleted} informes del Box {$box}",
+            'deleted_count' => $totalDeleted,
             'box' => $box,
-            'timestamp' => $timestamp
+            'tables_used' => implode(', ', $tablesUsed)
         ]);
     } else {
-        throw new Exception('No se pudieron eliminar los informes');
+        echo json_encode([
+            'success' => true,
+            'message' => "No hay informes en el Box {$box} para eliminar",
+            'deleted_count' => 0,
+            'box' => $box
+        ]);
     }
     
-} catch (PDOException $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Error de base de datos: ' . $e->getMessage()
-    ]);
 } catch (Exception $e) {
     echo json_encode([
         'success' => false,

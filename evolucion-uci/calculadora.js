@@ -194,6 +194,7 @@ function nombreAmigable(tipo) {
     oral: "Vía Oral",
     sng: "Sng",
     drenajes: "Drenajes",
+    vomitos: "Vómitos, Sudor, Heces",
     default: "Calculadora",
   };
   return nombres[tipo] || nombres.default;

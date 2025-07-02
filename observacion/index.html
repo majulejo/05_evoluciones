@@ -18,7 +18,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <link rel="icon" href="evolucion.png?v=3" type="image/png" />
+    <link rel="icon" href="ojo.png?v=3" type="image/png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,7 +31,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <title>Evolución/Informes</title>
+    <title>Observación-Evolución</title>
 
     <style>
       :root {
@@ -44,21 +44,21 @@
         --radio: 10px;
 
         /* uci */
-        --fuente: #368f3f;
+        /* --fuente: #368f3f;
         --hover: #d9ebd8;
         --borde: #4fa66a;
         --fuente15: #79b47f;
         --btn: #489950;
-        --color-fondo: #f4f7fa;
+        --color-fondo: #f4f7fa; */
 
         /* OBSERVACION */
 
-        /* --fuente: #b62329;
+        --fuente: #b62329;
         --hover: #d9ebd8;
         --borde: #d00000;
         --fuente15: #b84549;
         --btn: #d0000067;
-        --color-fondo: #f2efef; */
+        --color-fondo: #f2efef;
       }
 
       * {
@@ -1150,7 +1150,7 @@
         </div>
         <div class="info-content">
           Sistema para crear y gestionar informes de evolución de enfermería en
-          Uci de forma rápida y eficiente.
+          observación de forma rápida y eficiente.
         </div>
       </div>
 
@@ -1196,18 +1196,18 @@
         navegador, perderás la información guardada.
       </div>
     </div>
-    <h1>Evolución de Enfermería</h1>
+    <h1>Observación-Evolución</h1>
     <div id="contenidoApp" style="display: block"></div>
     <div class="box-selector" id="boxSelector"></div>
 
     <div id="mensaje-box-seleccionado">
-      Ha seleccionado el Box <span id="numero-box-seleccionado-msg"></span>
+      Ha seleccionado la cama <span id="numero-box-seleccionado-msg"></span>
     </div>
 
     <div id="indicador-guardando">Guardando...</div>
 
     <div id="box-indicador-flotante">
-      Box <span id="numero-box-seleccionado-fijo"></span>
+      Cama <span id="numero-box-seleccionado-fijo"></span>
       <div id="usuario-indicador-flotante"></div>
     </div>
 
@@ -1419,17 +1419,6 @@
 
       <div class="campo">
         <label for="firma" class="centered-label">FIRMA</label>
-        <i
-            class="fas fa-info-circle"
-            title="Si está vacío, no se imprimirá en el informe"
-            style="
-              color: var(--fuente);
-              font-size: 12px;
-              margin-left: 5px;
-              cursor: help;
-            "
-          >
-          </i>
         <textarea id="firma" disabled></textarea>
       </div>
 
@@ -1491,7 +1480,7 @@
           <i class="fas fa-trash-can"></i> Eliminar Informe
         </button>
         <button class="eliminarInforme" onclick="eliminarInformesDeBox()">
-          <i class="fas fa-broom"></i> Eliminar Informes del Box
+          <i class="fas fa-broom"></i> Eliminar Informes de las Camas
         </button>
       </div>
     </div>
@@ -1644,7 +1633,7 @@
       function eliminarDraft(boxNumber) {
         try {
           localStorage.removeItem(`draft_${currentUserId}_box${boxNumber}`);
-          console.log(`Draft eliminado para Box ${boxNumber}`);
+          console.log(`Draft eliminado para Cama ${boxNumber}`);
         } catch (error) {
           console.error("Error al eliminar draft:", error);
         }
@@ -1655,7 +1644,7 @@
           const textarea = document.getElementById(campoId);
           if (textarea) {
             textarea.disabled = true;
-            textarea.placeholder = "Seleccione un Box o informe guardado";
+            textarea.placeholder = "Seleccione una Cama o informe guardado";
           }
         });
       }
@@ -1680,9 +1669,9 @@
 
         for (let i = 1; i <= 12; i++) {
           const btn = document.createElement("button");
-          btn.textContent = `Box ${i}`;
+          btn.textContent = `Cama ${i}`;
           btn.onclick = async () => {
-            console.log(`Clic en Box ${i}`);
+            console.log(`Clic en Cama ${i}`);
             await selectBox(i);
           };
           boxSelector.appendChild(btn);
@@ -1692,7 +1681,7 @@
           const textarea = document.getElementById(campoId);
           if (textarea) {
             textarea.disabled = true;
-            textarea.placeholder = "Seleccione un Box o informe guardado";
+            textarea.placeholder = "Seleccione una Cama o informe guardado";
             textarea.addEventListener("input", actualizarContadorTotal);
           }
         });
@@ -1712,7 +1701,7 @@
 
         const lastBox = localStorage.getItem("lastSelectedBox");
         if (lastBox) {
-          console.log(`Cargando último Box seleccionado: ${lastBox}`);
+          console.log(`Cargando última Cama seleccionada: ${lastBox}`);
           selectBox(parseInt(lastBox, 10));
         } else {
           deshabilitarCampos();
@@ -1955,7 +1944,7 @@
 
         // Verificar que hay box seleccionado
         if (!selectedBox || !currentUserId) {
-          alert("Selecciona un Box.");
+          alert("Selecciona una Box.");
           return;
         }
 
@@ -2098,7 +2087,7 @@
 
       function saveDraft() {
         if (!selectedBox || !currentUserId) {
-          console.error("No se puede guardar: box o user_id no definidos");
+          console.error("No se puede guardar: Cama o user_id no definidos");
           return false;
         }
 
@@ -2135,7 +2124,7 @@
       function selectBox(boxNumber) {
         try {
           if (!boxNumber || isNaN(boxNumber)) {
-            throw new Error("Número de box inválido");
+            throw new Error("Número de Cama inválido");
           }
 
           if (!currentUserId) {
@@ -2146,11 +2135,11 @@
             return;
           }
 
-          console.log(`Seleccionando Box ${boxNumber}`);
+          console.log(`Seleccionando Cama ${boxNumber}`);
 
           if (selectedBox && selectedBox !== boxNumber) {
             console.log(
-              `Guardando draft del Box ${selectedBox} antes de cambiar`
+              `Guardando draft de la Cama ${selectedBox} antes de cambiar`
             );
             saveDraft();
           }
@@ -2185,7 +2174,7 @@
 
           habilitarCampos();
 
-          console.log(`Cargando datos para Box ${boxNumber}`);
+          console.log(`Cargando datos para Cama ${boxNumber}`);
           const localDraft = cargarDraftLocalStorage(boxNumber);
 
           if (localDraft) {
@@ -2210,7 +2199,7 @@
 
           actualizarContadorTotal();
         } catch (error) {
-          console.error("Error al cambiar de box:", error);
+          console.error("Error al cambiar de Cama:", error);
           alert(`Error: ${error.message}`);
 
           const indicador = document.getElementById("indicador-guardando");
@@ -2305,9 +2294,9 @@
               !informe.hora ||
               informe.fecha.includes("Sin")
             ) {
-              option.textContent = `Box ${informe.box} - Recién guardado`;
+              option.textContent = `Cama ${informe.box} - Recién guardado`;
             } else {
-              option.textContent = `Box ${informe.box} - ${informe.fecha} ${informe.hora}`;
+              option.textContent = `Cama ${informe.box} - ${informe.fecha} ${informe.hora}`;
             }
 
             select.appendChild(option);
@@ -2391,7 +2380,7 @@
 
           // Mensaje informativo
           console.log(
-            `Informe ${data.id} rescatado del Box ${data.box}. Listo para copiar/imprimir.`
+            `Informe ${data.id} rescatado de la Cama ${data.box}. Listo para copiar/imprimir.`
           );
         } catch (error) {
           console.error("Error al cargar informe:", error);
@@ -2539,7 +2528,7 @@
               : "Turno de 20 a 8 horas";
         }
 
-        let html = `<p class="cabecera">BOX ${selectedBox} – ${turnoTexto}</p>`;
+        let html = `<p class="cabecera">CAMA ${selectedBox} – ${turnoTexto}</p>`;
 
         // Procesar todos los campos excepto la firma
         todosLosCampos.forEach((campoId) => {
@@ -2693,20 +2682,20 @@
         }
 
         if (!selectedBox) {
-          alert("Selecciona primero un Box.");
+          alert("Selecciona primero unA Cama.");
           return;
         }
 
         if (
           !confirm(
-            `¿Estás seguro de que quieres eliminar TODOS los informes del Box ${selectedBox}?`
+            `¿Estás seguro de que quieres eliminar TODOS los informes de la Cama ${selectedBox}?`
           )
         ) {
           return;
         }
 
         try {
-          console.log("Eliminando informes del Box:", selectedBox);
+          console.log("Eliminando informes de la Cama:", selectedBox);
 
           // Obtener lista de informes
           let informes = JSON.parse(
@@ -2726,7 +2715,7 @@
           localStorage.setItem("lista_informes", JSON.stringify(informes));
 
           alert(
-            `Informes del Box ${selectedBox} eliminados correctamente (${informesAEliminar.length} informes)`
+            `Informes de la Cama ${selectedBox} eliminados correctamente (${informesAEliminar.length} informes)`
           );
 
           // Limpiar variables
@@ -2739,8 +2728,8 @@
           // Recargar lista de informes
           cargarListadoInformesGuardados();
         } catch (error) {
-          console.error("Error al eliminar informes del box:", error);
-          alert("Error al eliminar informes del box: " + error.message);
+          console.error("Error al eliminar informes de la Cama:", error);
+          alert("Error al eliminar informes de la Cama: " + error.message);
         }
       }
 
@@ -2759,7 +2748,7 @@
         }
 
         indicador.innerHTML = `
-        <span>BOX ${boxNumber}</span>
+        <span>CAMA ${boxNumber}</span>
         <span id="usuario-indicador-flotante">${nombreMostrar}</span>
     `;
 
@@ -2826,7 +2815,7 @@
           .forEach((key) => {
             const informe = JSON.parse(localStorage.getItem(key));
             console.log(
-              `- ${key}: Box ${informe.box}, ${informe.fecha} ${informe.hora}`
+              `- ${key}: Cama ${informe.box}, ${informe.fecha} ${informe.hora}`
             );
           });
 

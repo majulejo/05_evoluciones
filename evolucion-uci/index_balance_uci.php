@@ -189,13 +189,17 @@ $version = time();
                 </td>
               </tr>
               <tr>
-                <td>Vómitos Sudor Fiebre Tqn</td>
+                <td>Vómitos, Sudor, Heces <i
+                    class="bx bx-calculator calculadora-icon vomitos-icon"
+                    data-target="perdida_vomitos_box"
+                    data-type="vomitos"
+                  ></i></td>
                 <td>
                   <input
                     id="perdida_vomitos_box"
                     class="input perdida"
                     type="number"
-                    placeholder="Vómitos Sudor Fiebre Tqn"
+                    placeholder="Vómitos Sudor Heces"
                   />
                 </td>
               </tr>
@@ -298,7 +302,7 @@ $version = time();
               </tr>
               <tr>
                 <td>
-                  Sng
+                  Sng / C.Residuos
                   <i
                     class="bx bx-calculator calculadora-icon sng-icon"
                     data-target="perdida_sng_box"
@@ -359,7 +363,7 @@ $version = time();
                 </td>
               </tr>
               <tr>
-                <td>Cálculo de Vómitos, Sudor, Fiebre y Tqn</td>
+                <td>Cálculo de Vómitos, Sudor, Fiebre, Tqn y Heces</td>
                 <td>
                   <input
                     type="number"
