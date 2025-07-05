@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="format-detection" content="telephone=no" />
-    <link rel="shortcut icon" href="admin.png" type="image/png" />
-    <title>Gráficas del Paciente</title>
+    <title>Gráficas del Paciente - Sistema Hospitalario</title>
 
     <!-- Evitar caché -->
     <meta
@@ -37,17 +36,106 @@
         padding: 0 10px;
       }
 
-      .header {
-        text-align: center;
-        color: white;
-        margin-bottom: 30px;
-      }
-
       .header h1 {
         font-size: 2.5rem;
         margin-bottom: 10px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
       }
+
+      /* HEADER LOGOUT */
+
+      .header {
+        position: relative;
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80px;
+      }
+
+      .logout-btn {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: #dc3545;
+        color: #dc3545;
+        transform: translateY(-50%) translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.2);
+      }
+
+      .logout-icon {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+      }
+
+      .logout-btn:hover .logout-icon {
+        transform: scale(1.2);
+      }
+
+      .logout-text {
+        font-size: 13px;
+      }
+
+      /* Responsive para móviles */
+      @media (max-width: 768px) {
+        .header {
+          min-height: 60px;
+        }
+
+        .logout-btn {
+          right: 15px;
+          padding: 6px 10px;
+          font-size: 12px;
+        }
+
+        .logout-text {
+          display: none;
+        }
+
+        .logout-icon {
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .logout-btn {
+          right: 10px;
+          padding: 8px;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          justify-content: center;
+        }
+
+        .logout-icon {
+          font-size: 20px;
+        }
+      }
+
+      /* FINAL DEL HEADER LOGOUT */
 
       .patient-info-card {
         background: white;
@@ -325,7 +413,6 @@
         border-radius: 15px;
         padding: clamp(15px, 3vw, 25px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        /*min-height: 700px;*/
         height: auto;
         display: flex;
         flex-direction: column;
@@ -669,9 +756,9 @@
         width: 100%;
         max-width: 1200px;
         height: 100%;
-        /* max-height: 310px; */
+        max-height: 480px;
         margin: 0 auto;
-        overflow-x: hidden; /* Añadir esta línea */
+        overflow-y: hidden; /* Añadir esta línea */
       }
 
       .oxigenacion-table {
@@ -745,7 +832,7 @@
         position: relative;
         height: clamp(30px, 5vw, 35px);
         vertical-align: middle;
-        width: calc((1200px - 110px) / 24);
+        width: calc((1200px - 140px) / 24);
         min-width: 30px;
         max-width: 40px;
       }
@@ -786,10 +873,12 @@
         background: white;
       }
 
+      /* Valores de alerta - CORREGIR */
       .alert-value {
         background: #ffebee !important;
-        color: #c62828;
-        font-weight: bold;
+        color: #c62828 !important;
+        font-weight: bold !important;
+        border: 2px solid #f44336 !important;
       }
 
       .alert-icon {
@@ -798,6 +887,23 @@
         right: 2px;
         color: #f44336;
         font-size: 10px;
+        animation: pulse 1.5s infinite;
+      }
+
+      /* Animación para iconos de alerta */
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
 
       /* Responsive */
@@ -901,8 +1007,8 @@
         }
 
         .oxigenacion-table-container {
-          overflow-y: hidden;
-          overflow-x: auto;
+          overflow-y: auto;
+          overflow-x: hidden;
           max-height: 80vh;
         }
 
@@ -1105,12 +1211,621 @@
           font-size: 14px;
         }
       }
+
+      /*  1. AÑADIR ESTOS ESTILOS CSS (dentro del <style>) */
+      .oxigenacion-dropdown {
+        position: absolute;
+        background: white;
+        border: 2px solid #667eea;
+        border-radius: 8px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        min-width: 140px;
+        padding: 8px 0;
+        font-family: inherit;
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+        animation: dropdownAppear 0.15s ease-out forwards;
+      }
+
+      @keyframes dropdownAppear {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .oxigenacion-option {
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 13px;
+        font-weight: 500;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .oxigenacion-option:last-child {
+        border-bottom: none;
+      }
+
+      .oxigenacion-option:hover {
+        background: #667eea;
+        color: white;
+      }
+
+      .oxigenacion-option.selected {
+        background: #e8f0fe;
+        color: #667eea;
+        font-weight: bold;
+      }
+
+      .oxigenacion-option.vmi {
+        color: #e74c3c;
+      }
+
+      .oxigenacion-option.vmni {
+        color: #f39c12;
+      }
+
+      .oxigenacion-option.o2 {
+        color: #27ae60;
+      }
+
+      .oxigenacion-option.sin-especificar {
+        color: #95a5a6;
+        font-style: italic;
+      }
+
+      /* Indicadores visuales para oxigenación */
+      .oxigenacion-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 6px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: bold;
+        min-height: 16px;
+        max-width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .oxigenacion-indicator.vmi {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .oxigenacion-indicator.vmni {
+        background: #f39c12;
+        color: white;
+      }
+
+      .oxigenacion-indicator.o2 {
+        background: #27ae60;
+        color: white;
+      }
+
+      .oxigenacion-indicator.sin-especificar {
+        background: #95a5a6;
+        color: white;
+        font-style: italic;
+      }
+
+      /* Asegurar que las celdas no se expandan */
+      .data-cell {
+        padding: 4px;
+        overflow: hidden;
+      }
+
+      /* final de dropdown oxigenacion */
+
+      /* INSULINA */
+      /* ===== ESTILOS PARA MODAL DE INSULINA ===== */
+      .insulina-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .insulina-modal-content {
+        background: white;
+        border-radius: 15px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: modalAppear 0.3s ease-out;
+      }
+
+      @keyframes modalAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.9) translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .insulina-header {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 15px 15px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .insulina-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      .insulina-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        padding: 0;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .insulina-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+      }
+
+      .insulina-body {
+        padding: 25px;
+      }
+
+      .insulina-body p {
+        margin: 8px 0;
+        font-size: 15px;
+      }
+
+      .insulina-body hr {
+        margin: 20px 0;
+        border: none;
+        border-top: 2px solid #f0f0f0;
+      }
+
+      .recomendacion-box {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .recomendacion-box h4 {
+        color: #007bff;
+        margin: 0 0 15px 0;
+        font-size: 1.1rem;
+      }
+
+      .recomendacion-box p {
+        margin: 8px 0;
+        font-weight: 500;
+      }
+
+      .insulina-manual {
+        border: 2px solid #28a745;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        background: #f8fff8;
+      }
+
+      .insulina-manual h4 {
+        color: #28a745;
+        margin: 0 0 15px 0;
+        font-size: 1.1rem;
+      }
+
+      .form-group {
+        margin: 15px 0;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      }
+
+      .insulina-footer {
+        padding: 20px 25px;
+        border-top: 2px solid #f0f0f0;
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        background: #fafafa;
+        border-radius: 0 0 15px 15px;
+      }
+
+      .insulina-footer .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        min-width: 120px;
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: linear-gradient(45deg, #218838, #1ba085);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(45deg, #ffc107, #fd7e14);
+        color: #212529;
+      }
+
+      .btn-warning:hover {
+        background: linear-gradient(45deg, #e0a800, #dc6502);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #5a6268);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: linear-gradient(45deg, #5a6268, #495057);
+        transform: translateY(-2px);
+      }
+
+      /* Estilos responsive para modal de insulina */
+      @media (max-width: 768px) {
+        .insulina-modal-content {
+          width: 95%;
+          margin: 20px;
+          max-height: 90vh;
+        }
+
+        .insulina-header {
+          padding: 15px 20px;
+        }
+
+        .insulina-header h3 {
+          font-size: 1.1rem;
+        }
+
+        .insulina-body {
+          padding: 20px;
+        }
+
+        .recomendacion-box,
+        .insulina-manual {
+          padding: 15px;
+          margin: 15px 0;
+        }
+
+        .insulina-footer {
+          flex-direction: column;
+          padding: 15px 20px;
+        }
+
+        .insulina-footer .btn {
+          width: 100%;
+          margin-bottom: 8px;
+          min-width: auto;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .insulina-modal-content {
+          width: 98%;
+          margin: 10px;
+        }
+
+        .form-group input,
+        .form-group select {
+          padding: 10px 12px;
+        }
+      }
+
+      /* FIN INSULINA  */
+
+      /*EVA/RASS */
+      /* ===== DROPDOWN EVA/RASS - NUEVO ===== */
+      .eva-dropdown {
+        position: absolute;
+        background: white;
+        border: 2px solid #e74c3c;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(231, 76, 60, 0.2);
+        z-index: 1000;
+        min-width: 180px;
+        max-width: 220px;
+        padding: 12px 0;
+        font-family: inherit;
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+        animation: evaDropdownAppear 0.2s ease-out forwards;
+      }
+
+      .eva-dropdown-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        z-index: 999;
+      }
+
+      @keyframes evaDropdownAppear {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .eva-category {
+        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+      }
+
+      .eva-category:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .eva-category-title {
+        font-size: 11px;
+        font-weight: bold;
+        color: #e74c3c;
+        padding: 6px 15px 4px 15px;
+        background: #fff5f5;
+        margin: 0 8px;
+        border-radius: 6px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .eva-option {
+        padding: 8px 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 12px;
+        font-weight: 500;
+        border-bottom: 1px solid #f8f8f8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .eva-option:hover {
+        background: #e74c3c;
+        color: white;
+        padding-left: 18px;
+      }
+
+      .eva-option.selected {
+        background: #fef2f2;
+        color: #e74c3c;
+        font-weight: bold;
+        border-left: 3px solid #e74c3c;
+      }
+
+      .eva-option-value {
+        font-weight: bold;
+        font-size: 13px;
+        min-width: 25px;
+        text-align: center;
+      }
+
+      .eva-option-desc {
+        flex: 1;
+        margin-left: 8px;
+        font-size: 11px;
+      }
+
+      /* Estilos para diferentes rangos */
+      .eva-option.eva-bajo {
+        border-left: 3px solid #2ecc71;
+      }
+      .eva-option.eva-medio {
+        border-left: 3px solid #f39c12;
+      }
+      .eva-option.eva-alto {
+        border-left: 3px solid #e74c3c;
+      }
+
+      /* Indicadores visuales mejorados para EVA/RASS */
+      .eva-indicator {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px 5px;
+        border-radius: 6px;
+        font-size: 9px !important;
+        font-weight: bold;
+        min-height: 16px;
+        min-width: 20px;
+        box-sizing: border-box;
+        overflow: visible;
+        white-space: nowrap;
+        line-height: 1;
+        cursor: pointer;
+        position: relative;
+        text-shadow: none;
+        margin: 1px;
+        transition: all 0.2s ease;
+      }
+
+      .eva-multi-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 100%;
+        padding: 2px;
+      }
+
+      /* Colores con fondos suaves y bordes */
+      .eva-indicator.eva-0-3 {
+        background: #d4f5d4 !important;
+        border: 2px solid #28a745;
+        color: #155724 !important;
+      }
+
+      .eva-indicator.eva-4-6 {
+        background: #fff3cd !important;
+        border: 2px solid #ffc107;
+        color: #856404 !important;
+      }
+
+      .eva-indicator.eva-7-10 {
+        background: #f8d7da !important;
+        border: 2px solid #dc3545;
+        color: #721c24 !important;
+      }
+
+      .eva-indicator.escid-positivo {
+        background: #ffeaa7 !important;
+        border: 2px solid #fd7e14;
+        color: #b8651b !important;
+      }
+
+      .eva-indicator.escid-negativo {
+        background: #e2e3e5 !important;
+        border: 2px solid #6c757d;
+        color: #495057 !important;
+      }
+
+      .eva-indicator.rass-agitado {
+        background: #f5c6cb !important;
+        border: 2px solid #e74c3c;
+        color: #721c24 !important;
+      }
+
+      .eva-indicator.rass-alerta {
+        background: #bee5eb !important;
+        border: 2px solid #17a2b8;
+        color: #0c5460 !important;
+      }
+
+      .eva-indicator.rass-sedado {
+        background: #e2d9f3 !important;
+        border: 2px solid #6f42c1;
+        color: #432874 !important;
+      }
+
+      /* Tooltip mejorado */
+      .eva-tooltip {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.95);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        max-width: 280px;
+        white-space: normal;
+        line-height: 1.4;
+        font-weight: 500;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .eva-tooltip.visible {
+        opacity: 1;
+      }
+
+      .eva-tooltip::before {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -6px;
+        border: 6px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.95);
+      }
+
+      /* Hover effects */
+      .eva-indicator:hover {
+        transform: scale(1.15);
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        filter: brightness(1.1);
+      }
+
+      /* FIN DROPDOWN EVA/RASS */
     </style>
   </head>
   <body>
     <div class="container">
       <div class="header">
         <h1>Gráficas y Monitoreo del Paciente</h1>
+        <button class="logout-btn" onclick="cerrarSesion()">
+          <span class="logout-icon">🚪</span>
+          <span class="logout-text">Salir</span>
+        </button>
       </div>
 
       <!-- Información del Paciente -->
@@ -1278,7 +1993,7 @@
                 <div class="minimal-color" style="background: #e74c3c"></div>
                 <div class="minimal-text">
                   <div class="minimal-name">
-                    EVA/ESCID/RASS - Escalas especializadas
+                    EVA/RASS - Escalas especializadas
                   </div>
                   <div class="minimal-warning">
                     Click para acceder a escalas detalladas
@@ -1356,7 +2071,7 @@
                       class="param-color"
                       style="background: #e74c3c"
                     ></span>
-                    EVA/ESCID/RASS
+                    EVA/RASS
                   </td>
                 </tr>
                 <tr class="param-row" data-param="glucemia">
@@ -1559,13 +2274,13 @@
           </div>
 
           <div class="constante-group">
-            <label for="satO2">
+            <label for="sat_o2">
               <span class="color-box" style="background: lime"></span>
               Sat O₂ (%)
             </label>
             <input
               type="number"
-              id="satO2"
+              id="sat_o2"
               min="0"
               max="100"
               placeholder="0-100"
@@ -1603,20 +2318,9 @@
             >
               🗑️ Eliminar
             </button>
+            <button type="submit" class="btn btn-success">💾 Guardar</button>
           </div>
         </form>
-        <div class="modal-footer" style="margin-top: 1em; text-align: right">
-          <button id="guardarConstantesBtn" class="btn btn-primary">
-            💾 Guardar
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="cerrarModalConstantes()"
-          >
-            Cerrar
-          </button>
-        </div>
       </div>
     </div>
 
@@ -1669,8 +2373,6 @@
       let horaSeleccionada = null;
       let tooltipTimeout = null;
       let modalTooltipActivo = false;
-      let horaActual = null; // se actualizará cada vez que se abra el modal
-      let constantesPorHora = {}; // almacén temporal local (opcional)
 
       // Configuración de escalas para la gráfica
       const escalas = {
@@ -1678,7 +2380,7 @@
         temperatura: { min: 35, max: 40, step: 1, color: "red", name: "Tª" },
         FC: { min: 0, max: 250, step: 50, color: "blue", name: "FC" },
         TA: { min: 0, max: 250, step: 50, color: "green", name: "TA" },
-        satO2: { min: 60, max: 100, step: 10, color: "lime", name: "SatO₂" },
+        sat_o2: { min: 60, max: 100, step: 10, color: "lime", name: "SatO₂" },
         glucemia: {
           min: 0,
           max: 500,
@@ -1689,44 +2391,16 @@
       };
 
       // Inicializar página
-      document.addEventListener("DOMContentLoaded", function () {
-        inicializarTablaOxigenacion();
 
+      document.addEventListener("DOMContentLoaded", function () {
         try {
-          inicializarPagina();
+          inicializarPaginaMejorada(); // ← CAMBIAR inicializarPagina por inicializarPaginaMejorada
           configurarResponsive();
         } catch (error) {
           console.error("Error al inicializar la página:", error);
           mostrarMensaje("Error al cargar la página", "error");
         }
       });
-
-      function inicializarPagina() {
-        // Obtener parámetro box de URL
-        const urlParams = new URLSearchParams(window.location.search);
-        numeroBoxActual = urlParams.get("box");
-
-        if (!numeroBoxActual) {
-          alert("Error: No se especificó el número de box");
-          window.location.href = "index.html";
-          return;
-        }
-
-        // Cargar datos reales del paciente
-        cargarDatosPaciente()
-          .then(() => {
-            console.log("Datos del paciente cargados");
-            inicializarGraficaConstantes();
-            setTimeout(() => {
-              inicializarTablaOxigenacion();
-            }, 300);
-          })
-          .catch((error) => {
-            console.error("Error en inicialización:", error);
-            mostrarMensaje("Error al cargar los datos", "error");
-          });
-      }
-
       function inicializarGraficaConstantes() {
         const { hojaActual } = calcularTurnoHospitalario();
         document.getElementById("hojaConstantes").textContent = hojaActual;
@@ -1737,7 +2411,21 @@
 
       async function cargarConstantesVitales() {
         try {
-          // Datos demo para constantes
+          console.log(
+            "Intentando cargar constantes desde BD para box:",
+            numeroBoxActual
+          );
+
+          // Intentar cargar desde base de datos
+          constantesData = await cargarConstantesDesdeeBD();
+
+          console.log("Constantes cargadas desde BD:", constantesData);
+          generarGraficaConstantes();
+          actualizarValoresAutomaticos();
+        } catch (error) {
+          console.error("Error al cargar constantes desde BD:", error);
+          // Si hay error, usar datos demo como fallback
+          console.log("Usando datos demo como fallback");
           constantesData = {
             "08:00": {
               FR: 18,
@@ -1745,35 +2433,38 @@
               FC: 75,
               taSistolica: 120,
               taDiastolica: 80,
-              satO2: 98,
+              sat_o2: 98,
               glucemia: 110,
             },
             "12:00": {
               FR: 20,
               temperatura: 36.8,
               FC: 82,
-              satO2: 97,
+              sat_o2: 97,
               glucemia: 130,
             },
-            "16:00": { temperatura: 37.1, FC: 88, satO2: 96, glucemia: 145 },
+            "16:00": { temperatura: 37.1, FC: 88, sat_o2: 96, glucemia: 145 },
             "20:00": {
               FR: 22,
               temperatura: 37.2,
               FC: 90,
               taSistolica: 130,
               taDiastolica: 85,
-              satO2: 95,
+              sat_o2: 95,
               glucemia: 160,
             },
           };
-
-          console.log("Constantes cargadas:", constantesData);
+          mostrarMensaje(
+            "⚠️ Usando datos demo - Error conexión BD: " + error.message,
+            "error"
+          );
           generarGraficaConstantes();
           actualizarValoresAutomaticos();
-        } catch (error) {
-          console.error("Error al cargar constantes:", error);
-          constantesData = {};
-          generarGraficaConstantes();
+
+          mostrarMensaje(
+            "✅ Constantes guardadas en la base de datos",
+            "success"
+          );
         }
       }
 
@@ -1784,6 +2475,255 @@
           generarGraficaConstantesVertical(svg);
         } else {
           generarGraficaConstantesHorizontal(svg);
+        }
+      }
+
+      // Funciones para comunicación con base de datos
+      async function guardarConstantesEnBD(datos) {
+        try {
+          console.log("💾 Guardando constantes vitales en BD:", datos);
+
+          const response = await fetch("api/guardar_constantes.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(result.message || "Error al guardar constantes");
+          }
+
+          console.log("✅ Constantes vitales guardadas exitosamente");
+
+          // ✅ SINCRONIZAR AUTOMÁTICAMENTE CON TABLA DE OXIGENACIÓN
+          setTimeout(async () => {
+            await sincronizarValoresAutomaticos();
+          }, 500);
+
+          return result;
+        } catch (error) {
+          console.error("❌ Error guardando constantes vitales:", error);
+          throw error;
+        }
+      }
+
+      async function cargarConstantesDesdeeBD() {
+        try {
+          console.log(
+            "🔄 Cargando constantes vitales desde BD para box:",
+            numeroBoxActual
+          );
+
+          const response = await fetch(
+            `api/obtener_constantes.php?box=${numeroBoxActual}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(result.message || "Error al cargar constantes");
+          }
+
+          // Convertir datos del servidor al formato local
+          const constantesData = {};
+
+          if (result.data && result.data.length > 0) {
+            result.data.forEach((registro) => {
+              const hora = registro.hora;
+              constantesData[hora] = {};
+
+              if (registro.fr !== null)
+                constantesData[hora].FR = parseInt(registro.fr);
+              if (registro.temperatura !== null)
+                constantesData[hora].temperatura = parseFloat(
+                  registro.temperatura
+                );
+              if (registro.fc !== null)
+                constantesData[hora].FC = parseInt(registro.fc);
+              if (registro.ta_sistolica !== null)
+                constantesData[hora].taSistolica = parseInt(
+                  registro.ta_sistolica
+                );
+              if (registro.ta_diastolica !== null)
+                constantesData[hora].taDiastolica = parseInt(
+                  registro.ta_diastolica
+                );
+              if (registro.saturacion !== null)
+                constantesData[hora].sat_o2 = parseInt(registro.saturacion);
+              if (registro.glucemia !== null)
+                constantesData[hora].glucemia = parseInt(registro.glucemia);
+            });
+          }
+
+          console.log("✅ Constantes vitales cargadas:", constantesData);
+          return constantesData;
+        } catch (error) {
+          console.error("❌ Error cargando constantes vitales:", error);
+          throw error;
+        }
+      }
+
+      async function eliminarConstantesDeBD(hora) {
+        try {
+          const response = await fetch("api/eliminar_constantes.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              box: numeroBoxActual,
+              hora: hora,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.message || "Error desconocido");
+          }
+
+          return result;
+        } catch (error) {
+          console.error("Error en eliminarConstantesDeBD:", error);
+          throw error;
+        }
+      }
+
+      // ===== FUNCIONES DE API Y TEST AÑADIDAS =====
+
+      // FUNCIÓN MOCK PARA SIMULAR LA API
+      window.apiMockActiva = false; // ✅ API real activada por defecto
+
+      // FUNCIÓN DE DEBUG PARA VERIFICAR ESTADO ACTUAL
+      function debugEstadoActual() {
+        console.log("🔍 === DEBUG ESTADO ACTUAL ===");
+        console.log("📊 oxigenacionData:", oxigenacionData);
+        console.log("📊 constantesData:", constantesData);
+
+        // Verificar qué hay en cada celda EVA/RASS
+        const horasConEva = Object.keys(oxigenacionData).filter(
+          (hora) => oxigenacionData[hora].evaRass
+        );
+
+        console.log("🎯 Horas con EVA/RASS:", horasConEva);
+
+        horasConEva.forEach((hora) => {
+          const valor = oxigenacionData[hora].evaRass;
+          const cell = document.querySelector(
+            `[data-hora="${hora}"][data-param="evaRass"]`
+          );
+          console.log(`⏰ ${hora}: valor="${valor}", celda:`, cell);
+          if (cell) {
+            console.log(`   📝 Contenido celda: "${cell.textContent}"`);
+            console.log(`   🎨 HTML celda:`, cell.innerHTML);
+          }
+        });
+      }
+
+      // FUNCIÓN PARA APLICAR DATOS DE PRUEBA
+      function aplicarDatosPrueba() {
+        console.log("🧪 Aplicando datos de prueba...");
+
+        const datosPrueba = {
+          "08:00": { evaRass: "5", oxigenacion: "VMI" },
+          "12:00": { evaRass: "7/+", oxigenacion: "O2", insulina: "10" },
+          "16:00": { evaRass: "3/-2", pNeumo: 80 },
+          "20:00": { evaRass: "8/+/-1", insulina: "15+5" },
+        };
+
+        Object.keys(datosPrueba).forEach((hora) => {
+          const datos = datosPrueba[hora];
+          if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+
+          Object.keys(datos).forEach((campo) => {
+            oxigenacionData[hora][campo] = datos[campo];
+
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="${campo}"]`
+            );
+            if (cell) {
+              let valorMostrar = datos[campo];
+              if (
+                campo === "insulina" &&
+                !String(valorMostrar).includes("U.I.")
+              ) {
+                valorMostrar = valorMostrar + " U.I.";
+              }
+              actualizarCelda(cell, valorMostrar, campo);
+            }
+          });
+        });
+
+        console.log("✅ Datos de prueba aplicados");
+        console.log("📊 oxigenacionData actualizado:", oxigenacionData);
+      }
+
+      // FUNCIÓN PARA ACTIVAR/DESACTIVAR API MOCK
+      function toggleApiMock(activar = null) {
+        if (activar !== null) {
+          window.apiMockActiva = activar;
+        } else {
+          window.apiMockActiva = !window.apiMockActiva;
+        }
+
+        console.log(
+          `🔧 API Mock ${window.apiMockActiva ? "ACTIVADA" : "DESACTIVADA"}`
+        );
+        mostrarMensaje(
+          `🔧 Modo ${
+            window.apiMockActiva ? "SIMULACIÓN" : "API REAL"
+          } activado`,
+          "success"
+        );
+      }
+
+      async function guardarDato(hora, campo, valor) {
+        try {
+          console.log(
+            `🔄 Guardando en BD: ${campo} = ${valor} en hora ${hora}`
+          );
+
+          const datos = {
+            box: numeroBoxActual,
+            hora: hora,
+            campo: campo,
+            valor: valor,
+          };
+
+          const response = await fetch("api/guardar_dato.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datos),
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.message || "Error desconocido al guardar");
+          }
+
+          console.log(
+            `✅ Guardado exitoso en BD: ${hora} - ${campo}: ${valor}`
+          );
+          console.log("📊 Datos guardados:", result);
+
+          // Mostrar mensaje de éxito
+          mostrarMensaje("✅ Guardado en base de datos", "success");
+
+          return { success: true };
+        } catch (error) {
+          console.error("❌ Error al guardar en BD:", error);
+          mostrarMensaje("❌ Error al guardar en base de datos", "error");
+          return { success: false, error: error.message };
         }
       }
 
@@ -2079,18 +3019,6 @@
           svg.appendChild(text);
         });
       }
-      // Activar clic en celdas de glucemia y saturación
-      document
-        .querySelectorAll(
-          '.param-row[data-param="glucemia"] .data-cell, .param-row[data-param="saturacion"] .data-cell'
-        )
-        .forEach((celda) => {
-          celda.style.cursor = "pointer";
-          celda.addEventListener("click", function () {
-            const hora = this.getAttribute("data-hora");
-            if (hora) abrirModalConstantes(hora);
-          });
-        });
 
       function dibujarConstantesHorizontal(
         svg,
@@ -2237,7 +3165,7 @@
                   } else if (valorReal < 35 || valorReal > 38.5) {
                     esValorExtremo = true;
                   }
-                } else if (tipo === "satO2") {
+                } else if (tipo === "sat_o2") {
                   if (valorReal < config.min) {
                     valorParaGrafica = config.min;
                     esValorExtremo = true;
@@ -2381,7 +3309,7 @@
               return valor < 35 || valor > 38.5;
             case "FC":
               return valor < 50 || valor > 130;
-            case "satO2":
+            case "sat_o2":
               return valor < 85;
             case "glucemia":
               return valor < 70 || valor > 351;
@@ -2403,48 +3331,48 @@
         if (datos.FR !== undefined) {
           const extremo = esValorExtremo("FR", datos.FR);
           htmlContent += `
-                          <div class="tooltip-constante-item">
-                            <div class="tooltip-constante-label">
-                              <span class="color-box" style="background: black;"></span>
-                              FR ${extremo ? "⚠️" : ""}
-                            </div>
-                            <div class="tooltip-constante-valor" style="${
-                              extremo ? "color: #ff6b6b;" : ""
-                            }">${datos.FR}</div>
-                          </div>
-                        `;
+                                <div class="tooltip-constante-item">
+                                  <div class="tooltip-constante-label">
+                                    <span class="color-box" style="background: black;"></span>
+                                    FR ${extremo ? "⚠️" : ""}
+                                  </div>
+                                  <div class="tooltip-constante-valor" style="${
+                                    extremo ? "color: #ff6b6b;" : ""
+                                  }">${datos.FR}</div>
+                                </div>
+                              `;
         }
 
         // Temperatura
         if (datos.temperatura !== undefined) {
           const extremo = esValorExtremo("temperatura", datos.temperatura);
           htmlContent += `
-                          <div class="tooltip-constante-item">
-                            <div class="tooltip-constante-label">
-                              <span class="color-box" style="background: red;"></span>
-                              Tª ${extremo ? "⚠️" : ""}
-                            </div>
-                            <div class="tooltip-constante-valor" style="${
-                              extremo ? "color: #ff6b6b;" : ""
-                            }">${datos.temperatura}°C</div>
-                          </div>
-                        `;
+                                <div class="tooltip-constante-item">
+                                  <div class="tooltip-constante-label">
+                                    <span class="color-box" style="background: red;"></span>
+                                    Tª ${extremo ? "⚠️" : ""}
+                                  </div>
+                                  <div class="tooltip-constante-valor" style="${
+                                    extremo ? "color: #ff6b6b;" : ""
+                                  }">${datos.temperatura}°C</div>
+                                </div>
+                              `;
         }
 
         // FC
         if (datos.FC !== undefined) {
           const extremo = esValorExtremo("FC", datos.FC);
           htmlContent += `
-                          <div class="tooltip-constante-item">
-                            <div class="tooltip-constante-label">
-                              <span class="color-box" style="background: blue;"></span>
-                              FC ${extremo ? "⚠️" : ""}
-                            </div>
-                            <div class="tooltip-constante-valor" style="${
-                              extremo ? "color: #ff6b6b;" : ""
-                            }">${datos.FC}</div>
-                          </div>
-                        `;
+                                <div class="tooltip-constante-item">
+                                  <div class="tooltip-constante-label">
+                                    <span class="color-box" style="background: blue;"></span>
+                                    FC ${extremo ? "⚠️" : ""}
+                                  </div>
+                                  <div class="tooltip-constante-valor" style="${
+                                    extremo ? "color: #ff6b6b;" : ""
+                                  }">${datos.FC}</div>
+                                </div>
+                              `;
         }
 
         // TA
@@ -2460,48 +3388,50 @@
           );
 
           htmlContent += `
-                          <div class="tooltip-constante-item tooltip-ta-item">
-                            <div class="tooltip-constante-label">
-                              <span class="color-box" style="background: green;"></span>
-                              TA ${extremo ? "⚠️" : ""}
-                            </div>
-                            <div class="tooltip-constante-valor" style="${
-                              extremo ? "color: #ff6b6b;" : ""
-                            }">${datos.taSistolica}/${datos.taDiastolica}</div>
-                          </div>
-                        `;
+                                <div class="tooltip-constante-item tooltip-ta-item">
+                                  <div class="tooltip-constante-label">
+                                    <span class="color-box" style="background: green;"></span>
+                                    TA ${extremo ? "⚠️" : ""}
+                                  </div>
+                                  <div class="tooltip-constante-valor" style="${
+                                    extremo ? "color: #ff6b6b;" : ""
+                                  }">${datos.taSistolica}/${
+            datos.taDiastolica
+          }</div>
+                                </div>
+                              `;
         }
 
-        // SatO2
-        if (datos.satO2 !== undefined) {
-          const extremo = esValorExtremo("satO2", datos.satO2);
+        // sat_o2
+        if (datos.sat_o2 !== undefined) {
+          const extremo = esValorExtremo("sat_o2", datos.sat_o2);
           htmlContent += `
-                          <div class="tooltip-constante-item">
-                            <div class="tooltip-constante-label">
-                              <span class="color-box" style="background: lime;"></span>
-                              SatO₂ ${extremo ? "⚠️" : ""}
-                            </div>
-                            <div class="tooltip-constante-valor" style="${
-                              extremo ? "color: #ff6b6b;" : ""
-                            }">${datos.satO2}%</div>
-                          </div>
-                        `;
+                                <div class="tooltip-constante-item">
+                                  <div class="tooltip-constante-label">
+                                    <span class="color-box" style="background: lime;"></span>
+                                    SatO₂ ${extremo ? "⚠️" : ""}
+                                  </div>
+                                  <div class="tooltip-constante-valor" style="${
+                                    extremo ? "color: #ff6b6b;" : ""
+                                  }">${datos.sat_o2}%</div>
+                                </div>
+                              `;
         }
 
         // Glucemia
         if (datos.glucemia !== undefined) {
           const extremo = esValorExtremo("glucemia", datos.glucemia);
           htmlContent += `
-                          <div class="tooltip-constante-item">
-                            <div class="tooltip-constante-label">
-                              <span class="color-box" style="background: orange;"></span>
-                              Glucemia ${extremo ? "⚠️" : ""}
-                            </div>
-                            <div class="tooltip-constante-valor" style="${
-                              extremo ? "color: #ff6b6b;" : ""
-                            }">${datos.glucemia}</div>
-                          </div>
-                        `;
+                                <div class="tooltip-constante-item">
+                                  <div class="tooltip-constante-label">
+                                    <span class="color-box" style="background: orange;"></span>
+                                    Glucemia ${extremo ? "⚠️" : ""}
+                                  </div>
+                                  <div class="tooltip-constante-valor" style="${
+                                    extremo ? "color: #ff6b6b;" : ""
+                                  }">${datos.glucemia}</div>
+                                </div>
+                              `;
         }
 
         grid.innerHTML = htmlContent;
@@ -2548,8 +3478,6 @@
       }
 
       function abrirModalConstantes(hora) {
-        horaActual = hora;
-
         ocultarTooltipConstantes();
 
         horaSeleccionada = hora;
@@ -2564,7 +3492,7 @@
         document.getElementById("taSistolica").value = datos.taSistolica || "";
         document.getElementById("taDiastolica").value =
           datos.taDiastolica || "";
-        document.getElementById("satO2").value = datos.satO2 || "";
+        document.getElementById("sat_o2").value = datos.sat_o2 || "";
         document.getElementById("glucemia").value = datos.glucemia || "";
 
         const eliminarBtn = document.getElementById("eliminarBtn");
@@ -2593,10 +3521,9 @@
         }
       });
 
-      // Manejar envío del formulario de constantes
       document
         .getElementById("constantesForm")
-        .addEventListener("submit", function (e) {
+        .addEventListener("submit", async function (e) {
           e.preventDefault();
 
           if (!horaSeleccionada) return;
@@ -2606,37 +3533,93 @@
           const fc = document.getElementById("fc").value;
           const taSistolica = document.getElementById("taSistolica").value;
           const taDiastolica = document.getElementById("taDiastolica").value;
-          const satO2 = document.getElementById("satO2").value;
+          const sat_o2 = document.getElementById("sat_o2").value;
           const glucemia = document.getElementById("glucemia").value;
 
-          if (!constantesData[horaSeleccionada])
-            constantesData[horaSeleccionada] = {};
+          // Preparar datos para enviar
+          const datosConstantes = {
+            box: numeroBoxActual,
+            hora: horaSeleccionada,
+            fr: fr ? parseInt(fr) : null,
+            temperatura: temperatura ? parseFloat(temperatura) : null,
+            fc: fc ? parseInt(fc) : null,
+            ta_sistolica: taSistolica ? parseInt(taSistolica) : null,
+            ta_diastolica: taDiastolica ? parseInt(taDiastolica) : null,
+            saturacion: sat_o2 ? parseInt(sat_o2) : null,
+            glucemia: glucemia ? parseInt(glucemia) : null,
+          };
 
-          if (fr) constantesData[horaSeleccionada].FR = parseInt(fr);
-          if (temperatura)
-            constantesData[horaSeleccionada].temperatura =
-              parseFloat(temperatura);
-          if (fc) constantesData[horaSeleccionada].FC = parseInt(fc);
-          if (taSistolica)
-            constantesData[horaSeleccionada].taSistolica =
-              parseInt(taSistolica);
-          if (taDiastolica)
-            constantesData[horaSeleccionada].taDiastolica =
-              parseInt(taDiastolica);
-          if (satO2) constantesData[horaSeleccionada].satO2 = parseInt(satO2);
-          if (glucemia)
-            constantesData[horaSeleccionada].glucemia = parseInt(glucemia);
+          try {
+            // Enviar a la base de datos
+            await guardarConstantesEnBD(datosConstantes);
 
-          console.log(
-            "Constantes guardadas:",
-            constantesData[horaSeleccionada]
-          );
+            // Actualizar datos locales solo si se guardó correctamente
+            if (!constantesData[horaSeleccionada])
+              constantesData[horaSeleccionada] = {};
 
-          generarGraficaConstantes();
-          actualizarValoresAutomaticos();
+            if (fr) constantesData[horaSeleccionada].FR = parseInt(fr);
+            if (temperatura)
+              constantesData[horaSeleccionada].temperatura =
+                parseFloat(temperatura);
+            if (fc) constantesData[horaSeleccionada].FC = parseInt(fc);
+            if (taSistolica)
+              constantesData[horaSeleccionada].taSistolica =
+                parseInt(taSistolica);
+            if (taDiastolica)
+              constantesData[horaSeleccionada].taDiastolica =
+                parseInt(taDiastolica);
+            if (sat_o2)
+              constantesData[horaSeleccionada].sat_o2 = parseInt(sat_o2);
+            if (glucemia)
+              constantesData[horaSeleccionada].glucemia = parseInt(glucemia);
 
-          mostrarMensaje("✅ Constantes guardadas correctamente", "success");
-          cerrarModalConstantes();
+            console.log("Constantes guardadas en BD:", datosConstantes);
+
+            generarGraficaConstantes();
+            actualizarValoresAutomaticos();
+
+            mostrarMensaje(
+              "✅ Constantes guardadas en la base de datos",
+              "success"
+            );
+            cerrarModalConstantes();
+
+            // ✅ AÑADIR: Sincronizar valores automáticos en tabla oxigenación
+            setTimeout(async () => {
+              await sincronizarValoresAutomaticos();
+            }, 500);
+
+            // CORREGIDO: Verificar si hay glucemia nueva para calcular insulina
+
+            // CORREGIDO: Verificar si hay glucemia nueva para calcular insulina
+            if (glucemia && parseInt(glucemia) > 0) {
+              const horaParaInsulina = horaSeleccionada;
+              const glucemiaNum = parseInt(glucemia);
+
+              console.log(
+                "🚀 Glucemia detectada:",
+                glucemiaNum,
+                "Hora:",
+                horaParaInsulina
+              );
+
+              // Llamar inmediatamente después de cerrar el modal
+              setTimeout(() => {
+                if (glucemiaNum >= 150) {
+                  // Solo si necesita insulina
+                  console.log("💉 Calculando insulina automática...");
+                  calcularInsulinaAutomatica(
+                    glucemiaNum,
+                    numeroBoxActual,
+                    horaParaInsulina
+                  );
+                }
+              }, 500);
+            }
+          } catch (error) {
+            console.error("Error al guardar constantes:", error);
+            mostrarMensaje("❌ Error al guardar en la base de datos", "error");
+          }
         });
 
       function eliminarConstantes() {
@@ -2647,46 +3630,266 @@
             `¿Está seguro de eliminar las constantes de la hora ${horaSeleccionada}?`
           )
         ) {
-          delete constantesData[horaSeleccionada];
-          generarGraficaConstantes();
-          actualizarValoresAutomaticos();
-          mostrarMensaje("✅ Constantes eliminadas correctamente", "success");
-          cerrarModalConstantes();
+          // Llamar a API para eliminar de BD
+          eliminarConstantesDeBD(horaSeleccionada)
+            .then(() => {
+              delete constantesData[horaSeleccionada];
+              generarGraficaConstantes();
+              actualizarValoresAutomaticos();
+              mostrarMensaje(
+                "✅ Constantes eliminadas de la base de datos",
+                "success"
+              );
+              cerrarModalConstantes();
+            })
+            .catch((error) => {
+              console.error("Error al eliminar constantes:", error);
+              mostrarMensaje(
+                "❌ Error al eliminar de la base de datos",
+                "error"
+              );
+            });
         }
       }
 
+      // 1. CORREGIR LA FUNCIÓN cargarDatosPaciente() para soportar múltiples pacientes
+
+      // FUNCIÓN CORREGIDA cargarDatosPaciente para usar la API real
       async function cargarDatosPaciente() {
         try {
-          // Cargar datos reales según el box
-          const pacientesData = {
+          console.log("Cargando paciente para box:", numeroBoxActual);
+
+          // Intentar cargar desde API
+          const response = await fetch(
+            `api/obtener_paciente.php?box=${numeroBoxActual}`
+          );
+          const result = await response.json();
+
+          if (result.success && result.data) {
+            // Paciente encontrado en BD
+            datosPaciente = result.data;
+            console.log("Paciente cargado desde BD:", datosPaciente);
+            mostrarDatosPaciente();
+            calcularTiempoEstancia();
+            return Promise.resolve();
+          } else {
+            // No hay paciente en este box
+            console.log("No hay paciente en box", numeroBoxActual);
+            mostrarMensaje("No hay paciente ingresado en este box", "error");
+            setTimeout(() => (window.location.href = "index.html"), 2000);
+            return Promise.reject("No hay paciente en el box");
+          }
+        } catch (error) {
+          console.error("Error al cargar datos del paciente:", error);
+
+          // FALLBACK: Usar datos demo solo si hay error de conexión
+          console.log("Usando datos demo como fallback");
+          const pacientesDemo = {
             1: {
-              nombre_completo: "Plinicio Ruiz Ruiz",
+              nombre_completo: "Plinicio Ruiz Ruiz (DEMO)",
               edad: 86,
               peso: 100,
               numero_historia: "10000",
               fecha_ingreso: "2025-06-30T17:09:44",
             },
+            2: {
+              nombre_completo: "María García López (DEMO)",
+              edad: 72,
+              peso: 65,
+              numero_historia: "10001",
+              fecha_ingreso: "2025-07-01T08:30:00",
+            },
+            3: {
+              nombre_completo: "Carlos Fernández Ruiz (DEMO)",
+              edad: 58,
+              peso: 80,
+              numero_historia: "10002",
+              fecha_ingreso: "2025-07-02T14:15:00",
+            },
           };
 
-          // Obtener datos del paciente según el box actual
-          datosPaciente = pacientesData[numeroBoxActual];
+          datosPaciente = pacientesDemo[numeroBoxActual];
 
           if (!datosPaciente) {
-            // Si no hay datos para este box, mostrar error
-            mostrarMensaje("No hay paciente ingresado en este box", "error");
+            mostrarMensaje("No hay paciente en este box", "error");
             setTimeout(() => (window.location.href = "index.html"), 2000);
-            return Promise.reject();
+            return Promise.reject("No hay paciente");
           }
+
+          mostrarMensaje("⚠️ Usando datos DEMO - Error conexión BD", "error");
           mostrarDatosPaciente();
           calcularTiempoEstancia();
           return Promise.resolve();
-        } catch (error) {
-          console.error("Error al cargar datos:", error);
-          mostrarMensaje(
-            "Error de conexión al cargar los datos del paciente",
-            "error"
+        }
+      }
+
+      // 2. FUNCIÓN CORREGIDA para dar de alta (eliminar paciente)
+      async function altaCompleta() {
+        const nombrePaciente = datosPaciente.nombre_completo;
+
+        if (
+          confirm(
+            `¿Está seguro de dar de ALTA MÉDICA COMPLETA al paciente "${nombrePaciente}"?\n\n⚠️ Esta acción:\n• Liberará el box para nuevos ingresos\n• Guardará el historial completo\n• Eliminará al paciente del sistema activo`
+          )
+        ) {
+          try {
+            // Guardar todo antes del alta
+            await cerrarSesion();
+
+            // Llamar a API para dar de alta
+            const response = await fetch("api/dar_alta_paciente.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                box: numeroBoxActual,
+                paciente: datosPaciente,
+                fecha_alta: new Date().toISOString(),
+              }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              alert(
+                "✅ Alta médica procesada correctamente\n\nPaciente dado de alta y box liberado"
+              );
+              window.location.href = "index.html";
+            } else {
+              throw new Error(result.message || "Error al dar de alta");
+            }
+          } catch (error) {
+            console.error("Error al dar de alta:", error);
+
+            // Fallback: simular alta exitosa en modo demo
+            if (datosPaciente.nombre_completo.includes("DEMO")) {
+              alert(
+                "✅ Alta simulada exitosa (modo DEMO)\n\nRedirigiendo al inicio..."
+              );
+              window.location.href = "index.html";
+            } else {
+              mostrarMensaje("❌ Error al procesar el alta médica", "error");
+            }
+          }
+        }
+      }
+
+      // 3. FUNCIÓN para verificar estado del box
+      async function verificarEstadoBox(numeroBox) {
+        try {
+          const response = await fetch(
+            `api/verificar_box.php?box=${numeroBox}`
           );
-          return Promise.reject();
+          const result = await response.json();
+
+          return {
+            ocupado: result.ocupado || false,
+            paciente: result.paciente || null,
+            ultimaActividad: result.ultima_actividad || null,
+          };
+        } catch (error) {
+          console.error("Error al verificar estado del box:", error);
+          return { ocupado: false, paciente: null, ultimaActividad: null };
+        }
+      }
+
+      // 4. FUNCIÓN para crear nuevo paciente
+      async function crearNuevoPaciente(datosNuevoPaciente) {
+        try {
+          const response = await fetch("api/crear_paciente.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datosNuevoPaciente),
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.message || "Error al crear paciente");
+          }
+
+          return result;
+        } catch (error) {
+          console.error("Error al crear paciente:", error);
+          throw error;
+        }
+      }
+
+      // 5. FUNCIONES AUXILIARES para gestión de pacientes
+
+      // Función para limpiar datos del box después del alta
+      async function limpiarDatosBox(numeroBox) {
+        try {
+          const promises = [
+            fetch(`api/limpiar_constantes.php?box=${numeroBox}`, {
+              method: "DELETE",
+            }),
+            fetch(`api/limpiar_oxigenacion.php?box=${numeroBox}`, {
+              method: "DELETE",
+            }),
+            fetch(`api/limpiar_paciente.php?box=${numeroBox}`, {
+              method: "DELETE",
+            }),
+          ];
+
+          await Promise.all(promises);
+          console.log(`✅ Datos del box ${numeroBox} limpiados correctamente`);
+        } catch (error) {
+          console.warn(
+            `⚠️ Error al limpiar datos del box ${numeroBox}:`,
+            error
+          );
+        }
+      }
+
+      // Función para validar datos de paciente
+      function validarDatosPaciente(datos) {
+        const errores = [];
+
+        if (!datos.nombre_completo || datos.nombre_completo.trim() === "") {
+          errores.push("El nombre completo es obligatorio");
+        }
+
+        if (!datos.edad || datos.edad < 0 || datos.edad > 120) {
+          errores.push("La edad debe estar entre 0 y 120 años");
+        }
+
+        if (!datos.numero_historia || datos.numero_historia.trim() === "") {
+          errores.push("El número de historia es obligatorio");
+        }
+
+        return errores;
+      }
+
+      // FUNCIÓN MEJORADA DE INICIALIZACIÓN (asegúrate de que esté en tu código)
+      async function inicializarPaginaMejorada() {
+        try {
+          // Obtener parámetro box de URL
+          const urlParams = new URLSearchParams(window.location.search);
+          numeroBoxActual = urlParams.get("box");
+
+          if (!numeroBoxActual) {
+            alert("Error: No se especificó el número de box");
+            window.location.href = "index.html";
+            return;
+          }
+
+          console.log("Inicializando para box:", numeroBoxActual);
+
+          // Cargar datos del paciente
+          await cargarDatosPaciente();
+
+          console.log("Datos del paciente cargados");
+          inicializarGraficaConstantes();
+          setTimeout(async () => {
+            await inicializarTablaOxigenacionConPersistencia(); // ✅ NUEVO
+          }, 300);
+        } catch (error) {
+          console.error("Error en inicialización:", error);
+          mostrarMensaje("Error al cargar los datos", "error");
         }
       }
 
@@ -2769,128 +3972,133 @@
 
         if (esMobil()) {
           dataGrid.innerHTML = `
-                          <div class="patient-data-summary" onclick="togglePatientDetails()">
-                            <div class="patient-summary-text">
-                              ${
-                                datosPaciente.nombre_completo || "Paciente"
-                              } - ${datosPaciente.edad || "??"} años
-                            </div>
-                            <div class="expand-icon" id="expandIcon">▼</div>
-                          </div>
+                                <div class="patient-data-summary" onclick="togglePatientDetails()">
+                                  <div class="patient-summary-text">
+                                    ${
+                                      datosPaciente.nombre_completo ||
+                                      "Paciente"
+                                    } - ${datosPaciente.edad || "??"} años
+                                  </div>
+                                  <div class="expand-icon" id="expandIcon">▼</div>
+                                </div>
 
-                          <div class="patient-data-details" id="patientDetails">
-                            <div class="data-item">
-                              <div class="data-label">Número de Box</div>
-                              <div class="data-value">BOX-${numeroBoxActual}</div>
-                            </div>
+                                <div class="patient-data-details" id="patientDetails">
+                                  <div class="data-item">
+                                    <div class="data-label">Número de Box</div>
+                                    <div class="data-value">BOX-${numeroBoxActual}</div>
+                                  </div>
 
-                            <div class="data-item editable" onclick="abrirModalEdicion()">
-                              <div class="data-label">Nombre Completo ✏️</div>
-                              <div class="data-value">${
-                                datosPaciente.nombre_completo || "No registrado"
-                              }</div>
-                            </div>
+                                  <div class="data-item editable" onclick="abrirModalEdicion()">
+                                    <div class="data-label">Nombre Completo ✏️</div>
+                                    <div class="data-value">${
+                                      datosPaciente.nombre_completo ||
+                                      "No registrado"
+                                    }</div>
+                                  </div>
 
-                            <div class="data-item editable" onclick="abrirModalEdicion()">
-                              <div class="data-label">Edad ✏️</div>
-                              <div class="data-value">${
-                                datosPaciente.edad || "No registrada"
-                              } años</div>
-                            </div>
+                                  <div class="data-item editable" onclick="abrirModalEdicion()">
+                                    <div class="data-label">Edad ✏️</div>
+                                    <div class="data-value">${
+                                      datosPaciente.edad || "No registrada"
+                                    } años</div>
+                                  </div>
 
-                            <div class="data-item editable" onclick="abrirModalEdicion()">
-                              <div class="data-label">Peso ✏️</div>
-                              <div class="data-value">${
-                                datosPaciente.peso
-                                  ? Math.round(datosPaciente.peso) + " kg"
-                                  : "No registrado"
-                              }</div>
-                            </div>
+                                  <div class="data-item editable" onclick="abrirModalEdicion()">
+                                    <div class="data-label">Peso ✏️</div>
+                                    <div class="data-value">${
+                                      datosPaciente.peso
+                                        ? Math.round(datosPaciente.peso) + " kg"
+                                        : "No registrado"
+                                    }</div>
+                                  </div>
 
-                            <div class="data-item editable" onclick="abrirModalEdicion()">
-                              <div class="data-label">Número de Historia ✏️</div>
-                              <div class="data-value">${
-                                datosPaciente.numero_historia || "No registrado"
-                              }</div>
-                            </div>
+                                  <div class="data-item editable" onclick="abrirModalEdicion()">
+                                    <div class="data-label">Número de Historia ✏️</div>
+                                    <div class="data-value">${
+                                      datosPaciente.numero_historia ||
+                                      "No registrado"
+                                    }</div>
+                                  </div>
 
-                            <div class="data-item" style="border-left-color: #4ecdc4;">
-                              <div class="data-label">Fecha (Turno Actual)</div>
-                              <div class="data-value">${fechaActualTurno}</div>
-                            </div>
+                                  <div class="data-item" style="border-left-color: #4ecdc4;">
+                                    <div class="data-label">Fecha (Turno Actual)</div>
+                                    <div class="data-value">${fechaActualTurno}</div>
+                                  </div>
 
-                            <div class="data-item" style="border-left-color: #45b7d1;">
-                              <div class="data-label">Hoja</div>
-                              <div class="data-value">Día ${hojaActual}</div>
-                            </div>
-                          </div>
-                        `;
+                                  <div class="data-item" style="border-left-color: #45b7d1;">
+                                    <div class="data-label">Hoja</div>
+                                    <div class="data-value">Día ${hojaActual}</div>
+                                  </div>
+                                </div>
+                              `;
         } else {
           dataGrid.innerHTML = `
-                          <div class="data-item">
-                            <div class="data-label">Número de Box</div>
-                            <div class="data-value">BOX-${numeroBoxActual}</div>
-                          </div>
+                                <div class="data-item">
+                                  <div class="data-label">Número de Box</div>
+                                  <div class="data-value">BOX-${numeroBoxActual}</div>
+                                </div>
 
-                          <div class="data-item editable" onclick="abrirModalEdicion()">
-                            <div class="data-label">Nombre Completo ✏️</div>
-                            <div class="data-value">${
-                              datosPaciente.nombre_completo || "No registrado"
-                            }</div>
-                          </div>
+                                <div class="data-item editable" onclick="abrirModalEdicion()">
+                                  <div class="data-label">Nombre Completo ✏️</div>
+                                  <div class="data-value">${
+                                    datosPaciente.nombre_completo ||
+                                    "No registrado"
+                                  }</div>
+                                </div>
 
-                          <div class="data-item" style="border-left-color: #4ecdc4;">
-                            <div class="data-label">Fecha (Turno Actual)</div>
-                            <div class="data-value">${fechaActualTurno}</div>
-                          </div>
-                          
-                          <div class="data-item editable" onclick="abrirModalEdicion()">
-                            <div class="data-label">Edad ✏️</div>
-                            <div class="data-value">${
-                              datosPaciente.edad || "No registrada"
-                            } años</div>
-                          </div>
+                                <div class="data-item" style="border-left-color: #4ecdc4;">
+                                  <div class="data-label">Fecha (Turno Actual)</div>
+                                  <div class="data-value">${fechaActualTurno}</div>
+                                </div>
 
-                          <div class="data-item editable" onclick="abrirModalEdicion()">
-                            <div class="data-label">Peso ✏️</div>
-                            <div class="data-value">${
-                              datosPaciente.peso
-                                ? Math.round(datosPaciente.peso) + " kg"
-                                : "No registrado"
-                            }</div>
-                          </div>
+                                <div class="data-item editable" onclick="abrirModalEdicion()">
+                                  <div class="data-label">Edad ✏️</div>
+                                  <div class="data-value">${
+                                    datosPaciente.edad || "No registrada"
+                                  } años</div>
+                                </div>
 
-                          <div class="data-item editable" onclick="abrirModalEdicion()">
-                              <div class="data-label">Número de Historia ✏️</div>
-                              <div class="data-value">${
-                                datosPaciente.numero_historia || "No registrado"
-                              }</div>
-                          </div>
-                          
+                                <div class="data-item editable" onclick="abrirModalEdicion()">
+                                  <div class="data-label">Peso ✏️</div>
+                                  <div class="data-value">${
+                                    datosPaciente.peso
+                                      ? Math.round(datosPaciente.peso) + " kg"
+                                      : "No registrado"
+                                  }</div>
+                                </div>
 
-                          
-                          <div class="data-item" style="border-left-color: #45b7d1;">
-                            <div class="data-label">Hoja</div>
-                            <div class="data-value">Día ${hojaActual}</div>
-                          </div>
+                                <div class="data-item editable" onclick="abrirModalEdicion()">
+                                    <div class="data-label">Número de Historia ✏️</div>
+                                    <div class="data-value">${
+                                      datosPaciente.numero_historia ||
+                                      "No registrado"
+                                    }</div>
+                                </div>
 
-                          
-                          
-                          
-                          <div class="data-item">
-                            <div class="data-label">Fecha de Ingreso</div>
-                            <div class="data-value">${
-                              datosPaciente.fecha_ingreso
-                                ? new Date(
+
+
+                                <div class="data-item" style="border-left-color: #45b7d1;">
+                                  <div class="data-label">Hoja</div>
+                                  <div class="data-value">Día ${hojaActual}</div>
+                                </div>
+
+
+
+
+                                <div class="data-item">
+                                  <div class="data-label">Fecha de Ingreso</div>
+                                  <div class="data-value">${
                                     datosPaciente.fecha_ingreso
-                                  ).toLocaleString("es-ES")
-                                : "No registrada"
-                            }</div>
-                          </div>
+                                      ? new Date(
+                                          datosPaciente.fecha_ingreso
+                                        ).toLocaleString("es-ES")
+                                      : "No registrada"
+                                  }</div>
+                                </div>
 
-                          
-                          
-                        `;
+
+
+                              `;
         }
       }
 
@@ -2951,94 +4159,257 @@
 
       // Inicialización de la tabla de oxigenación
       function inicializarTablaOxigenacion() {
-        const tabla = document.querySelector(".oxigenacion-table");
-        if (!tabla) return;
+        try {
+          const { hojaActual } = calcularTurnoHospitalario();
+          document.getElementById("hojaOxigenacion").textContent = hojaActual;
 
-        const tbody = tabla.querySelector("tbody");
-        if (!tbody) return;
-
-        // Elimina fila de horas si ya existe
-        const filaHorasExistente = tbody.querySelector(".hora-row");
-        if (filaHorasExistente) filaHorasExistente.remove();
-
-        // Crear fila de horas (de 08:00 a 23:00)
-        const filaHoras = document.createElement("tr");
-        filaHoras.classList.add("hora-row");
-
-        const thVacio = document.createElement("th");
-        filaHoras.appendChild(thVacio);
-
-        const horas = [];
-        for (let h = 8; h <= 23; h++) {
-          const hora = h.toString().padStart(2, "0") + ":00";
-          horas.push(hora);
-          const th = document.createElement("th");
-          th.textContent = hora;
-          filaHoras.appendChild(th);
+          generarTablaOxigenacion();
+          cargarDatosOxigenacion(); // ← AÑADE SOLO ESTA LÍNEA
+        } catch (error) {
+          console.error("Error al inicializar tabla de oxigenación:", error);
         }
+      }
 
-        tbody.prepend(filaHoras);
+      // ===== CORRECCIÓN COMPLETA PARA GUARDADO DE EVA/RASS =====
 
-        // Generar celdas para cada parámetro
-        for (const row of document.querySelectorAll(".param-row")) {
-          const parametro = row.getAttribute("data-param");
-          row.querySelectorAll(".data-cell").forEach((td) => td.remove());
+      async function cargarDatosOxigenacion() {
+        try {
+          console.log(
+            "🔄 Cargando datos de oxigenación desde BD para box:",
+            numeroBoxActual
+          );
 
-          for (const hora of horas) {
-            const celda = document.createElement("td");
-            celda.classList.add("data-cell");
-            celda.setAttribute("data-hora", hora);
+          const response = await fetch(
+            `api/obtener_oxigenacion.php?box=${numeroBoxActual}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
 
-            if (["eva", "escid", "rass"].includes(parametro)) {
-              const select = document.createElement("select");
-              select.classList.add("form-select");
-              select.setAttribute("data-param", parametro);
-              select.setAttribute("data-hora", hora);
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(
+              result.message || "Error al cargar datos de oxigenación"
+            );
+          }
 
-              let opciones = [];
-              if (parametro === "eva")
-                opciones = Array.from({ length: 11 }, (_, i) => i);
-              if (parametro === "escid") opciones = ["0", "1", "2", "3", "4"];
-              if (parametro === "rass")
-                opciones = [
-                  "-5",
-                  "-4",
-                  "-3",
-                  "-2",
-                  "-1",
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                ];
+          const datosLocal = {};
 
-              for (const op of opciones) {
-                const option = document.createElement("option");
-                option.value = op;
-                option.textContent = op;
-                select.appendChild(option);
+          if (result.data && result.data.length > 0) {
+            result.data.forEach((registro) => {
+              const hora = registro.hora;
+              datosLocal[hora] = {};
+
+              // P.NEUMO
+              if (registro.p_neumo !== null && registro.p_neumo !== "") {
+                datosLocal[hora].pNeumo = parseInt(registro.p_neumo);
               }
 
-              celda.appendChild(select);
-            }
+              // OXIGENACIÓN
+              if (
+                registro.oxigenacion !== null &&
+                registro.oxigenacion !== ""
+              ) {
+                datosLocal[hora].oxigenacion = registro.oxigenacion;
+              }
 
-            row.appendChild(celda);
-          }
-        }
+              // SATURACIÓN (sincronizada con constantes vitales)
+              if (registro.sat_o2 !== null && registro.sat_o2 !== "") {
+                datosLocal[hora].saturacion = parseInt(registro.sat_o2);
+              }
 
-        // Reactivar clics en glucemia y saturación para abrir el modal
-        document
-          .querySelectorAll(
-            '.param-row[data-param="glucemia"] .data-cell, .param-row[data-param="saturacion"] .data-cell'
-          )
-          .forEach((celda) => {
-            celda.addEventListener("click", function () {
-              const hora = this.getAttribute("data-hora");
-              if (hora) abrirModalConstantes(hora);
+              // EVA/RASS
+              if (registro.eva_escid !== null && registro.eva_escid !== "") {
+                datosLocal[hora].evaRass = String(registro.eva_escid);
+              }
+
+              // GLUCEMIA (sincronizada con constantes vitales)
+              if (registro.glucemia !== null && registro.glucemia !== "") {
+                datosLocal[hora].glucemia = parseInt(registro.glucemia);
+              }
+
+              // INSULINA
+              if (registro.insulina !== null && registro.insulina !== "") {
+                datosLocal[hora].insulina = registro.insulina;
+              }
             });
-          });
+          }
+
+          console.log("✅ Datos de oxigenación cargados:", datosLocal);
+          oxigenacionData = datosLocal;
+
+          // Actualizar tabla visual
+          actualizarTablaOxigenacion();
+
+          return datosLocal;
+        } catch (error) {
+          console.error("❌ Error cargando datos de oxigenación:", error);
+          throw error;
+        }
       }
+
+      function actualizarCeldasEvaRass() {
+        console.log("🎯 Actualizando celdas EVA/ESCID/RASS específicamente...");
+        Object.keys(oxigenacionData).forEach((hora) => {
+          const datos = oxigenacionData[hora];
+          if (datos.evaRass) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="evaRass"]`
+            );
+            if (cell) {
+              console.log(
+                `🎨 Actualizando EVA/ESCID/RASS para hora ${hora}: ${datos.evaRass}`
+              );
+              actualizarCelda(cell, datos.evaRass, "evaRass");
+            } else {
+              console.warn(`❌ No se encontró celda EVA para hora ${hora}`);
+            }
+          }
+        });
+      }
+
+      // Llamar esta función después de cargar los datos
+      cargarDatosOxigenacion().then(actualizarCeldasEvaRass);
+
+      function actualizarTablaOxigenacion() {
+        console.log("🔄 Actualizando tabla de oxigenación completa...");
+        Object.keys(oxigenacionData).forEach((hora) => {
+          const datos = oxigenacionData[hora];
+          Object.keys(datos).forEach((param) => {
+            const valor = datos[param];
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="${param}"]`
+            );
+            if (cell) {
+              if (param === "evaRass") {
+                console.log(`🎨 Actualizando celda EVA/ESCID/RASS: ${valor}`);
+                actualizarCelda(cell, valor, "evaRass");
+                cell.classList.add("has-data");
+                cell.setAttribute("data-valor", valor);
+              } else {
+                let valorMostrar = valor;
+                if (param === "insulina" && !String(valor).includes("U.I.")) {
+                  valorMostrar = valor + " U.I.";
+                }
+                actualizarCelda(cell, valorMostrar, param);
+              }
+            } else {
+              console.warn(
+                `⚠️ No se encontró celda para ${param} en hora ${hora}`
+              );
+            }
+          });
+        });
+      }
+
+      function actualizarCeldasEspecíficas() {
+        console.log("🎯 Actualizando celdas específicas...");
+        Object.keys(oxigenacionData).forEach((hora) => {
+          const datos = oxigenacionData[hora];
+          if (datos.evaRass) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="evaRass"]`
+            );
+            if (cell) {
+              console.log(
+                `🎨 Actualizando EVA/ESCID/RASS para hora ${hora}: ${datos.evaRass}`
+              );
+              actualizarCelda(cell, datos.evaRass, "evaRass");
+            } else {
+              console.warn(`❌ No se encontró celda EVA para hora ${hora}`);
+            }
+          }
+          if (datos.saturation) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="saturacion"]`
+            );
+            if (cell) {
+              console.log(
+                `🎨 Actualizando SATURACIÓN para hora ${hora}: ${datos.saturation}`
+              );
+              actualizarCelda(cell, datos.saturation, "saturacion");
+            } else {
+              console.warn(
+                `❌ No se encontró celda SATURACIÓN para hora ${hora}`
+              );
+            }
+          }
+          if (datos.glucemia) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="glucemia"]`
+            );
+            if (cell) {
+              console.log(
+                `🎨 Actualizando GLUCEMIA para hora ${hora}: ${datos.glucemia}`
+              );
+              actualizarCelda(cell, datos.glucemia, "glucemia");
+            } else {
+              console.warn(
+                `❌ No se encontró celda GLUCEMIA para hora ${hora}`
+              );
+            }
+          }
+        });
+      }
+
+      // Llamar esta función después de cargar los datos
+      cargarDatosOxigenacion().then(actualizarCeldasEspecíficas);
+
+      // Actualizar la gráfica después de cargar los datos
+      function actualizarGraficaOxigenacion() {
+        console.log("🔄 Actualizando gráfica de oxigenación...");
+        // Lógica para actualizar la gráfica basada en oxigenacionData
+        // Ejemplo: generarGraficaConstantes()
+      }
+
+      // Actualizar la gráfica después de cargar los datos
+      function actualizarGraficaOxigenacion() {
+        console.log("🔄 Actualizando gráfica de oxigenación...");
+        // Lógica para actualizar la gráfica basada en oxigenacionData
+        // Ejemplo: generarGraficaConstantes()
+      }
+
+      // 8. ASEGURAR que la inicialización llame a cargarDatosOxigenacion correctamente
+      async function inicializarTablaOxigenacionCorregida() {
+        try {
+          const { hojaActual } = calcularTurnoHospitalario();
+          document.getElementById("hojaOxigenacion").textContent = hojaActual;
+
+          // 1. Generar estructura de tabla
+          generarTablaOxigenacion();
+
+          console.log("🔄 Tabla generada, cargando datos...");
+
+          // 2. Cargar datos desde BD y actualizar tabla
+          await cargarDatosOxigenacion();
+
+          console.log("✅ Tabla de oxigenación inicializada correctamente");
+        } catch (error) {
+          console.error("❌ Error al inicializar tabla de oxigenación:", error);
+          mostrarMensaje("Error al cargar tabla de oxigenación", "error");
+        }
+      }
+
+      // 9. EXPONER FUNCIONES PARA DEBUGGING
+      window.testGuardadoEvaRass = testGuardadoEvaRass;
+      window.debugEvaRassState = debugEvaRassState;
+      window.actualizarCeldasEvaRass = actualizarCeldasEvaRass;
+
+      console.log("🧪 Funciones de test EVA/RASS disponibles:");
+      console.log(
+        "   testGuardadoEvaRass() - Test completo de guardado y carga"
+      );
+      console.log("   debugEvaRassState() - Ver estado actual de EVA/RASS");
+      console.log(
+        "   actualizarCeldasEvaRass() - Forzar actualización de celdas"
+      );
+
+      // ===== CAMBIO EN INICIALIZACIÓN PRINCIPAL =====
+      // Reemplazar la línea en inicializarPaginaMejorada():
+      // setTimeout(() => { inicializarTablaOxigenacion(); }, 300);
+      //
+      // POR:
+      // setTimeout(() => { inicializarTablaOxigenacionCorregida(); }, 300);
 
       function generarTablaOxigenacion() {
         const table = document.getElementById("oxigenacionTable");
@@ -3070,7 +4441,7 @@
           { key: "pNeumo", label: "P. NEUMO", color: "#8e44ad" },
           { key: "oxigenacion", label: "OXIGENACIÓN", color: "#3498db" },
           { key: "saturacion", label: "SATURACIÓN", color: "#2ecc71" },
-          { key: "evaRass", label: "EVA/ESCID/RASS", color: "#e74c3c" },
+          { key: "evaRass", label: "EVA/RASS", color: "#e74c3c" },
           { key: "glucemia", label: "GLUCEMIA", color: "#f39c12" },
           { key: "insulina", label: "INSULINA", color: "#9b59b6" },
         ];
@@ -3086,9 +4457,9 @@
           const labelCell = document.createElement("td");
           labelCell.className = "param-label";
           labelCell.innerHTML = `
-                          <span class="param-color" style="background: ${param.color};"></span>
-                          ${param.label}
-                        `;
+                                <span class="param-color" style="background: ${param.color};"></span>
+                                ${param.label}
+                              `;
           row.appendChild(labelCell);
 
           // Celdas de horas
@@ -3112,34 +4483,33 @@
       }
 
       function configurarCeldaOxigenacion(cell, hora, param) {
-        if (param === "saturacion" || param === "glucemia") {
-          // Estas son automáticas, no editables
+        if (param === "glucemia" || param === "saturacion") {
+          // Parámetros que se editan desde constantes vitales
           cell.classList.add("auto-value");
+          cell.addEventListener("click", () => {
+            abrirModalConstantes(hora);
+          });
           return;
         }
 
         if (param === "evaRass") {
           cell.addEventListener("click", () => {
-            const valor = prompt(
-              `Ingrese valor para EVA/ESCID/RASS en hora ${hora}:`
-            );
-            if (valor !== null && valor.trim() !== "") {
-              guardarDatoOxigenacion(hora, "evaRass", valor.trim());
-              actualizarCelda(cell, valor.trim(), param);
-            }
+            mostrarDropdownEvaRass(cell, hora); // ← CAMBIO PRINCIPAL
           });
           return;
         }
 
         if (param === "insulina") {
           cell.addEventListener("click", () => {
-            const valor = prompt(
-              `Ingrese unidades de insulina para hora ${hora}:`
-            );
-            if (valor !== null && valor.trim() !== "") {
-              const valorEntero = Math.round(parseInt(valor));
-              guardarDatoOxigenacion(hora, "insulina", valorEntero);
-              actualizarCelda(cell, valorEntero + " U.I.", param);
+            // Verificar si hay glucemia para esta hora
+            const glucemia = constantesData[hora]?.glucemia;
+
+            if (glucemia) {
+              // Si hay glucemia, calcular insulina automática
+              calcularInsulinaAutomatica(glucemia, numeroBoxActual, hora);
+            } else {
+              // Si no hay glucemia, abrir modal manual
+              mostrarModalInsulinaManual(hora);
             }
           });
           return;
@@ -3148,19 +4518,7 @@
         // Para otros parámetros editables
         cell.addEventListener("click", () => {
           if (param === "oxigenacion") {
-            const opciones = ["", "VMI", "VMNI", "O2"];
-            const valor = prompt(
-              `Seleccione tipo de oxigenación para hora ${hora}:\n1. Sin especificar\n2. VMI\n3. VMNI\n4. O₂\n\nIngrese el número:`
-            );
-
-            if (valor !== null) {
-              const indice = parseInt(valor) - 1;
-              if (indice >= 0 && indice < opciones.length) {
-                const nuevoValor = opciones[indice];
-                guardarDatoOxigenacion(hora, "oxigenacion", nuevoValor);
-                actualizarCelda(cell, nuevoValor, param);
-              }
-            }
+            mostrarDropdownOxigenacion(cell, hora); // ESTA ES LA LÍNEA CLAVE
           } else if (param === "pNeumo") {
             const valor = prompt(
               `Ingrese presión neumática (0-100) para hora ${hora}:`
@@ -3168,109 +4526,256 @@
             if (valor !== null && valor.trim() !== "") {
               const valorNum = parseInt(valor);
               if (valorNum >= 0 && valorNum <= 100) {
-                guardarDatoOxigenacion(hora, "pNeumo", valorNum);
-                actualizarCelda(cell, valorNum, param);
+                guardarDatoOxigenacion(hora, "pNeumo", valorNum)
+                  .then(() => {
+                    console.log("P.Neumo guardado correctamente");
+                  })
+                  .catch((error) => {
+                    console.error("Error al guardar P.Neumo:", error);
+                  });
+              } else {
+                alert("Por favor ingrese un valor entre 0 y 100");
               }
             }
           }
         });
       }
 
-      function actualizarCelda(cell, valor, param) {
-        cell.classList.remove("has-data", "alert-value", "auto-value");
+      function mostrarDropdownOxigenacion(cell, hora) {
+        // Cerrar cualquier dropdown existente
+        cerrarDropdownOxigenacion();
 
-        if (!valor || valor === "") {
-          cell.textContent = "—";
-        } else {
-          cell.textContent = valor;
-          cell.classList.add("has-data");
-        }
-      }
+        const opciones = [
+          { valor: "", texto: "⚪ Sin especificar", clase: "sin-especificar" },
+          { valor: "VMI", texto: "🫁 VMI", clase: "vmi" },
+          { valor: "VMNI", texto: "😷 VMNI", clase: "vmni" },
+          { valor: "O2", texto: "💨 O₂", clase: "o2" },
+        ];
 
-      async function guardarDatoOxigenacion(hora, campo, valor) {
-        if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
-        oxigenacionData[hora][campo] = valor;
+        // Crear overlay
+        const overlay = document.createElement("div");
+        overlay.className = "oxigenacion-dropdown-overlay";
+        overlay.addEventListener("click", cerrarDropdownOxigenacion);
 
-        console.log(`Guardado: ${hora} - ${campo}: ${valor}`);
-        return Promise.resolve({ success: true });
-      }
+        // Crear dropdown
+        const dropdown = document.createElement("div");
+        dropdown.className = "oxigenacion-dropdown";
+        dropdown.id = "oxigenacionDropdown";
 
-      async function cargarDatosOxigenacion() {
-        try {
-          oxigenacionData = {
-            "08:00": { pNeumo: 25, oxigenacion: "O2" },
-            "12:00": { pNeumo: 30, evaRass: "2/0" },
-            "16:00": { oxigenacion: "VMI", insulina: 6 },
-            "20:00": { pNeumo: 20, evaRass: "1/-1" },
-          };
+        // Obtener valor actual
+        const valorActual = oxigenacionData[hora]?.oxigenacion || "";
 
-          console.log("Datos de oxigenación cargados:", oxigenacionData);
-          actualizarTablaOxigenacion();
-          actualizarValoresAutomaticos();
-        } catch (error) {
-          console.error("Error al cargar datos de oxigenación:", error);
-          oxigenacionData = {};
-        }
-      }
+        // Crear opciones
+        opciones.forEach((opcion) => {
+          const optionDiv = document.createElement("div");
+          optionDiv.className = `oxigenacion-option ${opcion.clase}`;
+          optionDiv.innerHTML = opcion.texto;
 
-      function actualizarTablaOxigenacion() {
-        Object.keys(oxigenacionData).forEach((hora) => {
-          const datos = oxigenacionData[hora];
+          if (opcion.valor === valorActual) {
+            optionDiv.classList.add("selected");
+          }
 
-          Object.keys(datos).forEach((param) => {
-            const cell = document.querySelector(
-              `[data-hora="${hora}"][data-param="${param}"]`
-            );
-            if (cell) {
-              let valor = datos[param];
-              if (param === "insulina") {
-                valor = valor + " U.I.";
-              }
-              actualizarCelda(cell, valor, param);
-            }
+          optionDiv.addEventListener("click", (e) => {
+            e.stopPropagation();
+            seleccionarOxigenacion(hora, opcion.valor, cell);
+            cerrarDropdownOxigenacion();
           });
+
+          dropdown.appendChild(optionDiv);
         });
 
-        actualizarValoresAutomaticos();
+        // Posicionar dropdown - MEJORADO
+        const rect = cell.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft =
+          window.pageXOffset || document.documentElement.scrollLeft;
+
+        dropdown.style.left = rect.left + scrollLeft + "px";
+        dropdown.style.top = rect.bottom + scrollTop + 8 + "px";
+
+        // Añadir al DOM
+        document.body.appendChild(overlay);
+        document.body.appendChild(dropdown);
+
+        // Ajustar posición después de renderizar
+        setTimeout(() => {
+          const dropdownRect = dropdown.getBoundingClientRect();
+          if (dropdownRect.right > window.innerWidth) {
+            dropdown.style.left =
+              rect.right + scrollLeft - dropdownRect.width + "px";
+          }
+          if (dropdownRect.bottom > window.innerHeight) {
+            dropdown.style.top =
+              rect.top + scrollTop - dropdownRect.height - 8 + "px";
+          }
+        }, 10);
+
+        console.log(
+          "Dropdown creado para hora:",
+          hora,
+          "Valor actual:",
+          valorActual
+        );
+      }
+
+      function cerrarDropdownOxigenacion() {
+        const dropdown = document.getElementById("oxigenacionDropdown");
+        const overlay = document.querySelector(".oxigenacion-dropdown-overlay");
+
+        if (dropdown) dropdown.remove();
+        if (overlay) overlay.remove();
+      }
+
+      function seleccionarOxigenacion(hora, valor, cell) {
+        console.log("Seleccionando oxigenación:", hora, valor);
+
+        // Guardar inmediatamente en BD
+        guardarDatoOxigenacion(hora, "oxigenacion", valor)
+          .then(() => {
+            console.log("Oxigenación guardada en BD:", valor);
+            // Actualizar visualmente la celda
+            actualizarCelda(cell, valor, "oxigenacion");
+            mostrarMensaje(
+              "✅ Oxigenación guardada en BD: " + (valor || "Sin especificar"),
+              "success"
+            );
+          })
+          .catch((error) => {
+            console.error("Error al guardar oxigenación:", error);
+            mostrarMensaje("❌ Error al guardar oxigenación en BD", "error");
+          });
       }
 
       function actualizarValoresAutomaticos() {
         Object.keys(constantesData).forEach((hora) => {
           const constantes = constantesData[hora];
 
-          // SATURACIÓN
-          if (constantes.satO2) {
+          // SATURACIÓN - CORREGIDO
+          if (constantes.sat_o2) {
             const cell = document.querySelector(
               `[data-hora="${hora}"][data-param="saturacion"]`
             );
             if (cell) {
-              cell.classList.add("auto-value");
-              cell.classList.remove("has-data", "alert-value");
-              cell.textContent = `${constantes.satO2}%`;
-              if (constantes.satO2 < 85) {
-                cell.classList.add("alert-value");
-                cell.innerHTML = `${constantes.satO2}% <span class="alert-icon">⚠️</span>`;
-              }
+              // Actualizar datos locales también
+              if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+              oxigenacionData[hora].saturacion = constantes.sat_o2;
+
+              // Actualizar celda
+              actualizarCelda(cell, constantes.sat_o2, "saturacion");
             }
           }
 
-          // GLUCEMIA
+          // GLUCEMIA - CORREGIDO
           if (constantes.glucemia) {
             const cell = document.querySelector(
               `[data-hora="${hora}"][data-param="glucemia"]`
             );
             if (cell) {
-              cell.classList.add("auto-value");
-              cell.classList.remove("has-data", "alert-value");
-              cell.textContent = `${constantes.glucemia}`;
-              if (constantes.glucemia > 351) {
-                cell.classList.add("alert-value");
-                cell.innerHTML = `${constantes.glucemia} <span class="alert-icon">⚠️</span>`;
-              }
+              // Actualizar datos locales también
+              if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+              oxigenacionData[hora].glucemia = constantes.glucemia;
+
+              // Actualizar celda
+              actualizarCelda(cell, constantes.glucemia, "glucemia");
             }
           }
         });
       }
+
+      // 4. FUNCIÓN ACTUALIZADA para manejar saturación y glucemia automáticas
+      async function sincronizarValoresAutomaticos() {
+        console.log("🔄 Sincronizando valores automáticos entre secciones...");
+
+        Object.keys(constantesData).forEach((hora) => {
+          const constantes = constantesData[hora];
+
+          // SATURACIÓN: De constantes vitales → oxigenación
+          if (constantes.sat_o2) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="saturacion"]`
+            );
+            if (cell) {
+              if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+              oxigenacionData[hora].saturacion = constantes.sat_o2;
+              actualizarCelda(cell, constantes.sat_o2, "saturacion");
+            }
+          }
+
+          // GLUCEMIA: De constantes vitales → oxigenación
+          if (constantes.glucemia) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="glucemia"]`
+            );
+            if (cell) {
+              if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+              oxigenacionData[hora].glucemia = constantes.glucemia;
+              actualizarCelda(cell, constantes.glucemia, "glucemia");
+            }
+          }
+        });
+
+        console.log("✅ Sincronización completada");
+      }
+
+      async function testGuardadoEvaRass() {
+        console.log("🧪 === TEST DE GUARDADO EVA/RASS ===");
+        const datosTest = [
+          { hora: "10:00", valor: "5" }, // Solo EVA
+          { hora: "12:00", valor: "7/+" }, // EVA + ESCID
+          { hora: "14:00", valor: "3/-2" }, // EVA + RASS
+          { hora: "16:00", valor: "8/+/-1" }, // EVA + ESCID + RASS
+        ];
+        let index = 0;
+
+        function procesarSiguiente() {
+          if (index >= datosTest.length) {
+            console.log("✅ TEST COMPLETADO - Verificando persistencia...");
+            setTimeout(() => {
+              // Simular recarga
+              console.log("🔄 Simulando recarga de datos...");
+              oxigenacionData = {}; // Limpiar datos locales
+              cargarDatosOxigenacion().then(() => {
+                console.log("📊 Datos después de recarga:", oxigenacionData);
+                // Verificar cada dato
+                datosTest.forEach(({ hora, valor }) => {
+                  const valorGuardado = oxigenacionData[hora]?.evaRass;
+                  if (valorGuardado === valor) {
+                    console.log(`✅ ${hora}: CORRECTO - "${valor}"`);
+                  } else {
+                    console.error(
+                      `❌ ${hora}: FALLO - esperado "${valor}", obtenido "${valorGuardado}"`
+                    );
+                  }
+                });
+                mostrarMensaje("🧪 Test de persistencia completado", "success");
+              });
+            }, 3000);
+            return;
+          }
+
+          const { hora, valor } = datosTest[index];
+          console.log(
+            `${index + 1}/${datosTest.length} - Guardando "${valor}" en ${hora}`
+          );
+          guardarDatoOxigenacion(hora, "evaRass", valor)
+            .then(() => {
+              console.log(`✅ ${hora}: guardado exitosamente`);
+            })
+            .catch((error) => {
+              console.error(`❌ ${hora}: Error -`, error);
+            })
+            .finally(() => {
+              index++;
+              setTimeout(procesarSiguiente, 1500);
+            });
+        }
+
+        procesarSiguiente();
+      }
+
+      // Exponer la función para la consola
+      window.testGuardadoEvaRass = testGuardadoEvaRass;
 
       function toggleInfoOxigenacion() {
         const info = document.getElementById("infoOxigenacion");
@@ -3361,87 +4866,2091 @@
             e.preventDefault();
           }
         });
-      function actualizarCeldaOxigenacion(
-        param,
-        hora,
-        valor,
-        editable = false
-      ) {
-        const fila = document.querySelector(
-          `.param-row[data-param="${param}"]`
-        );
-        if (!fila) return;
 
-        const celdas = fila.querySelectorAll(".data-cell");
-        for (const celda of celdas) {
-          if (celda.getAttribute("data-hora") === hora) {
-            celda.textContent = valor;
-            if (editable) {
-              celda.contentEditable = true;
-              celda.classList.add("editable");
-            } else {
-              celda.removeAttribute("contentEditable");
-              celda.classList.remove("editable");
-            }
-            break;
+      //INSULINA
+
+      // ===== FUNCIONES DE INSULINA CORREGIDAS - REEMPLAZAR TODO EL BLOQUE EXISTENTE =====
+      // ✅ MANTENER - Este bloque está correcto y funciona
+      // Variables globales para insulina
+      let insulinaCalculandose = false;
+
+      // FUNCIÓN PRINCIPAL CORREGIDA
+      async function calcularInsulinaAutomatica(glucemia, box, hora) {
+        if (!glucemia || glucemia <= 0 || insulinaCalculandose) return;
+
+        console.log(
+          `🔍 Calculando insulina para glucemia: ${glucemia} en hora: ${hora}`
+        );
+
+        insulinaCalculandose = true;
+
+        try {
+          let unidades_sc = 0;
+          let unidades_iv = 0;
+          let modo = "subcutanea";
+
+          // Calcular según los rangos
+          if (glucemia < 150) {
+            unidades_sc = 0;
+            unidades_iv = 0;
+          } else if (glucemia >= 151 && glucemia <= 225) {
+            unidades_sc = 6;
+            unidades_iv = 0;
+          } else if (glucemia > 226 && glucemia <= 250) {
+            unidades_sc = 10;
+            unidades_iv = 0;
+          } else if (glucemia > 251 && glucemia <= 300) {
+            unidades_sc = 15;
+            unidades_iv = 0;
+          } else if (glucemia > 301 && glucemia <= 350) {
+            unidades_sc = 20;
+            unidades_iv = 0;
+          } else if (glucemia > 351 && glucemia <= 400) {
+            // ✅ CASO ESPECIAL: 20 subcutáneas + 5 IV - ESTO ESTÁ CORRECTO
+            unidades_sc = 20;
+            unidades_iv = 5;
+            modo = "mixta";
+          } else if (glucemia > 401) {
+            // ✅ CASO CRÍTICO: Avisar al facultativo - ESTO ESTÁ CORRECTO
+            alert(
+              "⚠️ GLUCEMIA CRÍTICA > 400 mg/dL\n\nAVISAR AL FACULTATIVO INMEDIATAMENTE"
+            );
+            unidades_sc = 20;
+            unidades_iv = 3;
+            modo = "mixta";
           }
+
+          const recomendacion = {
+            unidades_sc: unidades_sc,
+            unidades_iv: unidades_iv,
+            modo: modo,
+            tipo: "Protocolo Hospitalario Personalizado",
+            observacion: generarObservacion(glucemia),
+          };
+
+          console.log("✅ Recomendación calculada:", recomendacion);
+          console.log("⏰ Hora recibida para modal:", hora);
+
+          // Mostrar modal con recomendación de insulina
+          mostrarModalInsulina(recomendacion, box, hora, glucemia);
+        } catch (error) {
+          console.error("Error:", error);
+          mostrarMensaje("❌ Error al calcular insulina", "error");
+        } finally {
+          insulinaCalculandose = false;
         }
       }
 
-      document
-        .querySelectorAll(
-          '.param-row[data-param="saturacion"] .data-cell, .param-row[data-param="glucemia"] .data-cell'
-        )
-        .forEach((celda) => {
-          celda.addEventListener("click", function () {
-            const hora = this.getAttribute("data-hora");
-            if (hora) abrirModalConstantes(hora);
-          });
-        });
-
-      function guardarConstantes() {
-        const hora = document
-          .querySelector("#constantesModal h3")
-          .textContent.split("Hora: ")[1];
-
-        const glucemia = document.querySelector(
-          '#constantesModal [data-param="glucemia"]'
-        ).value;
-        const saturacion = document.querySelector(
-          '#constantesModal [data-param="saturacion"]'
-        ).value;
-
-        const celdaGlucemia = document.querySelector(
-          `.param-row[data-param="glucemia"] .data-cell[data-hora="${hora}"]`
-        );
-        const celdaSaturacion = document.querySelector(
-          `.param-row[data-param="saturacion"] .data-cell[data-hora="${hora}"]`
-        );
-
-        if (celdaGlucemia) celdaGlucemia.textContent = glucemia;
-        if (celdaSaturacion) celdaSaturacion.textContent = saturacion;
-
-        cerrarModalConstantes(); // Si existe esta función, cierra el modal tras guardar
+      // FUNCIÓN AUXILIAR PARA OBSERVACIONES
+      function generarObservacion(glucemia) {
+        if (glucemia > 400)
+          return "Glucemia muy crítica - AVISAR FACULTATIVO - Control cada 30min";
+        if (glucemia > 350)
+          return "Glucemia crítica - Dosis mixta - Control cada hora";
+        if (glucemia > 250) return "Glucemia alta - Control cada 2 horas";
+        if (glucemia > 200) return "Glucemia moderadamente elevada";
+        return "Dosis preventiva";
       }
 
-      function enviarConstantesABaseDeDatos() {
-        const datos = constantesPorHora[horaActual];
-        datos.hora = horaActual;
+      // Función para mostrar modal de recomendación de insulina
+      function mostrarModalInsulina(recomendacion, box, hora, glucemia) {
+        // Crear modal dinámicamente
+        const modal = document.createElement("div");
+        modal.className = "insulina-modal";
+        modal.innerHTML = `
+              <div class="insulina-modal-content">
+                  <div class="insulina-header">
+                      <h3>💉 Recomendación de Insulina</h3>
+                      <button class="insulina-close" onclick="cerrarModalInsulina()">&times;</button>
+                  </div>
+                  <div class="insulina-body">
+                      <p><strong>Glucemia:</strong> ${glucemia} mg/dL</p>
+                      <p><strong>Box:</strong> ${box} | <strong>Hora:</strong> ${hora}</p>
+                      <hr>
+                      <div class="recomendacion-box">
+                          <h4>📋 Recomendación del Protocolo:</h4>
+                          <p><strong>Tipo:</strong> ${recomendacion.tipo}</p>
+                          ${
+                            recomendacion.unidades_sc > 0
+                              ? `<p><strong>Subcutánea:</strong> ${recomendacion.unidades_sc} U.I.</p>`
+                              : ""
+                          }
+                          ${
+                            recomendacion.unidades_iv > 0
+                              ? `<p><strong>Perfusión I.V.:</strong> ${recomendacion.unidades_iv} ml/hr</p>`
+                              : ""
+                          }
+                          <p><strong>Observación:</strong> ${
+                            recomendacion.observacion
+                          }</p>
+                      </div>
+                      <div class="insulina-manual">
+                          <h4>✏️ Modificar (Opcional):</h4>
+                          <div class="form-group">
+                              <label>Modo:</label>
+                              <select id="modoInsulinaModal">
+                                  <option value="subcutanea" ${
+                                    recomendacion.modo === "subcutanea"
+                                      ? "selected"
+                                      : ""
+                                  }>Subcutánea</option>
+                                  <option value="iv" ${
+                                    recomendacion.modo === "iv"
+                                      ? "selected"
+                                      : ""
+                                  }>Intravenosa</option>
+                                  <option value="mixta" ${
+                                    recomendacion.modo === "mixta"
+                                      ? "selected"
+                                      : ""
+                                  }>Mixta</option>
+                              </select>
+                          </div>
+                          <div class="form-group" id="scGroupModal">
+                              <label>Unidades s/c:</label>
+                              <input type="number" id="unidadesScModal" value="${
+                                recomendacion.unidades_sc || 0
+                              }" min="0" max="50">
+                          </div>
+                          <div class="form-group" id="ivGroupModal" style="display: ${
+                            recomendacion.modo === "iv" ||
+                            recomendacion.modo === "mixta"
+                              ? "block"
+                              : "none"
+                          }">
+                              <label>Unidades I.V.:</label>
+                              <input type="number" id="unidadesIvModal" value="${
+                                recomendacion.unidades_iv || 0
+                              }" step="0.1" min="0" max="10">
+                          </div>
+                          <div class="form-group">
+                              <label>Observación:</label>
+                              <input type="text" id="observacionModal" value="${
+                                recomendacion.observacion
+                              }" maxlength="100">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="insulina-footer">
+                      <button class="btn btn-success" onclick="aceptarInsulinaRecomendada('${box}', '${hora}')">✅ Aceptar</button>
+                      <button class="btn btn-warning" onclick="guardarInsulinaModificada('${box}', '${hora}')">📝 Guardar Modificado</button>
+                      <button class="btn btn-secondary" onclick="cerrarModalInsulina()">❌ Cancelar</button>
+                  </div>
+              </div>
+          `;
 
-        fetch("guardar_constantes.php", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        // Guardar recomendación globalmente para poder accederla desde aceptar
+        window.recomendacionActual = recomendacion;
+        window.horaInsulinaActual = hora;
+
+        console.log("💾 Guardando hora en window:", hora);
+
+        document.body.appendChild(modal);
+
+        // Event listener para cambio de modo
+        document
+          .getElementById("modoInsulinaModal")
+          .addEventListener("change", cambiarModoModal);
+      }
+
+      // Función para cambiar modo en el modal
+      function cambiarModoModal() {
+        const modo = document.getElementById("modoInsulinaModal").value;
+        const scGroup = document.getElementById("scGroupModal");
+        const ivGroup = document.getElementById("ivGroupModal");
+
+        if (modo === "subcutanea") {
+          scGroup.style.display = "block";
+          ivGroup.style.display = "none";
+        } else if (modo === "iv") {
+          scGroup.style.display = "none";
+          ivGroup.style.display = "block";
+        } else {
+          // mixta
+          scGroup.style.display = "block";
+          ivGroup.style.display = "block";
+        }
+      }
+
+      // Función para aceptar recomendación sin modificar
+      // ===============================================
+      // CORREGIR FUNCIONES DE GUARDADO DE INSULINA
+      // ===============================================
+
+      // 1. CORREGIR la función aceptarInsulinaRecomendada
+      async function aceptarInsulinaRecomendada(box, hora) {
+        try {
+          const recomendacion = window.recomendacionActual;
+          if (!recomendacion) {
+            console.error("No hay recomendación disponible");
+            mostrarMensaje("❌ Error: No hay recomendación", "error");
+            return;
+          }
+
+          const horaFinal =
+            hora || window.horaInsulinaActual || horaSeleccionada;
+          console.log("💾 Guardando recomendación para hora:", horaFinal);
+
+          if (!horaFinal) {
+            console.error("No se pudo determinar la hora");
+            mostrarMensaje("❌ Error: hora no válida", "error");
+            return;
+          }
+
+          // Preparar valor para mostrar
+          let valorMostrar = "";
+          if (recomendacion.modo === "subcutanea") {
+            valorMostrar = recomendacion.unidades_sc;
+          } else if (recomendacion.modo === "iv") {
+            valorMostrar = recomendacion.unidades_iv;
+          } else {
+            // mixta
+            valorMostrar = `${recomendacion.unidades_sc}+${recomendacion.unidades_iv}`;
+          }
+
+          console.log(
+            "💉 Guardando insulina:",
+            valorMostrar,
+            "en hora:",
+            horaFinal
+          );
+
+          // GUARDAR en base de datos Y datos locales
+          await guardarDatoOxigenacion(horaFinal, "insulina", valorMostrar);
+
+          cerrarModalInsulina();
+          mostrarMensaje(
+            "✅ Insulina aplicada: " + valorMostrar + " U.I.",
+            "success"
+          );
+        } catch (error) {
+          console.error("Error al guardar insulina:", error);
+          mostrarMensaje("❌ Error al guardar insulina", "error");
+        }
+      }
+
+      // 2. CORREGIR la función guardarInsulinaModificada
+      async function guardarInsulinaModificada(box, hora) {
+        const modo = document.getElementById("modoInsulinaModal").value;
+        const unidadesSc =
+          parseFloat(document.getElementById("unidadesScModal").value) || 0;
+        const unidadesIv =
+          parseFloat(document.getElementById("unidadesIvModal").value) || 0;
+
+        try {
+          // VERIFICAR que tenemos la hora correcta
+          const horaFinal = hora || horaSeleccionada;
+          console.log("💾 Guardando insulina modificada para hora:", horaFinal);
+          console.log("💾 Datos:", { modo, unidadesSc, unidadesIv });
+
+          if (!horaFinal) {
+            console.error("No se pudo determinar la hora");
+            mostrarMensaje("❌ Error: hora no válida", "error");
+            return;
+          }
+
+          // Preparar valor para mostrar
+          let valorMostrar = "";
+          if (modo === "subcutanea") {
+            valorMostrar = unidadesSc;
+          } else if (modo === "iv") {
+            valorMostrar = unidadesIv;
+          } else {
+            // mixta
+            valorMostrar = `${unidadesSc}+${unidadesIv}`;
+          }
+
+          console.log("💉 Valor modificado de insulina:", valorMostrar);
+
+          // GUARDAR en base de datos Y datos locales
+          await guardarDatoOxigenacion(horaFinal, "insulina", valorMostrar);
+
+          cerrarModalInsulina();
+          mostrarMensaje(
+            "✅ Insulina modificada guardada: " + valorMostrar + " U.I.",
+            "success"
+          );
+        } catch (error) {
+          console.error("Error:", error);
+          mostrarMensaje("❌ Error de conexión", "error");
+        }
+      }
+
+      // 4. AÑADIR función de debug para verificar que todo funciona
+      function debugInsulina(hora) {
+        console.log("🔍 DEBUG INSULINA PARA HORA:", hora);
+        console.log("📊 Datos locales:", oxigenacionData[hora]);
+
+        const cell = document.querySelector(
+          `[data-hora="${hora}"][data-param="insulina"]`
+        );
+        console.log("🎯 Celda encontrada:", cell);
+
+        if (cell) {
+          console.log("📝 Contenido de la celda:", cell.textContent);
+          console.log("🎨 Clases de la celda:", cell.className);
+        }
+      }
+
+      // 5. MEJORAR la función actualizarCelda para insulina
+     function actualizarCelda(cell, valor, param) {
+  if (!cell) {
+    console.warn("❌ Celda no encontrada");
+    return;
+  }
+
+  console.log(`🎨 Actualizando celda: ${param} = ${valor}`);
+
+  // Limpiar clases y contenido previo
+  cell.classList.remove(
+    "has-data", 
+    "alert-value", 
+    "auto-value",
+    "eva-0-3",
+    "eva-4-6", 
+    "eva-7-10",
+    "escid-positivo",
+    "escid-negativo",
+    "rass-agitado",
+    "rass-sedado",
+    "rass-alerta"
+  );
+  cell.innerHTML = "";
+
+  if (!valor || valor === "" || valor === "—") {
+    cell.textContent = "—";
+    return;
+  }
+
+  cell.classList.add("has-data");
+
+  switch(param) {
+    case 'saturacion':
+      cell.classList.add("auto-value");
+      cell.textContent = `${valor}%`;
+      if (valor < 85) {
+        cell.classList.add("alert-value");
+      }
+      break;
+
+    case 'glucemia':
+      cell.classList.add("auto-value");
+      cell.textContent = `${valor} mg/dL`;
+      if (valor < 70 || valor > 351) {
+        cell.classList.add("alert-value");
+      }
+      break;
+
+    case 'evaRass':
+      // Para EVA/RASS, usar la función especializada
+      procesarEvaRass(cell, valor);
+      break;
+
+    case 'oxigenacion':
+      const emojis = { VMI: "🫁", VMNI: "😷", O2: "💨", "": "⚪" };
+      cell.innerHTML = `<div class="oxigenacion-indicator ${valor.toLowerCase()}">${emojis[valor] || "⚪"} ${valor}</div>`;
+      break;
+
+    case 'insulina':
+      const valorFinal = typeof valor === "string" && valor.includes("U.I.") ? valor : `${valor} U.I.`;
+      cell.textContent = valorFinal;
+      break;
+
+    case 'pNeumo':
+      cell.textContent = valor;
+      if (valor < 0 || valor > 100) {
+        cell.classList.add("alert-value");
+      }
+      break;
+
+    default:
+      cell.textContent = valor;
+      break;
+  }
+
+  console.log("✅ Celda actualizada correctamente");
+}
+
+// Función auxiliar para procesar EVA/RASS
+function procesarEvaRass(cell, valor) {
+  const valorStr = String(valor).trim();
+
+  if (valorStr.includes("/")) {
+    // MÚLTIPLES VALORES: "8/+/-2"
+    const container = document.createElement("div");
+    container.className = "eva-multi-container";
+
+    const partes = valorStr.split("/");
+    partes.forEach((parte) => {
+      if (parte.trim()) {
+        const indicator = crearIndicadorEva(parte.trim());
+        container.appendChild(indicator);
+      }
+    });
+
+    cell.appendChild(container);
+  } else {
+    // VALOR ÚNICO: "5", "+", "-2"
+    const indicator = crearIndicadorEva(valorStr);
+    cell.appendChild(indicator);
+  }
+}
+
+// Función auxiliar para crear indicadores EVA/RASS
+function crearIndicadorEva(parte) {
+  const indicator = document.createElement("div");
+  indicator.className = "eva-indicator";
+  indicator.textContent = parte;
+
+  // Determinar tipo y aplicar estilos
+  if (parte.match(/^[0-9]+$/)) {
+    // EVA: 0-10
+    const num = parseInt(parte);
+    if (num <= 3) {
+      indicator.classList.add("eva-0-3");
+    } else if (num <= 6) {
+      indicator.classList.add("eva-4-6");
+    } else {
+      indicator.classList.add("eva-7-10");
+    }
+    indicator.setAttribute("data-tooltip", `EVA: ${parte} (${getEvaDescription(parte)})`);
+  } else if (parte.match(/^[\+\-][0-9]$/) || parte === "0") {
+    // RASS: +4 a -5
+    if (parte.includes("+") || parte === "0") {
+      indicator.classList.add("rass-agitado");
+    } else {
+      indicator.classList.add("rass-sedado");
+    }
+    indicator.setAttribute("data-tooltip", `RASS: ${parte} (${getRassDescription(parte)})`);
+  } else if (parte === "+" || parte === "-") {
+    // ESCID: + o -
+    if (parte === "+") {
+      indicator.classList.add("escid-positivo");
+    } else {
+      indicator.classList.add("escid-negativo");
+    }
+    indicator.setAttribute("data-tooltip", `ESCID: ${parte}`);
+  }
+
+  // Agregar eventos de tooltip
+  indicator.addEventListener("mouseenter", mostrarTooltipEva);
+  indicator.addEventListener("mouseleave", ocultarTooltipEva);
+
+  return indicator;
+}
+
+// Funciones auxiliares para descripciones
+function getEvaDescription(valor) {
+  const descripciones = {
+    0: "sin dolor",
+    1: "muy leve", 
+    2: "leve",
+    3: "leve-moderado",
+    4: "moderado",
+    5: "moderado",
+    6: "moderado-intenso",
+    7: "intenso",
+    8: "muy intenso",
+    9: "insoportable",
+    10: "máximo"
+  };
+  return descripciones[String(valor)] || "desconocido";
+}
+
+function getRassDescription(valor) {
+  const descripciones = {
+    "+4": "combativo",
+    "+3": "muy agitado", 
+    "+2": "agitado",
+    "+1": "inquieto",
+    "0": "alerta y calmado",
+    "-1": "somnoliento",
+    "-2": "ligero sedado",
+    "-3": "moderado sedado", 
+    "-4": "profundamente sedado",
+    "-5": "no despertable"
+  };
+  return descripciones[String(valor)] || "desconocido";
+}
+
+// Funciones para tooltips
+function mostrarTooltipEva(event) {
+  const indicator = event.target;
+  const tooltipText = indicator.getAttribute("data-tooltip");
+
+  if (!tooltipText) return;
+
+  // Crear tooltip si no existe
+  let tooltip = document.getElementById("eva-tooltip");
+  if (!tooltip) {
+    tooltip = document.createElement("div");
+    tooltip.id = "eva-tooltip";
+    tooltip.className = "eva-tooltip";
+    document.body.appendChild(tooltip);
+  }
+
+  tooltip.textContent = tooltipText;
+  tooltip.classList.add("visible");
+
+  // Posicionar tooltip
+  posicionarTooltipEva(event);
+}
+
+function ocultarTooltipEva() {
+  const tooltip = document.getElementById("eva-tooltip");
+  if (tooltip) {
+    tooltip.classList.remove("visible");
+    setTimeout(() => {
+      if (tooltip && !tooltip.classList.contains("visible")) {
+        tooltip.remove();
+      }
+    }, 200);
+  }
+}
+
+function posicionarTooltipEva(event) {
+  const tooltip = document.getElementById("eva-tooltip");
+  if (!tooltip || !tooltip.classList.contains("visible")) return;
+
+  const rect = event.target.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+  let left = rect.left + scrollLeft + rect.width / 2 - tooltipRect.width / 2;
+  let top = rect.top + scrollTop - tooltipRect.height - 10;
+
+  // Ajustar si se sale de la pantalla
+  if (left < 5) left = 5;
+  if (left + tooltipRect.width > window.innerWidth - 5) {
+    left = window.innerWidth - tooltipRect.width - 5;
+  }
+  if (top < 5) {
+    top = rect.bottom + scrollTop + 10;
+  }
+
+  tooltip.style.left = left + "px";
+  tooltip.style.top = top + "px";
+}
+
+    
+
+      // ===================================================================
+
+      // Función para cerrar modal de insulina
+      function cerrarModalInsulina() {
+        const modal = document.querySelector(".insulina-modal");
+        if (modal) {
+          modal.remove();
+        }
+      }
+
+      // Función para mostrar modal de insulina manual
+      function mostrarModalInsulinaManual(hora) {
+        const recomendacion = {
+          unidades_sc: 0,
+          unidades_iv: 0,
+          modo: "subcutanea",
+          tipo: "Manual",
+          observacion: "Introducido manualmente",
+        };
+
+        mostrarModalInsulina(recomendacion, numeroBoxActual, hora, "Manual");
+
+        // Cambiar el título del modal
+        setTimeout(() => {
+          const header = document.querySelector(".insulina-header h3");
+          if (header) {
+            header.textContent = "💉 Insulina Manual";
+          }
+
+          // Ocultar la sección de recomendación
+          const recomendacionBox = document.querySelector(".recomendacion-box");
+          if (recomendacionBox) {
+            recomendacionBox.style.display = "none";
+          }
+        }, 100);
+      }
+
+      // Función para detectar cambios en glucemia y calcular insulina
+      function onGlucemiaChange(glucemiaInput) {
+        const glucemia = parseFloat(glucemiaInput.value);
+        if (glucemia && glucemia > 0 && !insulinaCalculandose) {
+          insulinaCalculandose = true;
+
+          // Limpiar timeouts anteriores
+          clearTimeout(window.glucemiaTimeout);
+
+          window.glucemiaTimeout = setTimeout(async () => {
+            await calcularInsulinaAutomatica(
+              glucemia,
+              numeroBoxActual,
+              horaSeleccionada
+            );
+            insulinaCalculandose = false;
+          }, 800);
+        }
+      }
+
+      // Integración con eventos de glucemia
+      document.addEventListener("DOMContentLoaded", function () {
+        // Esperar a que el modal de constantes esté disponible
+        setTimeout(() => {
+          const glucemiaInput = document.getElementById("glucemia");
+          if (glucemiaInput) {
+            // Agregar event listeners para detectar cambios en glucemia
+            glucemiaInput.addEventListener("input", function () {
+              onGlucemiaChange(this);
+            });
+
+            glucemiaInput.addEventListener("change", function () {
+              onGlucemiaChange(this);
+            });
+          }
+        }, 1000);
+      });
+
+      console.log("🎯 Funcionalidad de insulina integrada correctamente");
+
+      //===========================================================
+
+      // Función para actualizar celda de insulina en la interfaz
+
+      function actualizarCeldaInsulina(box, hora) {
+        const cell = document.querySelector(
+          `[data-hora="${hora}"][data-param="insulina"]`
+        );
+        if (cell) {
+          const registro = oxigenacionData[hora];
+          if (registro && registro.insulina !== undefined) {
+            cell.textContent = `${registro.insulina} U.I.`;
+            cell.classList.add("has-data");
+          }
+        } else {
+          console.warn(`No se encontró la celda para hora=${hora}`);
+        }
+      }
+
+      // Función mejorada para actualizar valores automáticos
+      function actualizarValoresAutomaticos() {
+        Object.keys(constantesData).forEach((hora) => {
+          const constantes = constantesData[hora];
+
+          // SATURACIÓN
+          if (constantes.sat_o2) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="saturacion"]`
+            );
+            if (cell) {
+              actualizarCelda(cell, constantes.sat_o2, "saturacion");
+            }
+          }
+
+          // GLUCEMIA - CORREGIR para mostrar alerta correctamente
+          if (constantes.glucemia) {
+            const cell = document.querySelector(
+              `[data-hora="${hora}"][data-param="glucemia"]`
+            );
+            if (cell) {
+              actualizarCelda(cell, constantes.glucemia, "glucemia");
+            }
+          }
+        });
+      }
+
+      // Función para detectar cambios en glucemia y calcular insulina
+      //let insulinaCalculandose = false;
+
+      // Función para mostrar indicador de cálculo
+      function mostrarIndicadorCalculoInsulina(mostrar) {
+        let indicator = document.getElementById("glucemia-indicator");
+
+        if (mostrar && !indicator) {
+          const glucemiaGroup =
+            document.getElementById("glucemia").parentElement;
+          indicator = document.createElement("div");
+          indicator.id = "glucemia-indicator";
+          indicator.className = "glucemia-indicator";
+          indicator.innerHTML =
+            '<span class="indicator-icon">💉</span><span class="indicator-text">Calculando insulina...</span>';
+          glucemiaGroup.appendChild(indicator);
+
+          // Agregar estilos si no existen
+          if (!document.querySelector("#glucemia-indicator-styles")) {
+            const styles = document.createElement("style");
+            styles.id = "glucemia-indicator-styles";
+            styles.textContent = `
+                            .glucemia-indicator {
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                                margin-top: 5px;
+                                padding: 8px 12px;
+                                background: #e3f2fd;
+                                border: 1px solid #2196f3;
+                                border-radius: 4px;
+                                font-size: 12px;
+                                color: #1976d2;
+                            }
+
+                            .indicator-icon {
+                                font-size: 14px;
+                                animation: pulse 1.5s infinite;
+                            }
+
+                            @keyframes pulse {
+                                0% { opacity: 1; }
+                                50% { opacity: 0.6; }
+                                100% { opacity: 1; }
+                            }
+                        `;
+            document.head.appendChild(styles);
+          }
+        } else if (!mostrar && indicator) {
+          indicator.remove();
+        }
+      }
+
+      // Modificar la configuración de celdas para incluir insulina mejorada
+      function configurarCeldaOxigenacionConInsulina(cell, hora, param) {
+        if (param === "glucemia" || param === "saturacion") {
+          // Parámetros que se editan desde constantes vitales
+          cell.classList.add("auto-value");
+          cell.addEventListener("click", () => {
+            abrirModalConstantes(hora);
+          });
+          return;
+        }
+
+        if (param === "evaRass") {
+          cell.addEventListener("click", () => {
+            // En la próxima actualización implementaremos las escalas EVA/RASS
+            const valor = prompt(
+              `Ingrese valor para EVA/RASS en hora ${hora}:`
+            );
+            if (valor !== null && valor.trim() !== "") {
+              guardarDatoOxigenacion(hora, "evaRass", valor.trim())
+                .then(() => {
+                  console.log("Dato guardado correctamente");
+                })
+                .catch((error) => {
+                  console.error("Error al guardar:", error);
+                });
+            }
+          });
+          return;
+        }
+
+        if (param === "insulina") {
+          cell.addEventListener("click", () => {
+            mostrarModalInsulinaManual(hora);
+          });
+          return;
+        }
+
+        // Para otros parámetros editables (pNeumo, oxigenacion)
+        cell.addEventListener("click", () => {
+          if (param === "oxigenacion") {
+            mostrarDropdownOxigenacion(cell, hora);
+          } else if (param === "pNeumo") {
+            const valor = prompt(
+              `Ingrese presión neumática (0-100) para hora ${hora}:`
+            );
+            if (valor !== null && valor.trim() !== "") {
+              const valorNum = parseInt(valor);
+              if (valorNum >= 0 && valorNum <= 100) {
+                guardarDatoOxigenacion(hora, "pNeumo", valorNum)
+                  .then(() => {
+                    console.log("P.Neumo guardado correctamente");
+                  })
+                  .catch((error) => {
+                    console.error("Error al guardar P.Neumo:", error);
+                  });
+              } else {
+                alert("Por favor ingrese un valor entre 0 y 100");
+              }
+            }
+          }
+        });
+      }
+
+      // Función auxiliar para guardar datos del paciente (si no existe)
+      async function guardarDatosPacienteEnBD(datos) {
+        try {
+          const response = await fetch("api/guardar_paciente.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datos),
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(
+              result.message || "Error desconocido al guardar paciente"
+            );
+          }
+
+          return result;
+        } catch (error) {
+          console.error("Error en guardarDatosPacienteEnBD:", error);
+          throw error;
+        }
+      }
+
+      // Función mejorada para autoguardado periódico (opcional)
+      function iniciarAutoguardadoPeriodico() {
+        console.log("⏰ Iniciando autoguardado periódico...");
+        setInterval(async () => {
+          try {
+            console.log("💾 Ejecutando autoguardado periódico...");
+
+            // Guardar datos recientes de oxigenación
+            const horasRecientes = Object.keys(oxigenacionData).slice(-3); // Últimas 3 horas con datos
+            for (const hora of horasRecientes) {
+              const datos = oxigenacionData[hora];
+              for (const campo of Object.keys(datos)) {
+                if (
+                  datos[campo] !== null &&
+                  datos[campo] !== undefined &&
+                  datos[campo] !== ""
+                ) {
+                  await guardarDatoOxigenacionEnBD(
+                    hora,
+                    campo,
+                    datos[campo]
+                  ).catch((err) => {
+                    console.warn(`Autoguardado - Error ${campo} ${hora}:`, err);
+                  });
+                }
+              }
+            }
+
+            console.log("✅ Autoguardado periódico completado");
+          } catch (error) {
+            console.warn("⚠️ Error en autoguardado periódico:", error);
+          }
+        }, 120000); // Cada 2 minutos
+      }
+
+      // Iniciar autoguardado cuando se carga la página
+      document.addEventListener(
+        "DOMContentLoaded",
+        iniciarAutoguardadoPeriodico
+      );
+
+      // Función para guardar antes de salir de la página
+      function configurarGuardadoAntesDeSalir() {
+        window.addEventListener("beforeunload", function (e) {
+          // Intentar guardado rápido
+          navigator.sendBeacon &&
+            navigator.sendBeacon(
+              "api/guardar_sesion_rapido.php",
+              JSON.stringify({
+                box: numeroBoxActual,
+                constantesData: constantesData,
+                oxigenacionData: oxigenacionData,
+                datosPaciente: datosPaciente,
+              })
+            );
+        });
+
+        // También guardar cuando la página pierde el foco
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) {
+            // La página se está ocultando, guardar datos
+            cerrarSesion().catch((err) =>
+              console.warn("Error en guardado automático:", err)
+            );
+          }
+        });
+      }
+
+      // Inicializar autoguardado cuando se carga la página
+      document.addEventListener("DOMContentLoaded", function () {
+        if (numeroBoxActual) {
+          // Esperar 5 segundos después de cargar para empezar el autoguardado periódico
+          setTimeout(() => {
+            iniciarAutoguardadoPeriodico();
+            configurarGuardadoAntesDeSalir();
+            console.log("🔄 Sistema de autoguardado activado");
+          }, 5000);
+        }
+      });
+
+      // Función de emergencia para forzar guardado
+      function guardarTodoAhora() {
+        console.log("🚨 Ejecutando guardado de emergencia...");
+        return cerrarSesion();
+      }
+
+      console.log(
+        "💾 Sistema de guardado automático configurado correctamente"
+      );
+
+      // ===== FUNCIONES PARA DROPDOWN EVA/RASS =====
+
+      function mostrarDropdownEvaRass(cell, hora) {
+        // Cerrar cualquier dropdown existente
+        cerrarDropdownEvaRass();
+
+        const opciones = [
+          // EVA (Escala Visual Analógica) - 0 a 10
+          {
+            categoria: "EVA",
+            valor: "0",
+            texto: "Sin dolor",
+            clase: "eva-bajo",
           },
-          body: JSON.stringify(datos),
-        })
-          .then((response) => response.json())
-          .then((respuesta) => {
-            console.log("Guardado en BD:", respuesta);
+          {
+            categoria: "EVA",
+            valor: "1",
+            texto: "Dolor muy leve",
+            clase: "eva-bajo",
+          },
+          {
+            categoria: "EVA",
+            valor: "2",
+            texto: "Dolor leve",
+            clase: "eva-bajo",
+          },
+          {
+            categoria: "EVA",
+            valor: "3",
+            texto: "Dolor leve-moderado",
+            clase: "eva-bajo",
+          },
+          {
+            categoria: "EVA",
+            valor: "4",
+            texto: "Dolor moderado",
+            clase: "eva-medio",
+          },
+          {
+            categoria: "EVA",
+            valor: "5",
+            texto: "Dolor moderado",
+            clase: "eva-medio",
+          },
+          {
+            categoria: "EVA",
+            valor: "6",
+            texto: "Dolor moderado-intenso",
+            clase: "eva-medio",
+          },
+          {
+            categoria: "EVA",
+            valor: "7",
+            texto: "Dolor intenso",
+            clase: "eva-alto",
+          },
+          {
+            categoria: "EVA",
+            valor: "8",
+            texto: "Dolor muy intenso",
+            clase: "eva-alto",
+          },
+          {
+            categoria: "EVA",
+            valor: "9",
+            texto: "Dolor insoportable",
+            clase: "eva-alto",
+          },
+          {
+            categoria: "EVA",
+            valor: "10",
+            texto: "Máximo dolor",
+            clase: "eva-alto",
+          },
+
+          // RASS (Richmond Agitation-Sedation Scale)
+          {
+            categoria: "RASS",
+            valor: "+4",
+            texto: "Combativo",
+            clase: "rass-agitado",
+          },
+          {
+            categoria: "RASS",
+            valor: "+3",
+            texto: "Muy agitado",
+            clase: "rass-agitado",
+          },
+          {
+            categoria: "RASS",
+            valor: "+2",
+            texto: "Agitado",
+            clase: "rass-agitado",
+          },
+          {
+            categoria: "RASS",
+            valor: "+1",
+            texto: "Inquieto",
+            clase: "rass-agitado",
+          },
+          {
+            categoria: "RASS",
+            valor: "0",
+            texto: "Alerta y calmado",
+            clase: "rass-alerta",
+          },
+          {
+            categoria: "RASS",
+            valor: "-1",
+            texto: "Somnoliento",
+            clase: "rass-sedado",
+          },
+          {
+            categoria: "RASS",
+            valor: "-2",
+            texto: "Sedación ligera",
+            clase: "rass-sedado",
+          },
+          {
+            categoria: "RASS",
+            valor: "-3",
+            texto: "Sedación moderada",
+            clase: "rass-sedado",
+          },
+          {
+            categoria: "RASS",
+            valor: "-4",
+            texto: "Sedación profunda",
+            clase: "rass-sedado",
+          },
+          {
+            categoria: "RASS",
+            valor: "-5",
+            texto: "No despertable",
+            clase: "rass-sedado",
+          },
+        ];
+
+        // Crear overlay
+        const overlay = document.createElement("div");
+        overlay.className = "eva-dropdown-overlay";
+
+        // Crear dropdown
+        const dropdown = document.createElement("div");
+        dropdown.className = "eva-dropdown";
+        dropdown.id = "evaDropdown";
+
+        // Obtener valores actuales
+        const valorActual = oxigenacionData[hora]?.evaRass || "";
+        const valoresSeleccionados = {};
+
+        // Parsear valores existentes
+        if (valorActual.includes("/")) {
+          const partes = valorActual.split("/");
+          partes.forEach((parte) => {
+            if (parte.match(/^[0-9]+$/)) valoresSeleccionados.EVA = parte;
+            else if (parte.match(/^[\+\-][0-9]$/) || parte === "0")
+              valoresSeleccionados.RASS = parte;
+          });
+        } else if (valorActual) {
+          if (valorActual.match(/^[0-9]+$/))
+            valoresSeleccionados.EVA = valorActual;
+          else if (valorActual.match(/^[\+\-][0-9]$/) || valorActual === "0")
+            valoresSeleccionados.RASS = valorActual;
+        }
+
+        // TÍTULO
+        const headerDiv = document.createElement("div");
+        headerDiv.innerHTML = `
+    <div style="text-align: center; padding: 10px; background: #667eea; color: white; font-weight: bold; border-radius: 8px 8px 0 0;">
+      EVA/RASS - Hora: ${hora}
+      <div style="font-size: 11px; margin-top: 5px;">
+        Actual: ${valorActual || "Sin valores"} | Selección múltiple
+      </div>
+    </div>
+  `;
+        dropdown.appendChild(headerDiv);
+
+        // Agrupar opciones por categoría
+        const categorias = ["EVA", "RASS"];
+
+        categorias.forEach((categoria) => {
+          const categoriaDiv = document.createElement("div");
+          categoriaDiv.className = "eva-category";
+
+          // Título de categoría
+          const tituloDiv = document.createElement("div");
+          tituloDiv.className = "eva-category-title";
+          const valorActualCat =
+            valoresSeleccionados[categoria] || "No seleccionado";
+          tituloDiv.innerHTML = `${categoria} <span style="font-weight: normal;">(${valorActualCat})</span>`;
+          categoriaDiv.appendChild(tituloDiv);
+
+          // Opciones de la categoría
+          const opcionesCat = opciones.filter(
+            (op) => op.categoria === categoria
+          );
+          opcionesCat.forEach((opcion) => {
+            const optionDiv = document.createElement("div");
+            optionDiv.className = `eva-option ${opcion.clase}`;
+
+            if (opcion.valor === valoresSeleccionados[categoria]) {
+              optionDiv.classList.add("selected");
+            }
+
+            optionDiv.innerHTML = `
+        <span class="eva-option-value">${opcion.valor}</span>
+        <span class="eva-option-desc">${opcion.texto}</span>
+      `;
+
+            optionDiv.addEventListener("click", (e) => {
+              e.stopPropagation();
+
+              // Actualizar selección visual
+              const todasOpciones =
+                categoriaDiv.querySelectorAll(".eva-option");
+              todasOpciones.forEach((opt) => opt.classList.remove("selected"));
+              optionDiv.classList.add("selected");
+
+              // Guardar valor
+              seleccionarEvaRass(hora, opcion.valor, opcion.categoria, cell);
+
+              // Actualizar título
+              tituloDiv.innerHTML = `${categoria} <span style="font-weight: normal;">(${opcion.valor})</span>`;
+
+              // Actualizar header
+              setTimeout(() => {
+                const nuevoValor = oxigenacionData[hora]?.evaRass || "";
+                const headerContent = headerDiv.querySelector("div");
+                headerContent.innerHTML = `
+            EVA/RASS - Hora: ${hora}
+            <div style="font-size: 11px; margin-top: 5px;">
+              Actual: ${nuevoValor || "Sin valores"} | Selección múltiple
+            </div>
+          `;
+              }, 100);
+            });
+
+            categoriaDiv.appendChild(optionDiv);
+          });
+
+          dropdown.appendChild(categoriaDiv);
+        });
+
+        // BOTÓN CERRAR
+        const cerrarDiv = document.createElement("div");
+        cerrarDiv.innerHTML = `
+    <div style="text-align: center; padding: 10px; background: #f8f9fa; border-top: 1px solid #ddd;">
+      <button style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;" onclick="cerrarDropdownEvaRass()">
+        ✅ Cerrar y Aplicar
+      </button>
+    </div>
+  `;
+        dropdown.appendChild(cerrarDiv);
+
+        // Posicionar dropdown
+        const rect = cell.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft =
+          window.pageXOffset || document.documentElement.scrollLeft;
+
+        dropdown.style.left = rect.left + scrollLeft + "px";
+        dropdown.style.top = rect.bottom + scrollTop + 8 + "px";
+
+        // Añadir al DOM
+        document.body.appendChild(overlay);
+        document.body.appendChild(dropdown);
+
+        // Ajustar posición
+        setTimeout(() => {
+          const dropdownRect = dropdown.getBoundingClientRect();
+          if (dropdownRect.right > window.innerWidth) {
+            dropdown.style.left =
+              rect.right + scrollLeft - dropdownRect.width + "px";
+          }
+          if (dropdownRect.bottom > window.innerHeight) {
+            dropdown.style.top =
+              rect.top + scrollTop - dropdownRect.height - 8 + "px";
+          }
+        }, 10);
+
+        console.log("Dropdown EVA/RASS creado para hora:", hora);
+      }
+
+      //  =======================================================
+
+      function cerrarDropdownEvaRass() {
+        const dropdown = document.getElementById("evaDropdown");
+        const overlay = document.querySelector(".eva-dropdown-overlay");
+
+        if (dropdown) dropdown.remove();
+        if (overlay) overlay.remove();
+      }
+
+      // ===== SOLUCIÓN AL ERROR: guardarDatoOxigenacion is not defined =====
+
+      // 2. ASEGÚRATE de que esta función esté definida ANTES de seleccionarEvaRass:
+      async function guardarDatoOxigenacionConVerificacion(hora, campo, valor) {
+        try {
+          console.log(`🔄 GUARDANDO: ${campo} = "${valor}" en hora ${hora}`);
+
+          // 1. Guardar en base de datos primero
+          await guardarDatoOxigenacionEnBD(hora, campo, valor);
+          console.log(
+            `✅ Guardado en BD exitoso: ${hora} - ${campo}: ${valor}`
+          );
+
+          // 2. Actualizar datos locales
+          if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+          oxigenacionData[hora][campo] = valor;
+          console.log(`📊 Datos locales actualizados:`, oxigenacionData[hora]);
+
+          // 3. Actualizar inmediatamente la celda visual
+          const cell = document.querySelector(
+            `[data-hora="${hora}"][data-param="${campo}"]`
+          );
+          if (cell) {
+            if (campo === "evaRass") {
+              console.log(`🎨 Actualizando celda EVA/RASS: ${valor}`);
+              actualizarCelda(cell, valor, "evaRass");
+
+              // ✅ FORZAR actualización visual adicional para EVA/RASS
+              cell.classList.add("has-data");
+              cell.setAttribute("data-valor", valor);
+            } else {
+              let valorMostrar = valor;
+              if (campo === "insulina" && !String(valor).includes("U.I.")) {
+                valorMostrar = valor + " U.I.";
+              }
+              actualizarCelda(cell, valorMostrar, campo);
+            }
+          }
+
+          // 4. Mostrar mensaje de éxito
+          mostrarMensaje(`✅ ${campo} guardado correctamente`, "success");
+
+          return { success: true };
+        } catch (error) {
+          console.error(`❌ Error al guardar ${campo}:`, error);
+          mostrarMensaje(`❌ Error al guardar ${campo}`, "error");
+          return { success: false, error: error.message };
+        }
+      }
+
+      // ===== CORRECCIÓN FINAL PARA PERSISTENCIA EVA/RASS =====
+
+      // 1. FUNCIÓN PRINCIPAL DE GUARDADO (REEMPLAZA la existente)
+      async function guardarDatoOxigenacion(hora, campo, valor) {
+        try {
+          console.log(
+            `💾 Guardando oxigenación: ${campo} = "${valor}" en hora ${hora}`
+          );
+
+          const response = await fetch("api/guardar_oxigenacion.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              box: numeroBoxActual,
+              hora: hora,
+              campo: campo,
+              valor: valor,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(
+              result.message || "Error al guardar datos de oxigenación"
+            );
+          }
+
+          // Actualizar datos locales
+          if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+          oxigenacionData[hora][campo] = valor;
+
+          // Actualizar celda visual
+          const cell = document.querySelector(
+            `[data-hora="${hora}"][data-param="${campo}"]`
+          );
+          if (cell) {
+            actualizarCelda(cell, valor, campo);
+          }
+
+          console.log(`✅ ${campo} guardado exitosamente en hora ${hora}`);
+          mostrarMensaje(`✅ ${campo} guardado correctamente`, "success");
+
+          // ✅ SI ES SATURACIÓN O GLUCEMIA, SINCRONIZAR CON CONSTANTES VITALES
+          if (campo === "saturacion" || campo === "glucemia") {
+            setTimeout(async () => {
+              await recargarConstantesVitales();
+            }, 500);
+          }
+
+          return result;
+        } catch (error) {
+          console.error(`❌ Error guardando ${campo}:`, error);
+          mostrarMensaje(`❌ Error al guardar ${campo}`, "error");
+          throw error;
+        }
+      }
+
+      // ===== CORRECCIÓN PARA BD CON CAMPOS SEPARADOS EVA/RASS =====
+
+      async function guardarDatoOxigenacionEnBD(hora, campo, valor) {
+        try {
+          console.log(`💾 Guardando ${campo}="${valor}" en hora ${hora}`);
+          const response = await fetch("api/guardar_oxigenacion.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              box: numeroBoxActual,
+              hora: hora,
+              campo: campo,
+              valor: valor,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(
+              result.message || "Error al guardar datos de oxigenación"
+            );
+          }
+
+          console.log(
+            `✅ Éxito al guardar ${campo}="${valor}" en hora ${hora}`
+          );
+          return result;
+        } catch (error) {
+          console.error(
+            `❌ Error al guardar ${campo}="${valor}" en hora ${hora}:`,
+            error
+          );
+          throw error;
+        }
+      }
+
+      // 2. NUEVA FUNCIÓN para guardar EVA/RASS en campos separados
+      async function guardarEvaEscidRassSeparado(hora, valorCombinado) {
+        try {
+          console.log(
+            `🎯 Guardando EVA/RASS separado: "${valorCombinado}" en hora ${hora}`
+          );
+
+          // Parsear el valor combinado
+          const valores = parsearEvaEscidRass(valorCombinado);
+          console.log(`📊 Valores parseados:`, valores);
+
+          const promesas = [];
+
+          // ✅ GUARDAR EVA_ESCID (si hay valor EVA o ESCID)
+          if (valores.eva !== null || valores.escid !== null) {
+            let valorEvaEscid = null;
+
+            if (valores.eva !== null && valores.escid !== null) {
+              // Ambos presentes: usar formato "5/+"
+              valorEvaEscid = `${valores.eva}/${valores.escid}`;
+            } else if (valores.eva !== null) {
+              // Solo EVA: guardar el número
+              valorEvaEscid = valores.eva;
+            } else if (valores.escid !== null) {
+              // Solo ESCID: guardar + o -
+              valorEvaEscid = valores.escid;
+            }
+
+            if (valorEvaEscid !== null) {
+              console.log(`💾 Guardando eva_escid: ${valorEvaEscid}`);
+              promesas.push(
+                fetch("api/guardar_oxigenacion.php", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    box: numeroBoxActual,
+                    hora: hora,
+                    campo: "eva_escid",
+                    valor: String(valorEvaEscid),
+                  }),
+                })
+              );
+            }
+          }
+
+          // ✅ GUARDAR RASS (si hay valor)
+          if (valores.rass !== null) {
+            console.log(`💾 Guardando rass: ${valores.rass}`);
+
+            // RASS se guarda como número entero
+            let valorRassNumerico = null;
+            if (valores.rass === "0") {
+              valorRassNumerico = 0;
+            } else if (valores.rass.startsWith("+")) {
+              valorRassNumerico = parseInt(valores.rass.substring(1));
+            } else if (valores.rass.startsWith("-")) {
+              valorRassNumerico = parseInt(valores.rass); // Ya incluye el signo negativo
+            }
+
+            if (valorRassNumerico !== null) {
+              promesas.push(
+                fetch("api/guardar_oxigenacion.php", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    box: numeroBoxActual,
+                    hora: hora,
+                    campo: "rass",
+                    valor: valorRassNumerico,
+                  }),
+                })
+              );
+            }
+          }
+
+          // Ejecutar todas las promesas
+          const resultados = await Promise.all(promesas);
+
+          // Verificar que todas fueron exitosas
+          for (let response of resultados) {
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status}: ${response.statusText}`
+              );
+            }
+            const result = await response.json();
+            if (!result.success) {
+              throw new Error(result.message || "Error en guardado");
+            }
+          }
+
+          console.log(`✅ EVA/RASS guardado exitosamente en campos separados`);
+          return {
+            success: true,
+            message: "EVA/RASS guardado correctamente",
+          };
+        } catch (error) {
+          console.error(`❌ Error guardando EVA/RASS separado:`, error);
+          throw error;
+        }
+      }
+
+      // 3. FUNCIÓN para parsear valores combinados
+      function parsearEvaEscidRass(valorCombinado) {
+        const valores = {
+          eva: null,
+          escid: null,
+          rass: null,
+        };
+
+        if (!valorCombinado || valorCombinado.trim() === "") {
+          return valores;
+        }
+
+        const partes = valorCombinado.split("/");
+
+        partes.forEach((parte) => {
+          parte = parte.trim();
+
+          if (parte.match(/^[0-9]$/)) {
+            // EVA: números del 0-10
+            valores.eva = parseInt(parte);
+          } else if (parte === "+" || parte === "-") {
+            // ESCID: + o -
+            valores.escid = parte;
+          } else if (parte.match(/^[\+\-][0-9]$/) || parte === "0") {
+            // RASS: +4, +3, +2, +1, 0, -1, -2, -3, -4, -5
+            valores.rass = parte;
+          }
+        });
+
+        return valores;
+      }
+
+      // 2. FUNCIÓN CORREGIDA para cargar según tu estructura
+      async function cargarDatosOxigenacionDesdeBD() {
+        try {
+          console.log(`🔄 Cargando datos para box ${numeroBoxActual}`);
+
+          const response = await fetch(
+            `api/obtener_oxigenacion.php?box=${numeroBoxActual}`
+          );
+          const result = await response.json();
+
+          if (result.success && result.data && result.data.length > 0) {
+            const datosLocal = {};
+
+            result.data.forEach((registro) => {
+              const hora = registro.hora;
+              if (!datosLocal[hora]) datosLocal[hora] = {};
+
+              // ✅ MAPEAR SEGÚN TU ESTRUCTURA REAL
+
+              // P.NEUMO
+              if (registro.p_neumo !== null && registro.p_neumo !== "") {
+                datosLocal[hora].pNeumo = parseInt(registro.p_neumo);
+              }
+
+              // OXIGENACIÓN
+              if (
+                registro.oxigenacion !== null &&
+                registro.oxigenacion !== ""
+              ) {
+                datosLocal[hora].oxigenacion = registro.oxigenacion;
+              }
+
+              // INSULINA
+              if (registro.insulina !== null && registro.insulina !== "") {
+                datosLocal[hora].insulina = registro.insulina;
+              }
+
+              // ✅ EVA/RASS desde tu campo eva_escid
+              if (registro.eva_escid !== null && registro.eva_escid !== "") {
+                datosLocal[hora].evaRass = String(registro.eva_escid);
+                console.log(
+                  `📥 EVA/ESCID cargado: ${hora} = "${registro.eva_escid}"`
+                );
+              }
+
+              // NOTA: saturacion y glucemia se cargarán automáticamente desde constantes_vitales
+            });
+
+            return datosLocal;
+          } else {
+            return {};
+          }
+        } catch (error) {
+          console.error(`❌ Error cargando datos:`, error);
+          throw error;
+        }
+      }
+
+      // 3. FUNCIÓN SIMPLIFICADA para seleccionar EVA/ESCID (sin RASS por ahora)
+      function seleccionarEvaRass(hora, valor, categoria, cell) {
+        console.log(`🎯 SELECCIÓN: ${categoria} = "${valor}" en hora ${hora}`);
+
+        // ✅ SIMPLIFICADO: Usar tu campo eva_escid para valores combinados
+        const valoresActuales = oxigenacionData[hora]?.evaRass || "";
+        let valorFinal = "";
+
+        if (categoria === "EVA") {
+          // Si es EVA (número 0-10), reemplazar cualquier número existente
+          if (valoresActuales.includes("/")) {
+            const partes = valoresActuales.split("/");
+            const partesNoEva = partes.filter((p) => !p.match(/^[0-9]+$/));
+            valorFinal = [valor, ...partesNoEva].join("/");
+          } else if (valoresActuales.match(/^[0-9]+$/)) {
+            // Ya hay solo un número EVA, reemplazar
+            valorFinal = valor;
+          } else if (valoresActuales) {
+            // Hay otros valores, añadir EVA al principio
+            valorFinal = valor + "/" + valoresActuales;
+          } else {
+            // No hay nada, solo EVA
+            valorFinal = valor;
+          }
+        } else if (categoria === "RASS") {
+          // Para RASS, añadir al final
+          if (valoresActuales) {
+            valorFinal = valoresActuales + "/" + valor;
+          } else {
+            valorFinal = valor;
+          }
+        }
+
+        console.log(`🎯 Valor final construido: "${valorFinal}"`);
+
+        // Guardar en BD usando el campo eva_escid
+        guardarDatoOxigenacion(hora, "evaRass", valorFinal)
+          .then(() => {
+            console.log(`✅ EVA/ESCID guardado exitosamente: ${valorFinal}`);
           })
           .catch((error) => {
-            console.error("Error al guardar en BD:", error);
+            console.error(`❌ Error guardando EVA/ESCID:`, error);
           });
+      }
+
+      // 3. NUEVA función para guardar en tus 2 campos BD
+      async function guardarEvaRassEnBD(hora, eva, rass, valorDisplay) {
+        try {
+          console.log(
+            `💾 Guardando EVA="${eva}" RASS="${rass}" en hora ${hora}`
+          );
+
+          const promesas = [];
+
+          // Guardar EVA en campo eva_escid
+          if (eva !== null) {
+            promesas.push(
+              fetch("api/guardar_oxigenacion.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  box: numeroBoxActual,
+                  hora: hora,
+                  campo: "eva_escid",
+                  valor: parseInt(eva),
+                }),
+              })
+            );
+          }
+
+          // Guardar RASS en campo rass
+          if (rass !== null) {
+            let valorRass = 0;
+            if (rass === "0") valorRass = 0;
+            else if (rass.startsWith("+"))
+              valorRass = parseInt(rass.substring(1));
+            else if (rass.startsWith("-")) valorRass = parseInt(rass);
+
+            promesas.push(
+              fetch("api/guardar_oxigenacion.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  box: numeroBoxActual,
+                  hora: hora,
+                  campo: "rass",
+                  valor: valorRass,
+                }),
+              })
+            );
+          }
+
+          // Ejecutar todas las promesas
+          const resultados = await Promise.all(promesas);
+
+          // Verificar resultados
+          for (const response of resultados) {
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+            const result = await response.json();
+            if (!result.success) {
+              throw new Error(result.message);
+            }
+          }
+
+          // Actualizar datos locales
+          if (!oxigenacionData[hora]) oxigenacionData[hora] = {};
+          oxigenacionData[hora].evaRass = valorDisplay;
+
+          // Actualizar celda visual
+          const cell = document.querySelector(
+            `[data-hora="${hora}"][data-param="evaRass"]`
+          );
+          if (cell) {
+            actualizarCelda(cell, valorDisplay, "evaRass");
+          }
+
+          console.log(`✅ EVA/RASS guardado exitosamente`);
+          mostrarMensaje(`✅ EVA/RASS guardado correctamente`, "success");
+        } catch (error) {
+          console.error(`❌ Error guardando EVA/RASS:`, error);
+          mostrarMensaje(`❌ Error al guardar EVA/RASS`, "error");
+        }
+      }
+
+      // 5. FUNCIÓN DE VERIFICACIÓN POST-CARGA
+      function verificarEvaRassCargado() {
+        console.log("🔍 === VERIFICACIÓN POST-CARGA ===");
+
+        const horasConEva = Object.keys(oxigenacionData).filter(
+          (hora) => oxigenacionData[hora].evaRass
+        );
+
+        if (horasConEva.length === 0) {
+          console.log("ℹ️ No hay datos EVA/RASS cargados");
+          return false;
+        }
+
+        console.log(
+          `✅ ${horasConEva.length} horas con EVA/RASS:`,
+          horasConEva
+        );
+
+        horasConEva.forEach((hora) => {
+          const valor = oxigenacionData[hora].evaRass;
+          const cell = document.querySelector(
+            `[data-hora="${hora}"][data-param="evaRass"]`
+          );
+
+          console.log(`⏰ ${hora}: valor="${valor}"`);
+          console.log(`   🎯 Celda encontrada: ${!!cell}`);
+
+          if (cell) {
+            // Forzar actualización visual
+            actualizarCelda(cell, valor, "evaRass");
+            console.log(`   🎨 Celda actualizada visualmente`);
+          }
+        });
+
+        return true;
+      }
+
+      // 1. CORREGIR la función inicializarTablaOxigenacionConPersistencia (línea donde falla)
+      async function inicializarTablaOxigenacionConPersistencia() {
+        try {
+          const { hojaActual } = calcularTurnoHospitalario();
+          document.getElementById("hojaOxigenacion").textContent = hojaActual;
+
+          // 1. Generar tabla
+          generarTablaOxigenacion();
+          console.log("🏗️ Tabla generada");
+
+          // 2. Cargar datos
+          await cargarDatosOxigenacion();
+          console.log("📥 Datos cargados");
+
+          // 3. ✅ VERIFICACIÓN ESPECÍFICA PARA EVA/RASS
+          setTimeout(() => {
+            verificarEvaRassCargado();
+          }, 800);
+
+          console.log("✅ Tabla inicializada con persistencia");
+        } catch (error) {
+          console.error("❌ Error en inicialización:", error);
+          mostrarMensaje("Error al cargar tabla", "error");
+        }
+      }
+
+      function verificarCompatibilidadBD() {
+        console.log("🔍 === VERIFICACIÓN DE COMPATIBILIDAD ===");
+        console.log("📋 Campos esperados en datos_oxigenacion:");
+        console.log(" ✅ eva_escid (para EVA/ESCID/RASS combinados)");
+        console.log(" ✅ oxigenacion (para tipo de soporte)");
+        console.log(" ✅ p_neumo (para presión neumática)");
+        console.log(" ✅ insulina (para dosis de insulina)");
+        console.log(
+          " ❌ saturacion (se obtiene automáticamente de constantes_vitales)"
+        );
+
+        // Verificar carga desde BD
+        fetch(`api/obtener_oxigenacion.php?box=${numeroBoxActual}`)
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.data && result.data.length > 0) {
+              const registro = result.data[0];
+              console.log("🗄️ Primer registro en BD:", registro);
+
+              // Verificar campos clave
+              const camposEsperados = [
+                "eva_escid",
+                "oxigenacion",
+                "p_neumo",
+                "insulina",
+              ];
+              camposEsperados.forEach((campo) => {
+                if (campo in registro) {
+                  console.log(`✅ Campo ${campo}: presente`);
+                } else {
+                  console.warn(`⚠️ Campo ${campo}: ausente`);
+                }
+              });
+            } else {
+              console.log("ℹ️ No hay datos en BD para verificar");
+            }
+          })
+          .catch((error) => {
+            console.error("❌ Error verificando BD:", error);
+          });
+      }
+
+      // Ejecutar esta función para verificar la compatibilidad
+      verificarCompatibilidadBD();
+
+      function testEvaEscidCompleto() {
+        console.log("🧪 === TEST COMPLETO EVA/ESCID ===");
+
+        const datosTest = [
+          { hora: "10:00", valor: "5" }, // Solo EVA
+          { hora: "12:00", valor: "7/+" }, // EVA + ESCID
+          { hora: "14:00", valor: "3/-2" }, // EVA + RASS
+          { hora: "16:00", valor: "8/+/-1" }, // EVA + ESCID + RASS
+        ];
+
+        let index = 0;
+
+        function procesarSiguiente() {
+          if (index >= datosTest.length) {
+            console.log("✅ TEST COMPLETADO - Verificando persistencia...");
+
+            setTimeout(() => {
+              // Simular recarga
+              console.log("🔄 Simulando recarga de datos...");
+              oxigenacionData = {}; // Limpiar datos locales
+
+              // Recargar desde BD
+              cargarDatosOxigenacion().then(() => {
+                console.log("📊 Datos después de recarga:", oxigenacionData);
+
+                // Verificar cada dato
+                datosTest.forEach(({ hora, valor }) => {
+                  const valorGuardado = oxigenacionData[hora]?.evaRass;
+                  if (valorGuardado === valor) {
+                    console.log(`✅ ${hora}: CORRECTO - "${valor}"`);
+                  } else {
+                    console.error(
+                      `❌ ${hora}: FALLO - esperado "${valor}", obtenido "${valorGuardado}"`
+                    );
+                  }
+                });
+
+                mostrarMensaje("🧪 Test de persistencia completado", "success");
+              });
+            }, 3000);
+            return;
+          }
+
+          const { hora, valor } = datosTest[index];
+          console.log(
+            `${index + 1}/${datosTest.length} - Guardando "${valor}" en ${hora}`
+          );
+
+          guardarDatoOxigenacion(hora, "evaRass", valor)
+            .then(() => {
+              console.log(`✅ ${hora}: guardado exitosamente`);
+            })
+            .catch((error) => {
+              console.error(`❌ ${hora}: Error -`, error);
+            })
+            .finally(() => {
+              index++;
+              setTimeout(procesarSiguiente, 1500);
+            });
+        }
+
+        procesarSiguiente();
+      }
+
+      // 4. EXPONER FUNCIONES PARA LA CONSOLA
+      window.testEvaEscidCompleto = testEvaEscidCompleto;
+      window.verificarCompatibilidadBD = verificarCompatibilidadBD;
+
+      console.log("🔧 === CORRECCIÓN DE ERROR APLICADA ===");
+      console.log("🧪 Para probar: testEvaEscidCompleto()");
+      console.log("🔍 Para verificar: verificarCompatibilidadBD()");
+
+      // 5. FUNCIÓN DE VERIFICACIÓN
+      function verificarDatosEvaRassCargados() {
+        console.log("🔍 === VERIFICACIÓN DE DATOS EVA/RASS ===");
+
+        const horasConEva = Object.keys(oxigenacionData).filter(
+          (hora) => oxigenacionData[hora].evaRass
+        );
+
+        if (horasConEva.length === 0) {
+          console.log("ℹ️ No hay datos EVA/RASS cargados");
+          return false;
+        }
+
+        console.log(
+          `✅ ${horasConEva.length} horas con datos EVA/RASS:`,
+          horasConEva
+        );
+
+        horasConEva.forEach((hora) => {
+          const valor = oxigenacionData[hora].evaRass;
+          const cell = document.querySelector(
+            `[data-hora="${hora}"][data-param="evaRass"]`
+          );
+
+          console.log(`⏰ ${hora}: valor="${valor}"`);
+
+          if (cell) {
+            console.log(`   🎯 Celda encontrada y actualizada`);
+            // Forzar actualización de la celda
+            actualizarCelda(cell, valor, "evaRass");
+          } else {
+            console.warn(`   ❌ Celda NO encontrada para hora ${hora}`);
+          }
+        });
+
+        return true;
+      }
+
+      // 8. FUNCIÓN DE LOGOUT CORREGIDA
+      async function cerrarSesion() {
+        try {
+          console.log("🔄 Iniciando guardado automático antes del logout...");
+
+          // ✅ GUARDAR ESPECÍFICAMENTE DATOS DE EVA/RASS
+          const promesasEvaRass = [];
+          Object.keys(oxigenacionData).forEach((hora) => {
+            const datos = oxigenacionData[hora];
+            if (datos.evaRass) {
+              console.log(`💾 Guardando EVA/RASS: ${hora} = ${datos.evaRass}`);
+              promesasEvaRass.push(
+                guardarDatoOxigenacionEnBD(hora, "evaRass", datos.evaRass)
+                  .then(() =>
+                    console.log(`✅ EVA/RASS ${hora} guardado exitosamente`)
+                  )
+                  .catch((err) =>
+                    console.error(`❌ Error guardando EVA/RASS ${hora}:`, err)
+                  )
+              );
+            }
+          });
+
+          // Guardar constantes y otros datos
+          const promesasConstantes = [];
+          Object.keys(constantesData).forEach((hora) => {
+            const datos = constantesData[hora];
+            if (Object.keys(datos).length > 0) {
+              const datosConstantes = {
+                box: numeroBoxActual,
+                hora: hora,
+                fr: datos.FR || null,
+                temperatura: datos.temperatura || null,
+                fc: datos.FC || null,
+                ta_sistolica: datos.taSistolica || null,
+                ta_diastolica: datos.taDiastolica || null,
+                saturacion: datos.sat_o2 || null,
+                glucemia: datos.glucemia || null,
+              };
+
+              promesasConstantes.push(
+                guardarConstantesEnBD(datosConstantes).catch((err) =>
+                  console.warn(`Error guardando constantes ${hora}:`, err)
+                )
+              );
+            }
+          });
+
+          // Guardar todos los datos de oxigenación
+          const promesasOxigenacion = [];
+          Object.keys(oxigenacionData).forEach((hora) => {
+            const datos = oxigenacionData[hora];
+            Object.keys(datos).forEach((campo) => {
+              if (
+                datos[campo] !== null &&
+                datos[campo] !== undefined &&
+                datos[campo] !== ""
+              ) {
+                promesasOxigenacion.push(
+                  guardarDatoOxigenacionEnBD(hora, campo, datos[campo]).catch(
+                    (err) =>
+                      console.warn(`Error guardando ${campo} ${hora}:`, err)
+                  )
+                );
+              }
+            });
+          });
+
+          // Ejecutar todas las promesas
+          await Promise.allSettled([
+            ...promesasEvaRass, // ✅ Prioridad a EVA/RASS
+            ...promesasConstantes,
+            ...promesasOxigenacion,
+          ]);
+
+          console.log(
+            "✅ Guardado automático completado con prioridad a EVA/RASS"
+          );
+
+          // Limpiar y redirigir
+          try {
+            localStorage.removeItem("sesionActiva");
+            sessionStorage.clear();
+          } catch (error) {
+            console.warn("Error limpiando datos locales:", error);
+          }
+
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("❌ Error durante logout:", error);
+          // Redirigir de todas formas
+          window.location.href = "index.html";
+        }
+      }
+
+      // 9. EXPONER FUNCIONES PARA DEBUGGING
+      window.testPersistenciaEvaRass = testPersistenciaEvaRass;
+      window.verificarDatosEvaRassCargados = verificarDatosEvaRassCargados;
+
+      console.log("🔧 === CORRECCIÓN FINAL APLICADA ===");
+      console.log("🧪 Prueba con: testPersistenciaEvaRass()");
+
+      
+
+
+
+
+async function recargarConstantesVitales() {
+  try {
+    console.log("🔄 Recargando constantes vitales después de cambios...");
+    constantesData = await cargarConstantesDesdeeBD();
+    generarGraficaConstantes();
+    console.log("✅ Constantes vitales recargadas");
+  } catch (error) {
+    console.error("❌ Error recargando constantes vitales:", error);
+  }
+}
+
+// 7. FUNCIÓN CORREGIDA PARA ACTUALIZAR TABLA DE OXIGENACIÓN
+function actualizarTablaOxigenacion() {
+  console.log("🎨 Actualizando tabla de oxigenación...");
+  
+  Object.keys(oxigenacionData).forEach((hora) => {
+    const datos = oxigenacionData[hora];
+    
+    Object.keys(datos).forEach((param) => {
+      const valor = datos[param];
+      const cell = document.querySelector(`[data-hora="${hora}"][data-param="${param}"]`);
+      
+      if (cell && valor !== null && valor !== undefined && valor !== "") {
+        actualizarCelda(cell, valor, param);
+      }
+    });
+  });
+  
+  console.log("✅ Tabla de oxigenación actualizada");
+}
+
+      // ===== FIN FUNCIONES AUXILIARES TOOLTIPS EVA/RASS =====
+
+      function generarGraficaOxigenacion() {
+        console.log("📊 Generando gráfica de oxigenación...");
+        const grafica = document.getElementById("oxigenacionChart");
+        if (!grafica) return;
+
+        const horas = Object.keys(oxigenacionData);
+        const valoresEvaRass = horas.map(
+          (hora) => oxigenacionData[hora].evaRass || "Sin datos"
+        );
+
+        // Lógica para renderizar la gráfica
+        // Ejemplo: usando Chart.js
+        const chart = new Chart(grafica, {
+          type: "line",
+          data: {
+            labels: horas,
+            datasets: [
+              {
+                label: "EVA/RASS",
+                data: valoresEvaRass,
+                borderColor: "#3e95cd",
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+          },
+        });
+      }
+
+      function debugEvaRassState() {
+        console.log("🚀 === DEBUG DE ESTADO EVA/RASS ===");
+        console.log("Datos locales:", oxigenacionData);
+        console.log(
+          "Tabla actualizada:",
+          document.querySelectorAll(".oxigenacion-table tbody tr")
+        );
       }
     </script>
   </body>
