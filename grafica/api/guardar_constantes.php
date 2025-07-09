@@ -1,15 +1,23 @@
 <?php
-// ===== GUARDAR_CONSTANTES.PHP - API PARA GUARDAR CONSTANTES VITALES =====
-
 require_once 'config.php';
 
+function manejarError($mensaje, $codigo = 400) {
+    http_response_code($codigo);
+    echo json_encode(['success' => false, 'message' => $mensaje]);
+    exit;
+}
+
+function responderJSON($data) {
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
 try {
-    // Verificar método HTTP
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         manejarError('Método no permitido', 405);
     }
 
-    // Obtener datos JSON del body
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
@@ -17,41 +25,33 @@ try {
         manejarError('Datos JSON inválidos', 400);
     }
 
-    // Validar campos requeridos
-    if (!isset($data['box']) || !isset($data['hora'])) {
-        manejarError('Campos box y hora son requeridos', 400);
+    if (!isset($data['numero_box']) || !isset($data['hora'])) {
+        manejarError('Campos numero_box y hora son requeridos', 400);
     }
 
-    $box = (int)$data['box'];
+    $numero_box = (int)$data['numero_box'];
     $hora = $data['hora'];
     $hoja = $data['hoja'] ?? 1;
 
-    log_debug("Guardando constantes para box: $box, hora: $hora, hoja: $hoja");
+    $pdo = obtenerConexionBD();
 
-    // Conectar a la base de datos
-    $pdo = conectarBD();
-
-    // Verificar que el paciente existe
-    $stmt = $pdo->prepare("SELECT box FROM pacientes WHERE box = ?");
-    $stmt->execute([$box]);
-    
+    $stmt = $pdo->prepare("SELECT numero_box FROM pacientes WHERE numero_box = ?");
+    $stmt->execute([$numero_box]);
     if (!$stmt->fetch()) {
-        manejarError("No existe paciente en box $box", 404);
+        manejarError("No existe paciente en numero_box $numero_box", 404);
     }
 
-    // Preparar datos para insertar/actualizar
     $campos = [];
-    $valores = [$box, $hora, $hoja];
+    $valores = [$numero_box, $hora, $hoja];
     $placeholders = ['?', '?', '?'];
 
-    // Mapear campos opcionales
     $camposOpcionales = [
         'fr' => 'fr',
-        'temperatura' => 'temperatura', 
+        'temperatura' => 'temperatura',
         'fc' => 'fc',
         'ta_sistolica' => 'ta_sistolica',
         'ta_diastolica' => 'ta_diastolica',
-        'saturacion' => 'saturacion',
+        'sat_o2' => 'sat_o2',
         'glucemia' => 'glucemia'
     ];
 
@@ -63,13 +63,12 @@ try {
         }
     }
 
-    // Construir query de INSERT ... ON DUPLICATE KEY UPDATE
-    $camposStr = implode(', ', array_merge(['box', 'hora', 'hoja'], $campos));
+    $camposStr = implode(', ', array_merge(['numero_box', 'hora', 'hoja'], $campos));
     $placeholdersStr = implode(', ', $placeholders);
-    
+
     $updateParts = [];
     foreach ($campos as $campo) {
-        $updateParts[] = "$campo = VALUES($campo)";
+        $updateParts[] = "$campo=VALUES($campo)";
     }
     $updateStr = implode(', ', $updateParts);
 
@@ -78,31 +77,16 @@ try {
         $sql .= " ON DUPLICATE KEY UPDATE $updateStr";
     }
 
-    log_debug("SQL: $sql");
-    log_debug("Valores: " . json_encode($valores));
-
     $stmt = $pdo->prepare($sql);
     $stmt->execute($valores);
 
-    log_debug("Constantes guardadas exitosamente");
-
-    // Respuesta exitosa
     responderJSON([
         'success' => true,
-        'message' => 'Constantes guardadas correctamente',
-        'data' => [
-            'box' => $box,
-            'hora' => $hora,
-            'hoja' => $hoja,
-            'campos_guardados' => $campos
-        ]
+        'message' => 'Constantes vitales guardadas correctamente'
     ]);
 
-} catch (PDOException $e) {
-    log_debug("Error PDO: " . $e->getMessage());
-    manejarError('Error de base de datos: ' . $e->getMessage(), 500);
 } catch (Exception $e) {
-    log_debug("Error general: " . $e->getMessage());
-    manejarError('Error interno del servidor: ' . $e->getMessage(), 500);
+    error_log('Error en guardar_constantes.php: ' . $e->getMessage());
+    manejarError('Error al guardar constantes: ' . $e->getMessage(), 500);
 }
 ?>
