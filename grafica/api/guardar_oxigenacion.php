@@ -1,15 +1,22 @@
 <?php
-// ===== GUARDAR_OXIGENACION.PHP - API PARA GUARDAR DATOS DE OXIGENACIÓN =====
-
 require_once 'config.php';
 
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+function manejarError($msg, $code = 400) {
+    http_response_code($code);
+    echo json_encode(['success' => false, 'message' => $msg]);
+    exit;
+}
+
 try {
-    // Verificar método HTTP
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         manejarError('Método no permitido', 405);
     }
 
-    // Obtener datos JSON del body
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
@@ -18,85 +25,77 @@ try {
     }
 
     // Validar campos requeridos
-    if (!isset($data['box']) || !isset($data['hora']) || !isset($data['campo']) || !isset($data['valor'])) {
-        manejarError('Campos box, hora, campo y valor son requeridos', 400);
+    if (!isset($data['numero_box']) || !isset($data['hora'])) {
+        manejarError('Campos numero_box y hora son requeridos', 400);
     }
 
-    $box = (int)$data['box'];
+    $numero_box = (int)$data['numero_box'];
     $hora = $data['hora'];
-    $campo = $data['campo'];
-    $valor = $data['valor'];
     $hoja = $data['hoja'] ?? 1;
 
-    log_debug("Guardando oxigenación: box=$box, hora=$hora, campo=$campo, valor=$valor, hoja=$hoja");
-
-    // Conectar a la base de datos
-    $pdo = conectarBD();
+    $pdo = obtenerConexionBD();
 
     // Verificar que el paciente existe
-    $stmt = $pdo->prepare("SELECT box FROM pacientes WHERE box = ?");
-    $stmt->execute([$box]);
-    
+    $stmt = $pdo->prepare("SELECT numero_box FROM pacientes WHERE numero_box = ?");
+    $stmt->execute([$numero_box]);
     if (!$stmt->fetch()) {
-        manejarError("No existe paciente en box $box", 404);
+        manejarError("No existe paciente en numero_box $numero_box", 404);
     }
 
-    // Mapear campos permitidos
-    $camposPermitidos = [
-        'pNeumo' => 'p_neumo',
-        'oxigenacion' => 'oxigenacion',
-        'evaRass' => 'eva_escid',
-        'insulina' => 'insulina',
-        'saturacion' => 'saturacion',
-        'glucemia' => 'glucemia'
+    // Preparar campos para insertar/actualizar
+    $campos = ['numero_box', 'hora', 'hoja'];
+    $placeholders = ['?', '?', '?'];
+    $valores = [$numero_box, $hora, $hoja];
+
+    $camposOpcionales = [
+        'p_neumo',
+        'tipo_oxigenacion',
+        'eva_escid',
+        'sat_o2',
+        'glucemia',
+        'rass',
+        'insulina',
+        'oxigenacion'
     ];
 
-    if (!isset($camposPermitidos[$campo])) {
-        manejarError("Campo '$campo' no válido", 400);
+    foreach ($camposOpcionales as $campo) {
+        if (isset($data[$campo]) && $data[$campo] !== null && $data[$campo] !== '') {
+            $campos[] = $campo;
+            $placeholders[] = '?';
+            $valores[] = $data[$campo];
+        }
     }
 
-    $campoBaseDatos = $camposPermitidos[$campo];
+    $camposStr = implode(', ', $campos);
+    $placeholdersStr = implode(', ', $placeholders);
 
-    // Verificar si ya existe un registro para esta hora
-    $stmt = $pdo->prepare("SELECT id FROM datos_oxigenacion WHERE box = ? AND hora = ? AND hoja = ?");
-    $stmt->execute([$box, $hora, $hoja]);
-    $registroExistente = $stmt->fetch();
+    $updateParts = [];
+    foreach ($camposOpcionales as $campo) {
+        if (isset($data[$campo]) && $data[$campo] !== null && $data[$campo] !== '') {
+            $updateParts[] = "$campo = VALUES($campo)";
+        }
+    }
+    $updateStr = implode(', ', $updateParts);
 
-    if ($registroExistente) {
-        // Actualizar registro existente
-        $sql = "UPDATE datos_oxigenacion SET $campoBaseDatos = ? WHERE box = ? AND hora = ? AND hoja = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$valor, $box, $hora, $hoja]);
-        log_debug("Registro actualizado");
-    } else {
-        // Insertar nuevo registro
-        $sql = "INSERT INTO datos_oxigenacion (box, hora, hoja, $campoBaseDatos) VALUES (?, ?, ?, ?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$box, $hora, $hoja, $valor]);
-        log_debug("Nuevo registro insertado");
+    $sql = "INSERT INTO datos_oxigenacion ($camposStr) VALUES ($placeholdersStr)";
+    if (!empty($updateParts)) {
+        $sql .= " ON DUPLICATE KEY UPDATE $updateStr";
     }
 
-    log_debug("Dato de oxigenación guardado exitosamente");
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($valores);
 
-    // Respuesta exitosa
-    responderJSON([
+    echo json_encode([
         'success' => true,
-        'message' => 'Dato de oxigenación guardado correctamente',
-        'data' => [
-            'box' => $box,
-            'hora' => $hora,
-            'hoja' => $hoja,
-            'campo' => $campo,
-            'valor' => $valor,
-            'campo_bd' => $campoBaseDatos
-        ]
+        'message' => 'Datos de oxigenación guardados correctamente'
     ]);
 
-} catch (PDOException $e) {
-    log_debug("Error PDO: " . $e->getMessage());
-    manejarError('Error de base de datos: ' . $e->getMessage(), 500);
 } catch (Exception $e) {
-    log_debug("Error general: " . $e->getMessage());
-    manejarError('Error interno del servidor: ' . $e->getMessage(), 500);
+    error_log('Error en guardar_oxigenacion.php: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error al guardar datos de oxigenación: ' . $e->getMessage()
+    ]);
 }
 ?>
