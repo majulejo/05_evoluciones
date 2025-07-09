@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="img/datos.png" type="image/png" />
+    <title>Historial de Pacientes</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .controls {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .search-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      .search-group input,
+      .search-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .historial-table {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow-x: auto;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+        position: sticky;
+        top: 0;
+      }
+
+      .table tbody tr:hover {
+        background: #f8f9fa;
+      }
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .badge-info {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 4px;
+      }
+
+      .btn-info {
+        background: #17a2b8;
+        color: white;
+      }
+
+      .btn-warning {
+        background: #ffc107;
+        color: #212529;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+      }
+
+      @media (max-width: 768px) {
+        .controls {
+          flex-direction: column;
+        }
+
+        .table-responsive {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📚 Historial de Pacientes</h1>
+        <p>Registro completo de altas médicas y estancias hospitalarias</p>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="totalPacientes">0</div>
+          <div class="stat-label">Total Pacientes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="estanciaPromedio">0</div>
+          <div class="stat-label">Estancia Promedio (días)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="altasEsteMes">0</div>
+          <div class="stat-label">Altas Este Mes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="boxMasUsado">-</div>
+          <div class="stat-label">Box Más Usado</div>
+        </div>
+      </div>
+
+      <!-- Controles de búsqueda -->
+      <div class="controls">
+        <div class="search-group">
+          <label>Buscar por nombre:</label>
+          <input
+            type="text"
+            id="buscarNombre"
+            placeholder="Nombre del paciente..."
+          />
+        </div>
+        <div class="search-group">
+          <label>Filtrar por mes:</label>
+          <select id="filtroMes">
+            <option value="">Todos los meses</option>
+          </select>
+        </div>
+        <div class="search-group">
+          <label>Box:</label>
+          <select id="filtroBox">
+            <option value="">Todos los boxes</option>
+          </select>
+        </div>
+        <div style="align-self: flex-end">
+          <button class="btn btn-primary" onclick="buscarHistorial()">
+            🔍 Buscar
+          </button>
+          <button class="btn btn-secondary" onclick="limpiarFiltros()">
+            🗑️ Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla de historial -->
+      <div class="historial-table">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+          "
+        >
+          <h3>📋 Registro de Altas Médicas</h3>
+          <button class="btn btn-primary" onclick="exportarCSV()">
+            📊 Exportar CSV
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table" id="historialTable">
+            <thead>
+              <tr>
+                <th>Fecha Alta</th>
+                <th>Paciente</th>
+                <th>Edad</th>
+                <th>Box</th>
+                <th>Historia</th>
+                <th>Ingreso</th>
+                <th>Estancia</th>
+                <th>Registros</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="historialTableBody">
+              <tr>
+                <td colspan="9" class="loading">
+                  <div>🔄 Cargando historial...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Botón volver -->
+      <div style="text-align: center; margin-top: 20px">
+        <a href="index.html" class="btn btn-secondary">← Volver al Inicio</a>
+      </div>
+    </div>
+
+    <script>
+      let historialCompleto = [];
+      let historialFiltrado = [];
+
+      // Inicializar página
+      document.addEventListener("DOMContentLoaded", function () {
+        cargarHistorial();
+        inicializarFiltros();
+      });
+
+      async function cargarHistorial() {
+        try {
+          const response = await fetch("api/obtener_historial.php");
+          const result = await response.json();
+
+          if (result.success) {
+            historialCompleto = result.data;
+            historialFiltrado = [...historialCompleto];
+            renderizarTabla();
+            actualizarEstadisticas();
+          } else {
+            throw new Error(result.message || "Error al cargar historial");
+          }
+        } catch (error) {
+          console.error("Error cargando historial:", error);
+          document.getElementById("historialTableBody").innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: #dc3545;">
+                            ❌ Error al cargar el historial
+                        </td>
+                    </tr>
+                `;
+        }
+      }
+
+      function inicializarFiltros() {
+        // Llenar filtro de meses
+        const filtroMes = document.getElementById("filtroMes");
+        const fechaActual = new Date();
+
+        for (let i = 0; i < 12; i++) {
+          const fecha = new Date(
+            fechaActual.getFullYear(),
+            fechaActual.getMonth() - i,
+            1
+          );
+          const option = document.createElement("option");
+          option.value = `${fecha.getFullYear()}-${(fecha.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}`;
+          option.textContent = fecha.toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "long",
+          });
+          filtroMes.appendChild(option);
+        }
+
+        // Llenar filtro de boxes
+        const filtroBox = document.getElementById("filtroBox");
+        for (let i = 1; i <= 12; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = `Box ${i}`;
+          filtroBox.appendChild(option);
+        }
+      }
+
+      function renderizarTabla() {
+        const tbody = document.getElementById("historialTableBody");
+
+        if (historialFiltrado.length === 0) {
+          tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: #6c757d;">
+                            📋 No hay registros que coincidan con los filtros
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
+        tbody.innerHTML = historialFiltrado
+          .map((paciente) => {
+            const fechaAlta = new Date(paciente.fecha_alta).toLocaleDateString(
+              "es-ES"
+            );
+            const fechaIngreso = new Date(
+              paciente.fecha_ingreso
+            ).toLocaleDateString("es-ES");
+            const estancia = paciente.tiempo_estancia || 0;
+            const totalRegistros =
+              (paciente.total_registros_constantes || 0) +
+              (paciente.total_registros_oxigenacion || 0);
+
+            return `
+                    <tr>
+                        <td>${fechaAlta}</td>
+                        <td><strong>${paciente.nombre_completo}</strong></td>
+                        <td>${paciente.edad} años</td>
+                        <td><span class="badge badge-info">Box ${
+                          paciente.box
+                        }</span></td>
+                        <td>${paciente.numero_historia}</td>
+                        <td>${fechaIngreso}</td>
+                        <td>
+                            <span class="badge badge-success">${estancia} día${
+              estancia !== 1 ? "s" : ""
+            }</span>
+                        </td>
+                        <td>${totalRegistros} registros</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-info" onclick="verDetalle('${
+                              paciente.id
+                            }')">
+                                👁️ Ver
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="descargarPDF('${
+                              paciente.id
+                            }')">
+                                📄 PDF
+                            </button>
+                        </td>
+                    </tr>
+                `;
+          })
+          .join("");
+      }
+
+      function actualizarEstadisticas() {
+        const total = historialCompleto.length;
+        const estanciaTotal = historialCompleto.reduce(
+          (sum, p) => sum + (p.tiempo_estancia || 0),
+          0
+        );
+        const estanciaPromedio =
+          total > 0 ? Math.round(estanciaTotal / total) : 0;
+
+        const fechaActual = new Date();
+        const inicioMes = new Date(
+          fechaActual.getFullYear(),
+          fechaActual.getMonth(),
+          1
+        );
+        const altasEsteMes = historialCompleto.filter(
+          (p) => new Date(p.fecha_alta) >= inicioMes
+        ).length;
+
+        const boxContador = {};
+        historialCompleto.forEach((p) => {
+          boxContador[p.box] = (boxContador[p.box] || 0) + 1;
+        });
+        const boxMasUsado = Object.keys(boxContador).reduce(
+          (a, b) => (boxContador[a] > boxContador[b] ? a : b),
+          "-"
+        );
+
+        document.getElementById("totalPacientes").textContent = total;
+        document.getElementById("estanciaPromedio").textContent =
+          estanciaPromedio;
+        document.getElementById("altasEsteMes").textContent = altasEsteMes;
+        document.getElementById("boxMasUsado").textContent =
+          boxMasUsado !== "-" ? `Box ${boxMasUsado}` : "-";
+      }
+
+      function buscarHistorial() {
+        const nombre = document
+          .getElementById("buscarNombre")
+          .value.toLowerCase();
+        const mes = document.getElementById("filtroMes").value;
+        const box = document.getElementById("filtroBox").value;
+
+        historialFiltrado = historialCompleto.filter((paciente) => {
+          const coincideNombre =
+            !nombre || paciente.nombre_completo.toLowerCase().includes(nombre);
+          const coincideMes = !mes || paciente.fecha_alta.startsWith(mes);
+          const coincideBox = !box || paciente.box == box;
+
+          return coincideNombre && coincideMes && coincideBox;
+        });
+
+        renderizarTabla();
+      }
+
+      function limpiarFiltros() {
+        document.getElementById("buscarNombre").value = "";
+        document.getElementById("filtroMes").value = "";
+        document.getElementById("filtroBox").value = "";
+        historialFiltrado = [...historialCompleto];
+        renderizarTabla();
+      }
+
+      function verDetalle(pacienteId) {
+        window.open(`detalle_historial.html?id=${pacienteId}`, "_blank");
+      }
+
+      function descargarPDF(pacienteId) {
+        window.open(`api/generar_pdf_historial.php?id=${pacienteId}`, "_blank");
+      }
+
+      function exportarCSV() {
+        const csv = [
+          [
+            "Fecha Alta",
+            "Paciente",
+            "Edad",
+            "Box",
+            "Historia",
+            "Ingreso",
+            "Estancia",
+            "Registros",
+          ].join(","),
+          ...historialFiltrado.map((p) =>
+            [
+              new Date(p.fecha_alta).toLocaleDateString("es-ES"),
+              `"${p.nombre_completo}"`,
+              p.edad,
+              p.box,
+              p.numero_historia,
+              new Date(p.fecha_ingreso).toLocaleDateString("es-ES"),
+              p.tiempo_estancia || 0,
+              (p.total_registros_constantes || 0) +
+                (p.total_registros_oxigenacion || 0),
+            ].join(",")
+          ),
+        ].join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `historial_pacientes_${new Date()
+          .toISOString()
+          .slice(0, 10)}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    </script>
+  </body>
+</html>

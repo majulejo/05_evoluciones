@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Datos del Paciente - Sistema Hospitalario</title>
+    <link rel="shortcut icon" href="img/datos.png" type="image/png" />
+    <title>Datos del Paciente</title>
 
     <!-- Evitar caché -->
     <meta
@@ -439,12 +440,12 @@
             document.getElementById("nombreCompleto").value.trim()
           );
           formData.append("edad", document.getElementById("edad").value);
-          
+
           const pesoInput = document.getElementById("peso").value.trim();
           if (pesoInput !== "") {
             formData.append("peso", pesoInput);
           }
-          
+
           formData.append(
             "numero_historia",
             document.getElementById("numeroHistoria").value.trim()

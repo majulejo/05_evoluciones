@@ -1,9 +1,9 @@
 <?php
 // Configuración de la base de datos
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'u724879249_data');  // Verificar que este sea el nombre correcto
-define('DB_USER', 'u724879249_data');   // Verificar que este sea el usuario correcto
-define('DB_PASS', 'Farolill0.1');  // Verificar que esta sea la contraseña correcta
+define('DB_NAME', 'u724879249_data');  
+define('DB_USER', 'u724879249_data');   
+define('DB_PASS', 'Farolill0.1'); 
 
 // Función para obtener conexión PDO
 function obtenerConexionBD() {
