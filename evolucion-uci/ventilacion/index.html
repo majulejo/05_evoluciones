@@ -172,13 +172,14 @@
       }
     }
 
-    .tabs {
+   .tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
-  overflow-x: auto;
   padding-bottom: 8px;
   justify-content: center;
+  flex-wrap: wrap; /* Permite que se envuelvan si es necesario */
+  overflow: visible; /* Cambiamos de auto a visible */
 }
 
 .tab {
@@ -191,6 +192,7 @@
   transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-top: 0; /* Aseguramos que no tenga margen superior */
 }
 
 .tab.active {
@@ -208,17 +210,16 @@
 @media (max-width: 768px) {
   .tabs {
     flex-direction: column;
-    align-items: stretch; /* Ocupa todo el ancho */
+    align-items: stretch;
     gap: 8px;
-    overflow-x: visible;
     padding-bottom: 0;
-    margin: 0 10px 20px 10px;
+    margin: 0 0 20px 0; /* Reset margins */
   }
   
   .tab {
     width: 100%;
     text-align: center;
-    padding: 12px 16px;
+    padding: 14px 16px;
   }
 }
 
