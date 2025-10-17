@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referencia Respiradores UCI — Modos y Parámetros</title>
+  <meta name="description" content="Listado de modos respiratorios y valores de parámetros para uso en UCI. Responsive y accesible para móvil.">
+  <style>
+    :root{
+      --green-hospital: #0b6b3a;
+      --green-light: #eaf6ee;
+      --bg: #ffffff;
+      --muted:#6b6b6b;
+      --card-shadow: 0 6px 18px rgba(11,107,58,0.08);
+      --radius:12px;
+      --max-width:980px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:#111;
+    }
+    .container{max-width:var(--max-width);margin:18px auto;padding:16px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:46px;height:46px;border-radius:10px;
+      background:linear-gradient(180deg,var(--green-hospital),#04542a);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:700
+    }
+    h1{font-size:1.1rem;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:0.92rem}
+
+    main{margin-top:16px;display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:880px){main{grid-template-columns:1fr 1fr}}
+
+    .card{
+      background:var(--green-light);
+      border-radius:var(--radius);
+      padding:12px;
+      box-shadow:var(--card-shadow)
+    }
+    .card.white{background:#fff}
+    .modes-list{display:grid;gap:10px}
+    .mode{
+      background:#fff;border-radius:10px;padding:12px;
+      border-left:6px solid var(--green-hospital);
+      box-shadow:0 3px 10px rgba(0,0,0,0.04)
+    }
+    .mode h3{margin:0;font-size:0.98rem}
+    .mode p{margin:6px 0 0;color:var(--muted);font-size:0.88rem}
+    .tag{
+      display:inline-block;font-size:0.78rem;padding:4px 8px;
+      border-radius:999px;background:rgba(11,107,58,0.08);
+      color:var(--green-hospital);margin-left:6px
+    }
+
+    .params{overflow:auto}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}
+    th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #f1f1f1}
+    th{
+      background:linear-gradient(90deg,var(--green-hospital),#0f7f44);
+      color:#fff;font-weight:600
+    }
+
+    footer{margin-top:12px;color:var(--muted);font-size:0.85rem}
+    a:focus,input:focus,button:focus{
+      outline:3px solid rgba(11,107,58,0.18);
+      outline-offset:2px
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden>RC</div>
+        <div>
+          <h1>Referencia Respiradores — UCI</h1>
+          <p class="lead">Modos respiratorios ampliados y parámetros habituales. Versión móvil y accesible.</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="card white" aria-labelledby="modesTitle">
+          <h2 id="modesTitle">Modos Respiratorios (ampliado)</h2>
+          <div class="modes-list" id="modes"></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="card white" aria-labelledby="paramsTitle">
+          <h2 id="paramsTitle">Parámetros y valores normales</h2>
+          <div class="params">
+            <table aria-describedby="paramsTitle">
+              <thead>
+                <tr><th>Parámetro</th><th>Descripción</th><th>Valor normal / rango típico (adulto)</th></tr>
+              </thead>
+              <tbody id="paramsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small class="muted">Documento de referencia. No sustituye la valoración clínica. Última actualización: <!--GENERATED_DATE-->.</small>
+    </footer>
+  </div>
+
+  <script>
+    const modes = [
+      {id:'VCV',title:'VCV / Volume Control Ventilation',type:'Control por volumen',desc:'Ventilación controlada por volumen; entrega VT fijo. Útil para control preciso de ventilación minute.'},
+      {id:'PCV',title:'PCV / Pressure Control Ventilation',type:'Control por presión',desc:'Mantiene presión inspiratoria fija durante Ti; VT varía con la mecánica pulmonar.'},
+      {id:'AC',title:'A/C Assist-Control (VC o PC)',type:'Asistido-Controlado',desc:'Cada esfuerzo del paciente desencadena respiración completa con parámetros preprogramados.'},
+      {id:'SIMV',title:'SIMV (Synchronized Intermittent Mandatory Ventilation)',type:'Mixto',desc:'Combina respiraciones mandatorias sincronizadas con respiraciones espontáneas; suele agregar PS.'},
+      {id:'PSV',title:'PSV / Pressure Support Ventilation',type:'Espontáneo soportado',desc:'Soporte por presión para respiraciones espontáneas. No fija FR ni VT.'},
+      {id:'CPAP',title:'CPAP (Continuous Positive Airway Pressure)',type:'Espontáneo',desc:'Presión positiva constante en vía aérea. El paciente hace el trabajo inspiratorio.'},
+      {id:'PRVC',title:'PRVC / Pressure Regulated Volume Control',type:'Híbrido',desc:'Objetivo de VT con ajuste automático de presión inspiratoria para lograrlo con la menor presión posible.'},
+      {id:'APRV',title:'APRV (Airway Pressure Release Ventilation)',type:'Bilevel / Inverso',desc:'Mantiene presión alta (Phigh) por tiempo prolongado y libera a presión baja (Plow) brevemente. Permite respiración espontánea en ambos niveles.'},
+      {id:'ASV',title:'ASV (Adaptive Support Ventilation)',type:'Control adaptativo',desc:'Modo inteligente que adapta volumen y frecuencia objetivos según la mecánica y la demanda del paciente.'},
+      {id:'NAVA',title:'NAVA (Neurally Adjusted Ventilatory Assist)',type:'Proporcional',desc:'Usa señal eléctrica diafragmática (EAdi) para ajustar asistencia proporcional al esfuerzo neural.'},
+      {id:'PAV',title:'PAV / Proportional Assist Ventilation',type:'Proporcional',desc:'Asistencia proporcional al flujo y volumen demandado por el paciente; mantiene interacción natural.'},
+      {id:'MMV',title:'MMV (Mandatory Minute Ventilation)',type:'Control híbrido',desc:'Garantiza una ventilación minuto mínima; si el paciente no la alcanza, entrega mandatorias.'},
+      {id:'BiVent',title:'BiVent',type:'Bilevel / APRV-like',desc:'Modo que alterna fases de alta y baja presión similar a APRV.'}
+    ];
+
+    const params = [
+      {p:'VT (Volumen Tidal)',d:'Volumen por respiración',v:'6–8 ml/kg de peso ideal (SDRA: 4–6 ml/kg)'},
+      {p:'FR (Frecuencia Respiratoria)',d:'Respiraciones por minuto',v:'12–20 rpm (ajustar según PaCO₂)'},
+      {p:'PEEP',d:'Presión positiva al final de la espiración',v:'5–10 cmH₂O (SDRA: 8–15+)'},
+      {p:'FiO₂',d:'Fracción inspirada de oxígeno',v:'0.21–1.0; objetivo SpO₂ ≥ 92% (88–92% en EPOC)'},
+      {p:'Pplat',d:'Presión plateau (sin flujo)',v:'< 30 cmH₂O'},
+      {p:'Ti',d:'Tiempo inspiratorio',v:'0.8–1.2 s'},
+      {p:'I:E',d:'Relación inspiración:espiración',v:'1:2 habitual (APRV: invertida)'},
+      {p:'PS',d:'Presión Soporte',v:'5–15 cmH₂O'},
+      {p:'Compliance',d:'Distensibilidad pulmonar',v:'50–100 ml/cmH₂O (baja < 40)'},
+      {p:'SpO₂',d:'Saturación pulso-oximétrica',v:'≥ 92–98%'}
+    ];
+
+    const modesEl = document.getElementById('modes');
+    const paramsEl = document.getElementById('paramsTable');
+
+    modes.forEach(m=>{
+      const div=document.createElement('article');
+      div.className='mode';
+      div.innerHTML=`<h3>${m.title} <span class="tag">${m.id}</span></h3><p>${m.desc}</p><p class="muted" style="margin-top:8px;font-size:0.82rem"><strong>Tipo:</strong> ${m.type}</p>`;
+      modesEl.appendChild(div);
+    });
+
+    params.forEach(p=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${p.p}</td><td>${p.d}</td><td><strong>${p.v}</strong></td>`;
+      paramsEl.appendChild(tr);
+    });
+
+    document.querySelector('footer small').innerHTML =
+      'Documento de referencia. No sustituye la valoración clínica. Última actualización: ' +
+      (new Date()).toLocaleDateString();
+  </script>
+</body>
+</html>
