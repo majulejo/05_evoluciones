@@ -8,6 +8,7 @@ header('Expires: 0');
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,13 +17,13 @@ header('Expires: 0');
   <meta http-equiv="Expires" content="0" />
   <link rel="shortcut icon" href="calculadora.png?v=<?php echo time(); ?>" type="image/x-icon" />
   <title>Calculadora de Dosis por Fármaco</title>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap&v=<?php echo time(); ?>" rel="stylesheet">
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css?v=<?php echo time(); ?>" />
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap&v=<?php echo time(); ?>"
+    rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     :root {
       --color-fondo: #f4f7fa;
@@ -81,7 +82,7 @@ header('Expires: 0');
       background: var(--color-blanco);
       padding: 30px;
       border-radius: var(--radio);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 450px;
       text-align: left;
@@ -92,7 +93,7 @@ header('Expires: 0');
 
     .container:hover {
       transform: translateY(-5px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
 
     .container h2 {
@@ -278,12 +279,27 @@ header('Expires: 0');
       }
 
       .home-button {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1rem;
-        top: 15px;
-        right: 15px;
-      }
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--color-primario);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex !important; /* Forzar display */
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(45, 107, 58, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  text-decoration: none;
+  opacity: 1 !important; /* Asegurar visibilidad */
+  visibility: visible !important;
+}
 
       .home-button::after {
         font-size: 0.7rem;
@@ -397,6 +413,7 @@ header('Expires: 0');
         opacity: 0;
         transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -416,6 +433,7 @@ header('Expires: 0');
     }
   </style>
 </head>
+
 <body>
 
   <!-- Botón de vuelta a inicio -->
@@ -480,8 +498,11 @@ header('Expires: 0');
 
   <footer>
     <p>&copy; 2025 Calculadora de Dosis Farmacológicas. Herramienta para profesionales sanitarios.</p>
-    <p><i class="fas fa-exclamation-triangle"></i> Esta herramienta es de apoyo. Siempre verificar los cálculos antes de la administración.</p>
-    <p style="font-size: 0.8rem; color: #999; margin-top: 10px;">Versión: <?php echo date('Y-m-d H:i:s'); ?></p>
+    <p><i class="fas fa-exclamation-triangle"></i> Esta herramienta es de apoyo. Siempre verificar los cálculos antes de
+      la administración.</p>
+    <p style="font-size: 0.8rem; color: #999; margin-top: 10px;">Versión:
+      <?php echo date('Y-m-d H:i:s'); ?>
+    </p>
   </footer>
 
   <script>
@@ -642,4 +663,5 @@ header('Expires: 0');
     mostrarDatosFarma();
   </script>
 </body>
+
 </html>
