@@ -293,11 +293,13 @@
       font-style: italic;
     }
 
+    /* MODIFICACIÓN PRINCIPAL: Centrar las cards en móviles */
     .info-icons {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
       margin-top: 20px;
+      justify-items: center; /* Añadido para centrar las cards */
     }
 
     .info-icon {
@@ -308,6 +310,8 @@
       transition: all 0.3s ease;
       border: 2px solid transparent;
       position: relative;
+      width: 100%; /* Asegura que ocupe todo el ancho disponible */
+      max-width: 280px; /* Mantiene el tamaño máximo */
     }
 
     .info-icon:hover {
@@ -483,6 +487,7 @@
       .info-icons {
         grid-template-columns: 1fr;
         gap: 15px;
+        justify-items: center; /* Asegura que se centren en móviles */
       }
       
       .access-section {
