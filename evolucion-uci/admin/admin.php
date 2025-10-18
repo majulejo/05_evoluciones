@@ -388,8 +388,10 @@ $temp_users = $temp_users_result ? $temp_users_result->fetch_all(MYSQLI_ASSOC) :
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestión de Usuarios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"  rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"  />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AÑADE ESTA LÍNEA PARA BOOTSTRAP ICONS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { background-color: #f0f9f0; color: #2e7d32; }
         .card-header { background-color: #4CAF50 !important; color: white !important; }
@@ -828,9 +830,35 @@ body {
         font-size: 12px;
     }
     
-    /* Ocultar columna de contraseña cifrada en móvil */
-    .table th:nth-child(3),
-    .table td:nth-child(3) {
+    /* Solo ocultar contraseña cifrada en la tabla de usuarios existentes */
+    .card:not(:last-child) .table th:nth-child(3),
+    .card:not(:last-child) .table td:nth-child(3) {
+        display: none;
+    }
+    
+    /* Para la tabla temporal, mantener Usuario y Contraseña visibles */
+    #tempUsersTable th:nth-child(2), /* Usuario */
+    #tempUsersTable td:nth-child(2),
+    #tempUsersTable th:nth-child(3), /* Contraseña */
+    #tempUsersTable td:nth-child(3) {
+        display: table-cell !important;
+    }
+    
+    /* Opcional: Ocultar solo Estado en móviles */
+    #tempUsersTable th:nth-child(4),
+    #tempUsersTable td:nth-child(4) {
+        display: none;
+    }
+    
+      /* Ocultar columna ID en TODAS las tablas */
+    .table th:first-child,
+    .table td:first-child {
+        display: none !important;
+    }
+    
+    /* Para usuarios existentes: ocultar también contraseña cifrada */
+    .card:not(:last-child) .table th:nth-child(3),
+    .card:not(:last-child) .table td:nth-child(3) {
         display: none;
     }
     
@@ -919,9 +947,32 @@ body {
         font-size: 11px;
     }
     
-    /* Solo mostrar ID, Usuario y Acciones en móviles pequeños */
-    .table th:nth-child(n+3):not(:last-child),
-    .table td:nth-child(n+3):not(:last-child) {
+    /* Para usuarios existentes: solo ID, Usuario y Acciones */
+    .card:not(:last-child) .table th:nth-child(n+3):not(:last-child),
+    .card:not(:last-child) .table td:nth-child(n+3):not(:last-child) {
+        display: none;
+    }
+    
+    /* Para tabla temporal: mantener ID, Usuario y Contraseña */
+    /*#tempUsersTable th:nth-child(1),
+    #tempUsersTable td:nth-child(1),*/
+    #tempUsersTable th:nth-child(2), 
+    #tempUsersTable td:nth-child(2),
+    #tempUsersTable th:nth-child(3),
+    #tempUsersTable td:nth-child(3) {
+        display: table-cell !important;
+    }
+    
+    #tempUsersTable th:nth-child(4),
+    #tempUsersTable td:nth-child(4) {
+        display: none;
+    }
+    
+    
+    
+    /* Ocultar columna ID en AMBAS tablas en móviles pequeños */
+    .table th:first-child,
+    .table td:first-child {
         display: none;
     }
     
@@ -1244,9 +1295,18 @@ body {
         <h1 class="display-5 fw-bold" style="color: #2e7d32;">
             <i class="bi bi-shield-lock me-2" style="color: #4CAF50;"></i>Panel de Administración
         </h1>
+        
         <p class="lead text-muted">
             <i class="bi bi-people-fill me-1"></i> evolucion-uci
         </p>
+        
+        <!-- URL COMO TEXTO -->
+        <div class="mb-2">
+            <i class="bi bi-box-arrow-in-right me-2"></i><code class="text-muted small">https://jolejuma.es/evolucion-uci/index.html</code><i class="bi bi-box-arrow-in-left ms-2"></i>
+        </div>
+        
+        
+        
     </div>
 
     <?php if ($alert): ?>
