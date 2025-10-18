@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Juego educativo sobre compatibilidad de tipos sanguíneos">
+    <!-- link favicon -->
+    <link rel="icon" type="image/x-icon" href="img/cuadrado-c.png">
+    <title>Juego de Compatibilidad Sanguínea</title>
+    <style>
+        :root {
+            --primary-color: #c00;
+            --secondary-color: #4CAF50;
+            --error-color: #ff0000;
+            --correct-color: #008000;
+            --light-bg: #f5f5f5;
+            --card-bg: white;
+            --transition-fast: 0.3s;
+            /* Colores de fondo */
+            --bg-gradient-start: #2c5530;
+            --bg-gradient-end: #4a7c59;
+            --bg-white: #f5f5dc;
+            /* Colores de texto */
+            --text-dark: #2c5530;
+            --text-medium: #4a7c59;
+            --text-light: #f5f5dc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            padding-top: 10px;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #c00, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Icono de información */
+        .info-icon {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-color), #ff6b6b);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(192, 0, 0, 0.3);
+        }
+
+        .info-icon .icon-text {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Tooltip */
+        .compatibility-table {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            width: 95vw;
+            max-width: 500px;
+            max-height: 80vh;
+            display: none;
+            z-index: 1000;
+            border: 2px solid var(--primary-color);
+            overflow-y: auto;
+        }
+
+        .compatibility-table.active {
+            display: block;
+        }
+
+        .table-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .table-overlay.active {
+            display: block;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            background: var(--primary-color);
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .compatibility-table h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .can-donate,
+        .can-receive {
+            background-color: #e6ffe6;
+        }
+
+        /* Container responsive */
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            max-width: 100%;
+            flex: 1;
+        }
+
+        .section {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section h2 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .human-body-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .custom-human-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            max-height: 150px;
+            opacity: 0.8;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .blood-type-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(192, 0, 0, 0.3);
+            display: none;
+        }
+
+        /* Banco de sangre responsive */
+        .blood-bank {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            justify-items: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .blood-bag {
+            width: 55px;
+            height: 75px;
+            background: linear-gradient(135deg, var(--primary-color), #ff6b6b);
+            border-radius: 8px 8px 25px 25px;
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition-fast) ease;
+            box-shadow: 0 2px 6px rgba(192, 0, 0, 0.3);
+        }
+
+        .blood-bag:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(192, 0, 0, 0.4);
+        }
+
+        .blood-bag.selected {
+            box-shadow: 0 0 15px 3px var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .blood-bag::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, var(--primary-color), #ff6b6b);
+            border-radius: 50%;
+        }
+
+        .blood-type {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .selection {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin: 15px 0;
+        }
+
+        .selection p {
+            margin-bottom: 10px;
+        }
+
+        select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            margin-top: 10px;
+            background: #f5f5f5;
+            width: 100%;
+            max-width: 250px;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+            margin: 15px auto;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        .correct {
+            background: #e6ffe6;
+            color: var(--correct-color);
+            border: 2px solid var(--correct-color);
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: var(--error-color);
+            border: 2px solid var(--error-color);
+        }
+
+        .selection-details {
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            border: 1px dashed rgba(0, 0, 0, 0.2);
+            font-weight: normal;
+        }
+
+        .explanation {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px auto;
+            font-size: 14px;
+            max-width: 600px;
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 25px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            max-width: 200px;
+            transition: background 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #45a049;
+        }
+
+        /* Footer */
+        .footer {
+            width: 100%;
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .footer strong {
+            color: #ff6b6b;
+        }
+
+        .footer a {
+            color: #4d94ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Tablets y pantallas medianas (768px - 1024px) */
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+            }
+
+            .container {
+                flex-direction: row;
+                gap: 20px;
+                max-width: 1400px;
+                margin: 0 auto 20px;
+            }
+
+            .section {
+                flex: 1;
+                padding: 25px;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .blood-bank {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+
+            .blood-bag {
+                width: 80px;
+                height: 100px;
+            }
+
+            .blood-type {
+                font-size: 18px;
+            }
+
+            .human-body-container {
+                min-height: 250px;
+            }
+
+            .custom-human-image {
+                max-height: 280px;
+            }
+
+            .image-placeholder {
+                height: 250px;
+                font-size: 16px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th,
+            td {
+                padding: 10px;
+            }
+
+            .footer {
+                font-size: 0.9rem;
+                padding: 25px;
+            }
+        }
+
+        /* Pantallas grandes (1024px+) */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+            }
+
+            .section {
+                padding: 30px;
+                min-height: 550px;
+            }
+
+            .blood-bank {
+                gap: 25px;
+                margin: 30px 0;
+            }
+
+            .blood-bag {
+                width: 90px;
+                height: 110px;
+            }
+
+            .blood-type {
+                font-size: 20px;
+            }
+
+            .human-body-container {
+                min-height: 280px;
+                margin-bottom: 30px;
+            }
+
+            .custom-human-image {
+                max-height: 320px;
+            }
+
+            .image-placeholder {
+                height: 280px;
+            }
+
+            .footer {
+                max-width: 1200px;
+                margin: 30px auto 0;
+            }
+        }
+
+        /* Pantallas muy pequeñas (menos de 360px) */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .section h2 {
+                font-size: 1.1rem;
+            }
+
+            .blood-bank {
+                gap: 8px;
+            }
+
+            .blood-bag {
+                width: 50px;
+                height: 68px;
+            }
+
+            .blood-type {
+                font-size: 12px;
+            }
+
+            .blood-bag::after {
+                width: 12px;
+                height: 12px;
+                top: -5px;
+            }
+
+            table {
+                font-size: 0.7rem;
+            }
+
+            th,
+            td {
+                padding: 5px;
+            }
+
+            .footer {
+                font-size: 0.75rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="info-icon" role="button" aria-label="Mostrar tabla de compatibilidad">
+        <div class="icon-text">i</div>
+    </div>
+
+    <div class="table-overlay" role="button" aria-label="Cerrar tabla"></div>
+
+    <div class="compatibility-table" role="dialog" aria-labelledby="table-title">
+        <button class="close-btn" aria-label="Cerrar tabla">×</button>
+        <h3 id="table-title">Compatibilidad de Tipos Sanguíneos</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Puede Donar a</th>
+                    <th scope="col">Puede Recibir de</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">A+</th>
+                    <td class="can-donate">A+, AB+</td>
+                    <td class="can-receive">A+, A-, O+, O-</td>
+                </tr>
+                <tr>
+                    <th scope="row">A-</th>
+                    <td class="can-donate">A+, A-, AB+, AB-</td>
+                    <td class="can-receive">A-, O-</td>
+                </tr>
+                <tr>
+                    <th scope="row">B+</th>
+                    <td class="can-donate">B+, AB+</td>
+                    <td class="can-receive">B+, B-, O+, O-</td>
+                </tr>
+                <tr>
+                    <th scope="row">B-</th>
+                    <td class="can-donate">B+, B-, AB+, AB-</td>
+                    <td class="can-receive">B-, O-</td>
+                </tr>
+                <tr>
+                    <th scope="row">AB+</th>
+                    <td class="can-donate">AB+</td>
+                    <td class="can-receive">Todos</td>
+                </tr>
+                <tr>
+                    <th scope="row">AB-</th>
+                    <td class="can-donate">AB+, AB-</td>
+                    <td class="can-receive">AB-, A-, B-, O-</td>
+                </tr>
+                <tr>
+                    <th scope="row">O+</th>
+                    <td class="can-donate">O+, A+, B+, AB+</td>
+                    <td class="can-receive">O+, O-</td>
+                </tr>
+                <tr>
+                    <th scope="row">O-</th>
+                    <td class="can-donate">Todos</td>
+                    <td class="can-receive">O-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>Compatibilidad Sanguínea</h1>
+
+    <div class="container">
+        <section class="section" aria-labelledby="patient-title">
+            <h2 id="patient-title">PACIENTE</h2>
+            <div class="human-body-container">
+                <img src="img/sangre.jpg" alt="Ilustración del cuerpo humano" class="custom-human-image"
+                    onerror="this.style.display='none'; document.getElementById('image-placeholder').style.display='flex';">
+                <div id="image-placeholder" class="image-placeholder" style="display:none;">
+                    Ilustración del cuerpo humano
+                </div>
+                <div class="blood-type-display" id="patient-blood-display" aria-live="polite"></div>
+            </div>
+            <div class="selection">
+                <p>Selecciona el tipo de sangre del paciente:</p>
+                <select id="patient-blood-type" aria-label="Tipo de sangre del paciente">
+                    <option value="">Selecciona un tipo</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="blood-bank-title">
+            <h2 id="blood-bank-title">BANCO DE SANGRE</h2>
+            <div class="blood-bank" role="group" aria-label="Selección de bolsas de sangre">
+                <div class="blood-bag" data-type="A+" role="button" tabindex="0" aria-label="Bolsa de sangre tipo A positivo">
+                    <div class="blood-type">A+</div>
+                </div>
+                <div class="blood-bag" data-type="A-" role="button" tabindex="0" aria-label="Bolsa de sangre tipo A negativo">
+                    <div class="blood-type">A-</div>
+                </div>
+                <div class="blood-bag" data-type="B+" role="button" tabindex="0" aria-label="Bolsa de sangre tipo B positivo">
+                    <div class="blood-type">B+</div>
+                </div>
+                <div class="blood-bag" data-type="B-" role="button" tabindex="0" aria-label="Bolsa de sangre tipo B negativo">
+                    <div class="blood-type">B-</div>
+                </div>
+                <div class="blood-bag" data-type="AB+" role="button" tabindex="0" aria-label="Bolsa de sangre tipo AB positivo">
+                    <div class="blood-type">AB+</div>
+                </div>
+                <div class="blood-bag" data-type="AB-" role="button" tabindex="0" aria-label="Bolsa de sangre tipo AB negativo">
+                    <div class="blood-type">AB-</div>
+                </div>
+                <div class="blood-bag" data-type="O+" role="button" tabindex="0" aria-label="Bolsa de sangre tipo O positivo">
+                    <div class="blood-type">O+</div>
+                </div>
+                <div class="blood-bag" data-type="O-" role="button" tabindex="0" aria-label="Bolsa de sangre tipo O negativo">
+                    <div class="blood-type">O-</div>
+                </div>
+            </div>
+            <div class="selection">
+                <p>Selecciona una bolsa de sangre</p>
+            </div>
+        </section>
+    </div>
+
+    <div id="result-container" style="display: none;" aria-live="polite">
+        <div class="result" id="result-message"></div>
+        <div class="explanation" id="explanation"></div>
+    </div>
+
+    <button class="reset-btn" id="reset-btn">Reiniciar Juego</button>
+
+    <!-- Footer informativo -->
+    <footer class="footer">
+        <p><strong>⚠️ AVISO IMPORTANTE:</strong> Este es un juego educativo con fines informativos.</p>
+        <p>En situaciones reales de transfusión sanguínea, <strong>siempre debe confirmarse la compatibilidad</strong> mediante pruebas de laboratorio especializadas.</p>
+        <p>Este juego no sustituye el criterio médico profesional. Consulte siempre con especialistas en hematología.</p>
+        <p>No nos hacemos responsables del uso de esta información con fines médicos reales.</p>
+        <hr>
+        <p>© 2025 Juego de la Compatibilidad Sanguinea.</p>
+        <p>C.G.Francisco Manuel, M.G.José Antonio, M.M. Francisco Javier</p>
+    </footer>
+
+    <script>
+        let patientBloodType = '';
+        let donorBloodType = '';
+
+        const patientSelect = document.getElementById('patient-blood-type');
+        const bloodBags = document.querySelectorAll('.blood-bag');
+        const resultContainer = document.getElementById('result-container');
+        const resultMessage = document.getElementById('result-message');
+        const explanation = document.getElementById('explanation');
+        const resetBtn = document.getElementById('reset-btn');
+        const patientBloodDisplay = document.getElementById('patient-blood-display');
+        const infoIcon = document.querySelector('.info-icon');
+        const compatibilityTable = document.querySelector('.compatibility-table');
+        const tableOverlay = document.querySelector('.table-overlay');
+        const closeBtn = document.querySelector('.close-btn');
+
+        patientSelect.addEventListener('change', function () {
+            patientBloodType = this.value;
+            updatePatientDisplay();
+            checkCompatibility();
+        });
+
+        bloodBags.forEach(bag => {
+            bag.addEventListener('click', function () {
+                donorBloodType = this.getAttribute('data-type');
+                bloodBags.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                checkCompatibility();
+            });
+            
+            // Añadir soporte para teclado
+            bag.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    donorBloodType = this.getAttribute('data-type');
+                    bloodBags.forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    checkCompatibility();
+                }
+            });
+        });
+
+        resetBtn.addEventListener('click', resetGame);
+
+        infoIcon.addEventListener('click', function () {
+            compatibilityTable.classList.add('active');
+            tableOverlay.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', closeTable);
+        tableOverlay.addEventListener('click', closeTable);
+
+        function closeTable() {
+            compatibilityTable.classList.remove('active');
+            tableOverlay.classList.remove('active');
+        }
+
+        function updatePatientDisplay() {
+            if (patientBloodType) {
+                patientBloodDisplay.textContent = patientBloodType;
+                patientBloodDisplay.style.display = 'block';
+            } else {
+                patientBloodDisplay.style.display = 'none';
+            }
+        }
+
+        function checkCompatibility() {
+            if (patientBloodType && donorBloodType) {
+                const isCompatible = checkBloodCompatibility(patientBloodType, donorBloodType);
+                resultContainer.style.display = 'block';
+
+                if (isCompatible) {
+                    resultMessage.innerHTML = `✓ CORRECTO - TRANSFUSIÓN COMPATIBLE
+                        <div class="selection-details">
+                            Paciente: ${patientBloodType} | Donante: ${donorBloodType}
+                        </div>`;
+                    resultMessage.className = 'result correct';
+                    explanation.textContent = getCompatibilityExplanation(patientBloodType, donorBloodType, true);
+                } else {
+                    resultMessage.innerHTML = `✗ ERROR - TRANSFUSIÓN INCOMPATIBLE
+                        <div class="selection-details">
+                            Paciente: ${patientBloodType} | Donante: ${donorBloodType}
+                        </div>`;
+                    resultMessage.className = 'result error';
+                    explanation.textContent = getCompatibilityExplanation(patientBloodType, donorBloodType, false);
+                }
+            }
+        }
+
+        function checkBloodCompatibility(patient, donor) {
+            if (patient === 'AB+') return true;
+            if (donor === 'O-') return true;
+
+            const patientGroup = patient.slice(0, -1);
+            const patientRh = patient.slice(-1);
+            const donorGroup = donor.slice(0, -1);
+            const donorRh = donor.slice(-1);
+
+            const groupCompatible =
+                patientGroup === donorGroup ||
+                (patientGroup === 'A' && donorGroup === 'O') ||
+                (patientGroup === 'B' && donorGroup === 'O') ||
+                (patientGroup === 'AB' && (donorGroup === 'A' || donorGroup === 'B' || donorGroup === 'O'));
+
+            const rhCompatible = patientRh === '+' || (patientRh === '-' && donorRh === '-');
+
+            return groupCompatible && rhCompatible;
+        }
+
+        function getCompatibilityExplanation(patient, donor, isCompatible) {
+            if (isCompatible) {
+                if (patient === 'AB+') return "El paciente AB+ es receptor universal y puede recibir sangre de cualquier tipo.";
+                if (donor === 'O-') return "La sangre O- es donante universal y puede ser recibida por cualquier paciente.";
+                return `El tipo de sangre ${donor} es compatible con el paciente ${patient}. La transfusión puede realizarse de forma segura.`;
+            } else {
+                return `El tipo de sangre ${donor} NO es compatible con el paciente ${patient}. Esta transfusión podría causar una reacción adversa grave.`;
+            }
+        }
+
+        function resetGame() {
+            patientBloodType = '';
+            donorBloodType = '';
+            patientSelect.value = '';
+            bloodBags.forEach(bag => bag.classList.remove('selected'));
+            resultContainer.style.display = 'none';
+            updatePatientDisplay();
+
+            // Desplazar hacia arriba al reiniciar
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

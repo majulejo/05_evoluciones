@@ -1,10 +1,35 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Modos respiratorios. Guía de consulta</title>
-  <meta name="description" content="Listado de modos respiratorios y valores de parámetros para uso en UCI. Responsive y accesible para móvil.">
+  
+  <!-- Metatags SEO y accesibilidad -->
+  <meta name="description" content="Guía completa de modos respiratorios y parámetros ventilatorios para uso en UCI. Información clínica actualizada y accesible.">
+  <meta name="keywords" content="ventilación mecánica, modos respiratorios, UCI, parámetros ventilatorios, cuidados intensivos">
+  <meta name="author" content="Equipo de Evolución UCI">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Modos Respiratorios - Guía de Consulta">
+  <meta property="og:description" content="Guía completa de modos respiratorios y parámetros ventilatorios para profesionales de UCI">
+  <meta property="og:image" content="https://jolejuma.es/evolucion-uci/assets/images/og-image.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Modos Respiratorios - Guía de Consulta">
+  <meta property="twitter:description" content="Guía completa de modos respiratorios y parámetros ventilatorios para profesionales de UCI">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="r.png">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=1.0">
+  
+  <title>Modos respiratorios. Guía de consulta para UCI</title>
+  
   <style>
     :root {
       --primary: #0b6b3a;
@@ -19,6 +44,7 @@
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --radius: 8px;
       --max-width: 1200px;
+      --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
     * {
@@ -27,7 +53,8 @@
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background-color: var(--light-bg);
@@ -63,27 +90,8 @@
       }
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      justify-content: center;
-      margin: 20px auto;
-    }
-    
-
-    .header-text h1 {        
-      font-size: 1.5rem;
-      margin-bottom: 4px;
-      color: var(--primary);
-    }
-
-    .header-text p {
-      color: var(--text-light);
-      font-size: 0.95rem;
-    }
-
-    .home-button {
+    /* Icono de enlace a la página principal - MEJORADO */
+    .home-link {
       position: absolute;
       top: 0;
       right: 0;
@@ -96,57 +104,80 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-medium);
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 100;
       overflow: hidden;
-      border: none;
-      cursor: pointer;
+      border: 2px solid var(--primary-light);
+
+      /* Animación de pulso sutil */
       animation: pulse-gentle 4s infinite;
     }
 
-    .home-button:hover {
+    /* Efecto hover con animación moderna */
+    .home-link:hover {
       transform: scale(1.15) rotate(5deg);
       background: var(--primary);
       color: var(--white);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(11, 107, 58, 0.3);
+      border-color: var(--primary);
+
+      /* Animación de brillo */
       animation: shine 0.8s ease-out;
     }
 
+    /* Animación de pulso sutil */
     @keyframes pulse-gentle {
-      0%, 100% {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+      0%,
+      100% {
+        box-shadow: 0 4px 15px rgba(11, 107, 58, 0.2);
       }
+
       50% {
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 6px 20px rgba(11, 107, 58, 0.3);
       }
     }
 
+    /* Animación de brillo al hacer hover */
     @keyframes shine {
       0% {
         box-shadow: 0 0 0 0 rgba(11, 107, 58, 0.7);
       }
+
       70% {
         box-shadow: 0 0 0 10px rgba(11, 107, 58, 0);
       }
+
       100% {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 25px rgba(11, 107, 58, 0.3);
       }
     }
 
-    .home-button:active {
+    /* Efecto de onda al hacer clic */
+    .home-link:active {
       transform: scale(0.95);
       transition: transform 0.1s;
     }
 
-    .home-button::before {
+    .home-link i {
+      font-size: 1.5em;
+      transition: transform 0.3s ease;
+    }
+
+    .home-link:hover i {
+      transform: scale(1.1);
+    }
+
+    /* Efecto de partículas flotantes alrededor del botón */
+    .home-link::before {
       content: '';
       position: absolute;
       top: -2px;
       left: -2px;
       right: -2px;
       bottom: -2px;
-      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+      background: linear-gradient(45deg, var(--primary), var(--secondary), var(--primary-dark), var(--primary));
       background-size: 400%;
       border-radius: 50%;
       z-index: -1;
@@ -155,7 +186,7 @@
       filter: blur(5px);
     }
 
-    .home-button:hover::before {
+    .home-link:hover::before {
       opacity: 0.3;
       animation: glowing 20s linear infinite;
     }
@@ -164,67 +195,89 @@
       0% {
         background-position: 0 0;
       }
+
       50% {
         background-position: 400% 0;
       }
+
       100% {
         background-position: 0 0;
       }
     }
 
-   .tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding-bottom: 8px;
-  justify-content: center;
-  flex-wrap: wrap; /* Permite que se envuelvan si es necesario */
-  overflow: visible; /* Cambiamos de auto a visible */
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      margin: 20px auto;
+    }
 
-.tab {
-  padding: 12px 20px;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 0; /* Aseguramos que no tenga margen superior */
-}
 
-.tab.active {
-  background: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
-}
+    .header-text h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+      color: var(--primary);
+    }
 
-.tab:hover:not(.active) {
-  background: var(--primary-light);
-  border-color: var(--primary);
-}
+    .header-text p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
 
-/* En móviles cambiamos a columna */
-@media (max-width: 768px) {
-  .tabs {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding-bottom: 0;
-    margin: 0 0 20px 0; /* Reset margins */
-  }
-  
-  .tab {
-    width: 100%;
-    text-align: center;
-    padding: 14px 16px;
-  }
-}
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      overflow: visible;
+    }
+
+    .tab {
+      padding: 12px 20px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .tab:hover:not(.active) {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    /* En móviles cambiamos a columna */
+    @media (max-width: 768px) {
+      .tabs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding-bottom: 0;
+        margin: 0 0 20px 0;
+      }
+
+      .tab {
+        width: 100%;
+        text-align: center;
+        padding: 14px 16px;
+      }
+    }
 
     .content-section {
-      max-width: 100%;      
+      max-width: 100%;
       margin: 0 auto;
       margin-bottom: 30px;
       text-align: center;
@@ -353,7 +406,8 @@
       box-shadow: var(--shadow);
     }
 
-    th, td {
+    th,
+    td {
       padding: 12px 16px;
       text-align: left;
       border-bottom: 1px solid var(--border);
@@ -398,108 +452,162 @@
       line-height: 1.6;
     }
 
-    footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      color: var(--text-light);
-      font-size: 0.85rem;
-      text-align: center;
-    }
-
     .hidden {
       display: none;
     }
 
-    a:focus, input:focus, button:focus {
+    a:focus,
+    input:focus,
+    button:focus {
       outline: 2px solid var(--primary);
       outline-offset: 2px;
     }
 
-    /* Footer */
-footer {
-    margin-top: auto; /* Esto es clave para empujar el footer hacia abajo */
-    padding: 10px 0;
-    border-top: 1px solid var(--border);
-    color: var(--text-light);
-    font-size: 0.85rem;
-    text-align: center;
-    background: var(--white);
-    width: 100%;
-}
+    /* Footer mejorado */
+    footer {
+      margin-top: 40px;
+      padding: 25px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-light);
+      font-size: 0.9rem;
+      text-align: center;
+      background: var(--white);
+      width: 100%;
+      border-radius: var(--radius) var(--radius) 0 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
 
-footer p {
-    margin: 5px 0;
-    font-weight: 500;
-}
+    .footer-content {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-/* Versión cards para móviles */
-.mobile-cards {
-  display: none;
-}
+    .footer-main {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-.mobile-param-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
-  border-left: 4px solid var(--primary);
-  box-shadow: var(--shadow);
-}
+    @media (min-width: 768px) {
+      .footer-main {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
 
-.mobile-param-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-}
+    .footer-title {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 1rem;
+    }
 
-.mobile-param-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary);
-  margin: 0;
-}
+    .footer-authors {
+      color: var(--text);
+      font-weight: 500;
+      margin: 0 auto;
+    }
 
-.mobile-param-desc {
-  color: var(--text-light);
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
+    .footer-disclaimer {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      line-height: 1.4;
+      max-width: 800px;
+      margin: 0 auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light);
+    }
 
-.mobile-param-value {
-  background: var(--primary-light);
-  padding: 8px 12px;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--primary-dark);
-}
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
 
-/* Mostrar cards en móvil y ocultar tabla */
-@media (max-width: 768px) {
-  .desktop-table {
-    display: none;
-  }
-  
-  .mobile-cards {
-    display: block;
-  }
-}
+    .footer-link {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      font-size: 0.85rem;
+    }
 
-/* Mostrar tabla en desktop y ocultar cards */
-@media (min-width: 769px) {
-  .desktop-table {
-    display: block;
-  }
-  
-  .mobile-cards {
-    display: none;
-  }
-}
+    .footer-link:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    /* Versión cards para móviles */
+    .mobile-cards {
+      display: none;
+    }
+
+    .mobile-param-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .mobile-param-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .mobile-param-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .mobile-param-desc {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .mobile-param-value {
+      background: var(--primary-light);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--primary-dark);
+    }
+
+    /* Mostrar cards en móvil y ocultar tabla */
+    @media (max-width: 768px) {
+      .desktop-table {
+        display: none;
+      }
+
+      .mobile-cards {
+        display: block;
+      }
+    }
+
+    /* Mostrar tabla en desktop y ocultar cards */
+    @media (min-width: 769px) {
+      .desktop-table {
+        display: block;
+      }
+
+      .mobile-cards {
+        display: none;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="container" role="main" style="display: flex; flex-direction: column; min-height: 100vh;">
     <header>
@@ -509,10 +617,9 @@ footer p {
           <p>Modos respiratorios ampliados, parámetros y notas clínicas rápidas</p>
         </div>
       </div>
-      <a href="https://jolejuma.es/evolucion-uci/index.html" class="home-button" title="Volver a la página principal">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
-        </svg>
+      <!-- Icono de enlace a la página principal - MEJORADO -->
+      <a href="https://jolejuma.es/evolucion-uci/index.html" class="home-link" title="Volver a la página principal" aria-label="Volver a la página principal">
+        <i class="fas fa-home" aria-hidden="true"></i>
       </a>
     </header>
 
@@ -540,30 +647,30 @@ footer p {
     </div>
 
     <div id="params" class="tab-content hidden">
-  <div class="content-section">
-    <h2 class="section-title">Parámetros y Valores Normales</h2>
-    <div class="params-container">
-      <!-- Versión tabla para desktop -->
-      <div class="card desktop-table">
-        <table aria-describedby="paramsTitle">
-          <thead>
-            <tr>
-              <th>Parámetro</th>
-              <th>Descripción</th>
-              <th>Valor normal / rango típico (adulto)</th>
-            </tr>
-          </thead>
-          <tbody id="paramsTable"></tbody>
-        </table>
-      </div>
-      
-      <!-- Versión cards para móvil -->
-      <div class="mobile-cards" id="mobileParams">
-        <!-- Se genera dinámicamente -->
+      <div class="content-section">
+        <h2 class="section-title">Parámetros y Valores Normales</h2>
+        <div class="params-container">
+          <!-- Versión tabla para desktop -->
+          <div class="card desktop-table">
+            <table aria-describedby="paramsTitle">
+              <thead>
+                <tr>
+                  <th>Parámetro</th>
+                  <th>Descripción</th>
+                  <th>Valor normal / rango típico (adulto)</th>
+                </tr>
+              </thead>
+              <tbody id="paramsTable"></tbody>
+            </table>
+          </div>
+
+          <!-- Versión cards para móvil -->
+          <div class="mobile-cards" id="mobileParams">
+            <!-- Se genera dinámicamente -->
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
     <div id="notes" class="tab-content hidden">
       <div class="content-section">
@@ -586,49 +693,56 @@ footer p {
       </div>
     </div>
 
+    <!-- Footer mejorado -->
     <footer>
-            <p> 2025 Modos Respiratorios </p>
-            <p>C.G.Francisco Manuel,M.G.José Antonio,M.M. Francisco Javier</p>	       
-      
+      <div class="footer-content">
+        <div class="footer-main">
+          <div class="footer-authors">C.G. Francisco Manuel, M.G. José Antonio, M.M. Francisco Javier</div>
+        </div>
+        <div class="footer-disclaimer">
+          Esta guía tiene fines educativos y de consulta rápida. <br> Las decisiones clínicas deben basarse en la evaluación integral del paciente y las guías oficiales.
+        </div>
+        
+      </div>
     </footer>
   </div>
 
   <script>
     const modes = [
-      {id:'VCV',title:'VCV / Volume Control Ventilation',type:'Control por volumen',desc:'Ventilación controlada por volumen; entrega VT fijo. Útil para control preciso de ventilación minuto.',category:'volume'},
-      {id:'AC-V',title:'A/C Assist-Control (VC o PC)',type:'Asistido-Controlado',desc:'Cada esfuerzo del paciente desencadena respiración completa con parámetros preprogramados.',category:'volume'},
-      {id:'SIMV-V',title:'SIMV (Synchronized Intermittent Mandatory Ventilation)',type:'Mixto',desc:'Combina respiraciones mandatorias sincronizadas con respiraciones espontáneas; suele agregar PS.',category:'volume'},
-      {id:'MMV',title:'MMV (Mandatory Minute Ventilation)',type:'Control híbrido',desc:'Garantiza una ventilación minuto mínima; si el paciente no la alcanza, entrega mandatorias.',category:'volume'},
-      
-      {id:'PCV',title:'PCV / Pressure Control Ventilation',type:'Control por presión',desc:'Mantiene presión inspiratoria fija durante Ti; VT varía con la mecánica pulmonar.',category:'pressure'},
-      {id:'PSV',title:'PSV / Pressure Support Ventilation',type:'Espontáneo soportado',desc:'Soporte por presión para respiraciones espontáneas. No fija FR ni VT.',category:'pressure'},
-      {id:'CPAP',title:'CPAP (Continuous Positive Airway Pressure)',type:'Espontáneo',desc:'Presión positiva constante en vía aérea. El paciente hace el trabajo inspiratorio.',category:'pressure'},
-      {id:'APRV',title:'APRV (Airway Pressure Release Ventilation)',type:'Bilevel / Inverso',desc:'Mantiene presión alta (Phigh) por tiempo prolongado y libera a presión baja (Plow) brevemente. Permite respiración espontánea en ambos niveles.',category:'pressure'},
-      
-      {id:'PRVC',title:'PRVC / Pressure Regulated Volume Control',type:'Híbrido',desc:'Objetivo de VT con ajuste automático de presión inspiratoria para lograrlo con la menor presión posible.',category:'hybrid'},
-      {id:'ASV',title:'ASV (Adaptive Support Ventilation)',type:'Control adaptativo',desc:'Modo inteligente que adapta volumen y frecuencia objetivos según la mecánica y la demanda del paciente.',category:'hybrid'},
-      {id:'NAVA',title:'NAVA (Neurally Adjusted Ventilatory Assist)',type:'Proporcional',desc:'Usa señal eléctrica diafragmática (EAdi) para ajustar asistencia proporcional al esfuerzo neural.',category:'hybrid'},
-      {id:'PAV',title:'PAV / Proportional Assist Ventilation',type:'Proporcional',desc:'Asistencia proporcional al flujo y volumen demandado por el paciente; mantiene interacción natural.',category:'hybrid'},
-      {id:'BiVent',title:'BiVent',type:'Bilevel / APRV-like',desc:'Modo que alterna fases de alta y baja presión similar a APRV.',category:'hybrid'}
+      { id: 'VCV', title: 'VCV / Volume Control Ventilation', type: 'Control por volumen', desc: 'Ventilación controlada por volumen; entrega VT fijo. Útil para control preciso de ventilación minuto.', category: 'volume' },
+      { id: 'AC-V', title: 'A/C Assist-Control (VC o PC)', type: 'Asistido-Controlado', desc: 'Cada esfuerzo del paciente desencadena respiración completa con parámetros preprogramados.', category: 'volume' },
+      { id: 'SIMV-V', title: 'SIMV (Synchronized Intermittent Mandatory Ventilation)', type: 'Mixto', desc: 'Combina respiraciones mandatorias sincronizadas con respiraciones espontáneas; suele agregar PS.', category: 'volume' },
+      { id: 'MMV', title: 'MMV (Mandatory Minute Ventilation)', type: 'Control híbrido', desc: 'Garantiza una ventilación minuto mínima; si el paciente no la alcanza, entrega mandatorias.', category: 'volume' },
+
+      { id: 'PCV', title: 'PCV / Pressure Control Ventilation', type: 'Control por presión', desc: 'Mantiene presión inspiratoria fija durante Ti; VT varía con la mecánica pulmonar.', category: 'pressure' },
+      { id: 'PSV', title: 'PSV / Pressure Support Ventilation', type: 'Espontáneo soportado', desc: 'Soporte por presión para respiraciones espontáneas. No fija FR ni VT.', category: 'pressure' },
+      { id: 'CPAP', title: 'CPAP (Continuous Positive Airway Pressure)', type: 'Espontáneo', desc: 'Presión positiva constante en vía aérea. El paciente hace el trabajo inspiratorio.', category: 'pressure' },
+      { id: 'APRV', title: 'APRV (Airway Pressure Release Ventilation)', type: 'Bilevel / Inverso', desc: 'Mantiene presión alta (Phigh) por tiempo prolongado y libera a presión baja (Plow) brevemente. Permite respiración espontánea en ambos niveles.', category: 'pressure' },
+
+      { id: 'PRVC', title: 'PRVC / Pressure Regulated Volume Control', type: 'Híbrido', desc: 'Objetivo de VT con ajuste automático de presión inspiratoria para lograrlo con la menor presión posible.', category: 'hybrid' },
+      { id: 'ASV', title: 'ASV (Adaptive Support Ventilation)', type: 'Control adaptativo', desc: 'Modo inteligente que adapta volumen y frecuencia objetivos según la mecánica y la demanda del paciente.', category: 'hybrid' },
+      { id: 'NAVA', title: 'NAVA (Neurally Adjusted Ventilatory Assist)', type: 'Proporcional', desc: 'Usa señal eléctrica diafragmática (EAdi) para ajustar asistencia proporcional al esfuerzo neural.', category: 'hybrid' },
+      { id: 'PAV', title: 'PAV / Proportional Assist Ventilation', type: 'Proporcional', desc: 'Asistencia proporcional al flujo y volumen demandado por el paciente; mantiene interacción natural.', category: 'hybrid' },
+      { id: 'BiVent', title: 'BiVent', type: 'Bilevel / APRV-like', desc: 'Modo que alterna fases de alta y baja presión similar a APRV.', category: 'hybrid' }
     ];
 
     const params = [
-      {p:'FiO₂',d:'Fracción inspirada de oxígeno',v:'21–100 % (habitualmente < 60 %)'},
-      {p:'PEEP',d:'Presión positiva al final de la espiración',v:'5–10 cmH₂O (evitar > 12 sin indicación)'},
-      {p:'VT (Volumen corriente)',d:'Volumen por respiración',v:'6–8 ml/kg de peso ideal (SDRA: 4–6 ml/kg)'},
-      {p:'FR (Frecuencia respiratoria)',d:'Respiraciones por minuto',v:'12–20 rpm (ajustar según PaCO₂)'},
-      {p:'Presión pico (PIP)',d:'Presión máxima durante inspiración',v:'< 30 cmH₂O (alta = resistencia elevada)'},
-      {p:'Presión meseta (Pplat)',d:'Presión al final de la inspiración sin flujo',v:'< 28 cmH₂O'},
-      {p:'Driving Pressure (ΔP)',d:'Pplat – PEEP',v:'< 15 cmH₂O'},
-      {p:'Presión media (Pmean)',d:'Presión promedio de la vía aérea',v:'5–15 cmH₂O'},
-      {p:'I:E',d:'Relación inspiración:espiración',v:'1:2 (habitual), 1:1–1:3 (controlado)'},
-      {p:'Sensibilidad',d:'Disparo inspiratorio',v:'-1 a -2 cmH₂O'},
-      {p:'Compliance',d:'Distensibilidad pulmonar',v:'50–100 ml/cmH₂O (baja en SDRA, edema, fibrosis)'},
-      {p:'Resistencia',d:'Resistencia de vía aérea',v:'< 10 cmH₂O/L/s'},
-      {p:'PaO₂/FiO₂',d:'Índice de oxigenación',v:'> 300 mmHg (SDRA: < 200)'},
-      {p:'EtCO₂',d:'CO₂ espirado final',v:'35–45 mmHg'},
-      {p:'SpO₂',d:'Saturación periférica',v:'92–98 % (EPOC: 88–92 %)'},
-      {p:'P0.1',d:'Presión negativa en 0.1 s',v:'-1 a -3 cmH₂O (control del esfuerzo)'}
+      { p: 'FiO₂', d: 'Fracción inspirada de oxígeno', v: '21–100 % (habitualmente < 60 %)' },
+      { p: 'PEEP', d: 'Presión positiva al final de la espiración', v: '5–10 cmH₂O (evitar > 12 sin indicación)' },
+      { p: 'VT (Volumen corriente)', d: 'Volumen por respiración', v: '6–8 ml/kg de peso ideal (SDRA: 4–6 ml/kg)' },
+      { p: 'FR (Frecuencia respiratoria)', d: 'Respiraciones por minuto', v: '12–20 rpm (ajustar según PaCO₂)' },
+      { p: 'Presión pico (PIP)', d: 'Presión máxima durante inspiración', v: '< 30 cmH₂O (alta = resistencia elevada)' },
+      { p: 'Presión meseta (Pplat)', d: 'Presión al final de la inspiración sin flujo', v: '< 28 cmH₂O' },
+      { p: 'Driving Pressure (ΔP)', d: 'Pplat – PEEP', v: '< 15 cmH₂O' },
+      { p: 'Presión media (Pmean)', d: 'Presión promedio de la vía aérea', v: '5–15 cmH₂O' },
+      { p: 'I:E', d: 'Relación inspiración:espiración', v: '1:2 (habitual), 1:1–1:3 (controlado)' },
+      { p: 'Sensibilidad', d: 'Disparo inspiratorio', v: '-1 a -2 cmH₂O' },
+      { p: 'Compliance', d: 'Distensibilidad pulmonar', v: '50–100 ml/cmH₂O (baja en SDRA, edema, fibrosis)' },
+      { p: 'Resistencia', d: 'Resistencia de vía aérea', v: '< 10 cmH₂O/L/s' },
+      { p: 'PaO₂/FiO₂', d: 'Índice de oxigenación', v: '> 300 mmHg (SDRA: < 200)' },
+      { p: 'EtCO₂', d: 'CO₂ espirado final', v: '35–45 mmHg' },
+      { p: 'SpO₂', d: 'Saturación periférica', v: '92–98 % (EPOC: 88–92 %)' },
+      { p: 'P0.1', d: 'Presión negativa en 0.1 s', v: '-1 a -3 cmH₂O (control del esfuerzo)' }
     ];
 
     // Render modes by category
@@ -648,7 +762,7 @@ footer p {
         <p class="mode-desc">${m.desc}</p>
         <p class="mode-type"><strong>Tipo:</strong> ${m.type}</p>
       `;
-      
+
       if (m.category === 'volume') {
         volumeModesEl.appendChild(div);
       } else if (m.category === 'pressure') {
@@ -670,12 +784,12 @@ footer p {
     });
 
     // Añade esto después de renderizar la tabla
-const mobileParamsEl = document.getElementById('mobileParams');
+    const mobileParamsEl = document.getElementById('mobileParams');
 
-params.forEach(p => {
-  const card = document.createElement('div');
-  card.className = 'mobile-param-card';
-  card.innerHTML = `
+    params.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'mobile-param-card';
+      card.innerHTML = `
     <div class="mobile-param-header">
       <h3 class="mobile-param-title">${p.p}</h3>
     </div>
@@ -684,8 +798,8 @@ params.forEach(p => {
       <strong>Valor:</strong> ${p.v}
     </div>
   `;
-  mobileParamsEl.appendChild(card);
-});
+      mobileParamsEl.appendChild(card);
+    });
 
     // Tab functionality
     const tabs = document.querySelectorAll('.tab');
@@ -694,11 +808,11 @@ params.forEach(p => {
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const target = tab.getAttribute('data-tab');
-        
+
         // Update active tab
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        
+
         // Show target content
         tabContents.forEach(content => {
           content.classList.add('hidden');
@@ -706,9 +820,7 @@ params.forEach(p => {
         document.getElementById(target).classList.remove('hidden');
       });
     });
-
-    // Update date
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
   </script>
 </body>
+
 </html>

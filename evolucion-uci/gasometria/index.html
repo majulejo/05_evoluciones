@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- link favicon -->
+     <link rel="icon" type="image/x-icon" href="g-cuadrado.png">
+
+    <!-- Meta etiquetas para control de caché -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Valores Normales de Gasometría</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Parámetro de versión en la hoja de estilos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=1.0">
     <style>
         :root {
             /* Nueva paleta de colores basada en el sitio de referencia */
             --color-primary: #2c5530;
             --color-primary-light: #4a7c59;
             --color-primary-very-light: #8fbc8f;
-            
+
             /* Colores de fondo */
             --bg-gradient-start: #2c5530;
             --bg-gradient-end: #4a7c59;
             --bg-white: #f5f5dc;
-            
+
             /* Colores de tarjetas */
             --card-bg-start: #e8f5e8;
             --card-bg-end: #d0e8d0;
             --card-border: #4a7c59;
-            
+
             /* Colores de texto */
             --text-dark: #2c5530;
             --text-medium: #4a7c59;
             --text-light: #f5f5dc;
-            
+
             /* Colores de alteraciones */
             --acidosis-resp: #8b4513;
             --acidosis-meta: #a0522d;
@@ -38,26 +47,40 @@
             --hiperglucemia: #b8860b;
             --hipopotasemia: #4682b4;
             --hiperpotasemia: #dc143c;
-            
+
             /* Colores de estado */
             --status-low: #4682b4;
             --status-high: #dc143c;
             --status-normal: #4a7c59;
-            
+
             /* Colores de nota */
             --note-bg: #fff8dc;
             --note-border: #b8860b;
             --note-text: #8b4513;
-            
+
             /* Colores de tooltip */
             --tooltip-bg: #2c5530;
             --tooltip-text: #f5f5dc;
             --tooltip-param: #8fbc8f;
-            
+
             /* Sombras */
             --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
             --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.15);
             --shadow-heavy: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+            /*TAMAÑO FUENTE*/
+            --font-grande: clamp(1.8rem, 4vw, 2.5rem);
+            --font-mediano: clamp(1rem, 2.5vw, 1.4rem);
+            --font-pequeño: clamp(0.8rem, 1.5vw, 1.1rem);
+
+            /*COLORES ACTUALIZADOS - ESTILO EVOLUCIÓN UCI*/
+            --color-fondo: #f4f7fa;
+            --color-primario: #2d6b3a;
+            --color-secundario: #368f3f;
+            --color-hover: #489950;
+            --color-texto: #2e2925;
+            --color-blanco: #fff;
+            --radio: 10px;
         }
 
         * {
@@ -89,7 +112,7 @@
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -119,7 +142,7 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 100;
             overflow: hidden;
-            
+
             /* Animación de pulso sutil */
             animation: pulse-gentle 4s infinite;
         }
@@ -130,16 +153,19 @@
             background: var(--color-primary);
             color: var(--bg-white);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            
+
             /* Animación de brillo */
             animation: shine 0.8s ease-out;
         }
 
         /* Animación de pulso sutil */
         @keyframes pulse-gentle {
-            0%, 100% {
+
+            0%,
+            100% {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             }
+
             50% {
                 box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
             }
@@ -150,9 +176,11 @@
             0% {
                 box-shadow: 0 0 0 0 rgba(44, 85, 48, 0.7);
             }
+
             70% {
                 box-shadow: 0 0 0 10px rgba(44, 85, 48, 0);
             }
+
             100% {
                 box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             }
@@ -199,9 +227,11 @@
             0% {
                 background-position: 0 0;
             }
+
             50% {
                 background-position: 400% 0;
             }
+
             100% {
                 background-position: 0 0;
             }
@@ -253,8 +283,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .tab-content.active {
@@ -497,7 +532,7 @@
         .tooltip-param {
             margin-bottom: 10px;
             padding: 8px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 5px;
         }
 
@@ -571,7 +606,8 @@
                 width: 100%;
             }
 
-            .values-grid, .alterations-grid {
+            .values-grid,
+            .alterations-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -619,11 +655,11 @@
             .content {
                 padding: 15px;
             }
-            
+
             h1 {
                 font-size: 1.5em;
             }
-            
+
             .tab-button {
                 padding: 12px 20px;
             }
@@ -648,15 +684,36 @@
                 font-size: 1.2em;
             }
         }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            max-width: 1000px;
+            margin: 40px auto 20px;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            font-size: var(--font-pequeño);
+            border-radius: var(--radio);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Icono de enlace a la página principal - ANIMADO -->
         <a href="https://jolejuma.es/evolucion-uci/index.html" class="home-link" title="Volver a la página principal">
             <i class="fas fa-home"></i>
         </a>
-        
+
         <header>
             <h1><i class="fas fa-heartbeat"></i> Valores Normales de Gasometría</h1>
             <p class="subtitle">Referencia rápida para gasometría arterial y venosa</p>
@@ -836,20 +893,24 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Acidosis Respiratoria</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH
+                                    </div>
                                     <div class="tooltip-param-value">&lt; 7.35</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>PaCO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>PaCO₂</div>
                                     <div class="tooltip-param-value">&gt; 45 mmHg</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-normal"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>HCO₃⁻(c)</div>
                                     <div class="tooltip-param-value">Normal o ligeramente elevado (compensación)</div>
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
-                                    <div class="tooltip-param-value">EPOC, depresión respiratoria, obstrucción vía aérea</div>
+                                    <div class="tooltip-param-value">EPOC, depresión respiratoria, obstrucción vía aérea
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -860,24 +921,29 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Acidosis Metabólica</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH
+                                    </div>
                                     <div class="tooltip-param-value">&lt; 7.35</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>HCO₃⁻(c)</div>
                                     <div class="tooltip-param-value">&lt; 22 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>BE</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>BE
+                                    </div>
                                     <div class="tooltip-param-value">&lt; -2 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-normal"></span>PaCO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>PaCO₂</div>
                                     <div class="tooltip-param-value">Normal o disminuido (compensación)</div>
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
-                                    <div class="tooltip-param-value">Cetoacidosis, insuficiencia renal, diarrea, shock</div>
+                                    <div class="tooltip-param-value">Cetoacidosis, insuficiencia renal, diarrea, shock
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -888,16 +954,20 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Alcalosis Respiratoria</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>pH</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>pH
+                                    </div>
                                     <div class="tooltip-param-value">&gt; 7.45</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>PaCO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>PaCO₂</div>
                                     <div class="tooltip-param-value">&lt; 35 mmHg</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-normal"></span>HCO₃⁻(c)</div>
-                                    <div class="tooltip-param-value">Normal o ligeramente disminuido (compensación)</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-value">Normal o ligeramente disminuido (compensación)
+                                    </div>
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
@@ -912,19 +982,23 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Alcalosis Metabólica</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>pH</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>pH
+                                    </div>
                                     <div class="tooltip-param-value">&gt; 7.45</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>HCO₃⁻(c)</div>
                                     <div class="tooltip-param-value">&gt; 26 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>BE</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>BE
+                                    </div>
                                     <div class="tooltip-param-value">&gt; +2 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-normal"></span>PaCO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>PaCO₂</div>
                                     <div class="tooltip-param-value">Normal o aumentado (compensación)</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -945,11 +1019,13 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Hipoxemia</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>PaO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>PaO₂</div>
                                     <div class="tooltip-param-value">&lt; 80 mmHg</div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>SaO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>SaO₂</div>
                                     <div class="tooltip-param-value">&lt; 95%</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -973,7 +1049,8 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Hipercapnia</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>PaCO₂</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>PaCO₂</div>
                                     <div class="tooltip-param-value">&gt; 45 mmHg</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -986,7 +1063,8 @@
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
-                                    <div class="tooltip-param-value">Hipoventilación, EPOC avanzado, fallo respiratorio</div>
+                                    <div class="tooltip-param-value">Hipoventilación, EPOC avanzado, fallo respiratorio
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1002,7 +1080,8 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Hiperlactatemia</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>Lactato</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>Lactato</div>
                                     <div class="tooltip-param-value">&gt; 2.0 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -1014,12 +1093,14 @@
                                     </div>
                                 </div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH
+                                    </div>
                                     <div class="tooltip-param-value">Puede estar disminuido (acidosis láctica)</div>
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
-                                    <div class="tooltip-param-value">Shock, sepsis, isquemia tisular, ejercicio intenso</div>
+                                    <div class="tooltip-param-value">Shock, sepsis, isquemia tisular, ejercicio intenso
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1030,7 +1111,8 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Hiperglucemia</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>Glucosa</div>
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>Glucosa</div>
                                     <div class="tooltip-param-value">&gt; 100 mg/dL (ayunas)</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -1043,7 +1125,8 @@
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Asociación:</div>
-                                    <div class="tooltip-param-value">Puede asociarse con acidosis metabólica en cetoacidosis diabética</div>
+                                    <div class="tooltip-param-value">Puede asociarse con acidosis metabólica en
+                                        cetoacidosis diabética</div>
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
@@ -1058,7 +1141,8 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Hipopotasemia</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>K⁺</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>K⁺
+                                    </div>
                                     <div class="tooltip-param-value">&lt; 3.5 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -1086,7 +1170,8 @@
                             <div class="tooltip">
                                 <div class="tooltip-header">Hiperpotasemia</div>
                                 <div class="tooltip-param">
-                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>K⁺</div>
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>K⁺
+                                    </div>
                                     <div class="tooltip-param-value">&gt; 5.0 mEq/L</div>
                                 </div>
                                 <div class="tooltip-param">
@@ -1103,7 +1188,8 @@
                                 </div>
                                 <div class="tooltip-param">
                                     <div class="tooltip-param-name">Causas comunes:</div>
-                                    <div class="tooltip-param-value">Insuficiencia renal, acidosis, hemólisis, rabdomiólisis</div>
+                                    <div class="tooltip-param-value">Insuficiencia renal, acidosis, hemólisis,
+                                        rabdomiólisis</div>
                                 </div>
                             </div>
                         </div>
@@ -1111,56 +1197,65 @@
                 </div>
 
                 <div class="note">
-                    <strong>💡 Nota:</strong> Haz clic en cada alteración para ver los valores específicos y las causas comunes. Para cerrar el tooltip, haz clic fuera de él o en otra alteración. Recuerda que pueden existir trastornos mixtos donde se combinan varias alteraciones simultáneamente. La interpretación clínica siempre debe considerar el contexto del paciente.
+                    <strong>💡 Nota:</strong> Haz clic en cada alteración para ver los valores específicos y las causas
+                    comunes. Para cerrar el tooltip, haz clic fuera de él o en otra alteración. Recuerda que pueden
+                    existir trastornos mixtos donde se combinan varias alteraciones simultáneamente. La interpretación
+                    clínica siempre debe considerar el contexto del paciente.
                 </div>
             </div>
 
             <div class="note">
-                <strong>Nota importante:</strong> Los valores pueden variar ligeramente según el laboratorio y el analizador utilizado. Siempre consulte los rangos de referencia específicos de su institución.
+                <strong>Nota importante:</strong> Los valores pueden variar ligeramente según el laboratorio y el
+                analizador utilizado. Siempre consulte los rangos de referencia específicos de su institución.
             </div>
         </div>
     </div>
 
+    <footer>
+        <p> 2025 Valores Normales Gasometría </p>
+        <p>C.G.Francisco Manuel,M.G.José Antonio,M.M. Francisco Javier</p>
+    </footer>
+
     <script>
         // Función para cambiar entre pestañas
         document.querySelectorAll('.tab-button, .quick-action-btn').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 const tabName = this.getAttribute('data-tab');
-                
+
                 // Remover clase active de todos los botones
                 document.querySelectorAll('.tab-button').forEach(btn => {
                     btn.classList.remove('active');
                 });
-                
+
                 // Ocultar todo el contenido
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
-                
+
                 // Activar el botón clickeado
                 document.querySelector(`.tab-button[data-tab="${tabName}"]`).classList.add('active');
-                
+
                 // Mostrar el contenido correspondiente
                 document.getElementById(tabName + '-content').classList.add('active');
             });
         });
 
         // Mejorar la experiencia táctil en dispositivos móviles
-        document.addEventListener('touchstart', function(e) {
+        document.addEventListener('touchstart', function (e) {
             const clickedCard = e.target.closest('.alteration-card');
-            
+
             // Cerrar todos los tooltips primero
             document.querySelectorAll('.alteration-card').forEach(card => {
                 if (card !== clickedCard) {
                     card.blur();
                 }
             });
-            
+
             // Si se hizo clic en una tarjeta, alternar su estado
             if (clickedCard) {
                 // Prevenir el comportamiento por defecto para evitar doble activación
                 e.preventDefault();
-                
+
                 // Si ya está enfocada, quitamos el foco
                 if (clickedCard === document.activeElement) {
                     clickedCard.blur();
@@ -1172,13 +1267,35 @@
         });
 
         // Cerrar tooltips al hacer clic fuera de ellos
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!e.target.closest('.alteration-card')) {
                 document.querySelectorAll('.alteration-card').forEach(card => {
                     card.blur();
                 });
             }
         });
+
+        // Función para forzar recarga sin caché cuando sea necesario
+        function forceReload() {
+            // Verificar si la página se está cargando desde caché
+            if (performance.navigation.type === 2 || 
+                (performance.getEntriesByType('navigation')[0] && 
+                 performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                // Recargar la página sin caché
+                window.location.reload(true);
+            }
+        }
+
+        // Ejecutar al cargar la página
+        window.addEventListener('load', forceReload);
+
+        // También ejecutar cuando se detecte navegación hacia atrás/adelante
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                forceReload();
+            }
+        });
     </script>
 </body>
+
 </html>
