@@ -29,6 +29,58 @@
             background-color: var(--color-secundario);
             color: var(--color-texto);
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Indicador de página en elaboración */
+        .en-elaboracion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.7;
+        }
+        
+        .banda-elaboracion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 40px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 0, 0, 0.3),
+                rgba(255, 0, 0, 0.3) 20px,
+                rgba(255, 165, 0, 0.3) 20px,
+                rgba(255, 165, 0, 0.3) 40px
+            );
+            transform: rotate(-15deg);
+            transform-origin: 0 0;
+        }
+        
+        .mensaje-elaboracion {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #d35400;
+            border: 2px solid #e74c3c;
+            pointer-events: auto;
+        }
+        
+        .mensaje-elaboracion p {
+            margin: 0;
         }
         
         .container {
@@ -36,6 +88,8 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
         
         header {
@@ -299,6 +353,8 @@
             text-align: center;
             padding: 20px 0;
             margin-top: 40px;
+            position: relative;
+            z-index: 1;
         }
         
         .metodo-dubin {
@@ -453,10 +509,24 @@
             .ecg-anatomia {
                 flex-direction: column;
             }
+            
+            .mensaje-elaboracion {
+                font-size: 1.2rem;
+                padding: 15px 25px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Indicador de página en elaboración -->
+    <div class="en-elaboracion">
+        <div class="banda-elaboracion"></div>
+        <div class="mensaje-elaboracion">
+            <p>⚠️ PÁGINA EN ELABORACIÓN</p>
+            <p style="font-size: 1rem; margin-top: 5px;">Contenido en desarrollo</p>
+        </div>
+    </div>
+    
     <header>
         <div class="container">
             <div class="header-content">
