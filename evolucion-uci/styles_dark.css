@@ -1,0 +1,2103 @@
+/* =============================== */
+/*          GENERAL STYLES         */
+/* =============================== */
+/* variables de color */
+:root {
+    
+    /* body */
+    --body: #f4f7fa;
+   
+      
+    /* dark */
+    --texto-1: #272626;
+    --texto-2: #072664;
+    --dark-1: #e7e7e7;
+    --dark-2: #757575;
+
+    --label: #939393;
+    --fondo-1: #a6a6a6;
+    --fondo-2: #aeacac;
+    --total-hover: #737373;
+    --hover: #ababab66;
+    --light-hover: #d6edfb;
+    --hover-input: #989797;
+    --borde: #8d8d8d;
+    --dark-shadow: #e1e1e114;
+    --light-shadow: #00000011;
+    --button: #ebebeb66;
+    
+    /* losses */
+    --losses-bc: #e3f2fd;
+    --losses-cabecera-2: #d2ebf9;
+    --losses-borde: #dcdfe1;
+    --losses-bc-hover: #;
+    /* #box-earings */
+    --earings-bc: #fffde7;
+    --earings-cabecera-2: #fafad9;
+    --earings-borde: #ececec;
+    --earings-hover: #faf3c2;
+    /* box summary */
+    --summary: #ebf4f4;
+    --summary-dark: #a5a5a7;
+    --summary-bc: #EBF4F4;
+    
+    
+    /* ------------------- */
+      --fuente: #368f3f;
+      --fuente-active: #2e2925;
+      --principal: #92c99b;
+      --hover: #d9ebd8;
+      --borde: #4fa66a;
+      --fuente15: #79b47f;
+      --btn: #489950;
+      --text-area:#ffffff;
+      
+      --color-fondo: #f4f7fa;
+      --color-primario: #2d6b3a;
+      --color-secundario: #368f3f;
+      --color-hover: #489950;
+      --color-texto: #2e2925;
+      --color-blanco: #fff;
+      --radio: 10px;
+    
+
+}
+
+
+
+/* Contenedor principal para ordenar las cajas  para adaptarse a pantallas*/
+* {
+    box-sizing: border-box;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centrar todos los elementos */
+    gap: 20px;
+    /* Espaciado uniforme entre las secciones */
+    margin: 0;
+    padding: 0;
+    background-color: var(--body);
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+}
+
+/* Mantener el encabezado centrado */
+h1 {
+    text-align: center;
+    color: var(--texto-1);
+    margin: 20px 0;
+    font-size: 1.5rem;
+}
+
+h1:hover {
+    transform: scale(1.3);
+    transition: all 0.6s ease;
+}
+
+/*-- para adaptarse a pantallas--*/
+
+section {
+    /*--CAJA NAVIGATION  --*/
+    width: 90%;
+    max-width: 1200px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px var(--light-shadow);
+    font-size: 1rem;
+
+}
+
+/* ─────────────────────────────── */
+/* Indicador flotante (responsive) */
+/* ─────────────────────────────── */
+#box-indicador-flotante {
+  display: none;              /* oculto hasta selección */
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background: var(--body);
+  color:    var(--texto-1);
+  padding:  clamp(0.25rem, 1.5vw, 0.5rem)  clamp(0.5rem, 3vw, 1rem);
+  border:   2px solid var(--borde);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  font-weight: bold;
+  font-size: clamp(0.75rem, 1.2vw, 1rem);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#box-indicador-flotante:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+@media (max-width: 480px) {
+  #box-indicador-flotante {
+    top: 0.5rem; left: 0.5rem;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+
+
+/* =============================== */
+/*         CALCULADORA         */
+/* =============================== */
+
+
+/* Estilos para los iconos de calculadora */
+.calculadora-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    padding: 3px;
+    border-radius: 50%;
+    position: absolute;
+    right: 5px;
+    /* Posicionado a 5px del borde derecho */
+    z-index: 10;
+}
+
+/* Estilo base para las celdas que contienen iconos de calculadora */
+.table__perdidas td:first-child,
+.table__ingresos td:first-child {
+    position: relative; /* Necesario para posicionamiento absoluto del icono */
+    padding-right: 30px; /* Espacio para el icono */
+}
+
+
+
+    
+
+/* Nuevos estilos para las calculadoras de pérdidas */
+.medicacion-icon,
+.sangre-icon, 
+.oral-icon,
+.sng-icon,
+.drenajes-icon, 
+.vomitos-icon {
+    color: var(--borde);
+    background-color: transparent;
+    border: 1px solid var(--borde);
+}
+
+    
+
+
+body.active .medicacion-icon,
+body.active .sangre-icon,
+body.active .oral-icon,
+body.active .sng-icon,
+body.active .drenajes-icon,
+body.active .vomitos-icon {
+    color: var(--dark-1);
+    background-color: var(--hover);
+    border: 1px solid var(--borde);
+}
+
+/* --dark-1:#e7e7e7;
+--dark-2:#757575;
+
+--label: #939393;
+--fondo-1: #a6a6a6;
+--fondo-2: #aeacac;
+--total-hover: #737373;
+--hover: #ababab66;
+--light-hover: #d6edfb;
+--hover-input: #989797;
+--borde: #8d8d8d; */
+
+.calculadora-icon:hover {
+    transform: scale(1.2);
+}
+
+/* Contenedor de la calculadora */
+.calculadora-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--body);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px var(--light-shadow);
+    width: 90%;
+    max-width: 320px;
+}
+
+
+
+/* Estilos específicos para cada tipo de calculadora */
+.calculadora-medicacion {
+    border-top: 4px solid #1976D2;
+}
+
+.calculadora-sangre {
+    border-top: 4px solid #D32F2F;
+}
+
+.calculadora-oral {
+    border-top: 4px solid #2fd337;
+}
+
+/* Nuevos estilos para calculadoras de pérdidas */
+.calculadora-sng {
+    border-top: 4px solid #FF6F00;
+}
+
+.calculadora-drenajes {
+    border-top: 4px solid #77b0b3;
+}
+
+.calculadora-vomitos {
+    border-top: 4px solid #574002;
+}
+
+body.active .calculadora-container {
+    background-color: var(--fondo-1);
+    border: 1px solid var(--borde);
+    box-shadow: 0 4px 20px var(--dark-shadow);
+}
+
+body.active .calculadora-medicacion {
+    border-top: 4px solid var(--light-shadow);
+}
+
+body.active .calculadora-sangre {
+    border-top: 4px solid var(--dark-1);
+}
+
+body.active .calculadora-oral {
+    border-top: 4px solid var(--borde);
+}
+
+body.active .calculadora-sng {
+    border-top: 4px solid var(--dark-1);
+}
+
+body.active .calculadora-drenajes{
+    border-top: 4px solid var(--borde);
+}
+
+body.active .calculadora-vomitos {
+    border-top: 4px solid var(--borde);
+}
+
+
+
+/* Display de la calculadora */
+.calculadora-display {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 0 10px 15px 10px;
+    font-size: 1.5rem;
+    text-align: right;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    background-color: var(--body);
+    color: var(--texto-2);
+}
+
+body.active .calculadora-display {
+    background-color: var(--fondo-1);
+    color: var(--dark-1);
+    border: 1px solid var(--borde);
+}
+
+/* Botones de la calculadora */
+.calculadora-botones {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 0 10px;
+}
+
+.calculadora-btn {
+    padding: 12px 0;
+    font-size: 1.1rem;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    background-color: var(--body);
+    color: var(--texto-2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+body.active .calculadora-btn {
+    background-color: var(--fondo-1);
+    color: var(--dark-1);
+    border: 1px solid var(--borde);
+}
+
+.calculadora-btn:hover {
+    background-color: var(--hover);
+}
+
+body.active .calculadora-btn:hover {
+    background-color: var(--hover-input);
+}
+
+/* Botón igual */
+.calculadora-btn.igual {
+    grid-column: span 2;
+}
+
+.calculadora-medicacion .calculadora-btn.igual {
+    background-color: #1976D2;
+    color: white;
+}
+
+.calculadora-sangre .calculadora-btn.igual {
+    background-color: #D32F2F;
+    color: white;
+}
+
+.calculadora-oral .calculadora-btn.igual {
+    background-color: #2fd337;
+    color: white;
+}
+
+.calculadora-sng .calculadora-btn.igual {
+    background-color: #FF6F00;
+    color: white;
+}
+
+.calculadora-drenajes .calculadora-btn.igual {
+    background-color: #77b0b3;
+    color: white;
+}
+
+.calculadora-vomitos .calculadora-btn.igual {
+    background-color: #574002;
+    color: white;
+}
+
+
+
+body.active .calculadora-medicacion .calculadora-btn.igual,
+body.active .calculadora-sangre .calculadora-btn.igual,
+body.active .calculadora-oral .calculadora-btn.igual,
+body.active .calculadora-sng .calculadora-btn.igual,
+body.active .calculadora-drenajes .calculadora-btn.igual, 
+body.active .calculadora-vomitos .calculadora-btn.igual{
+    background-color: var(--button);
+    color: var(--dark-1);
+}
+
+body.active .calculadora-medicacion .calculadora-btn.igual:hover,
+body.active .calculadora-sangre .calculadora-btn.igual:hover,
+body.active .calculadora-oral .calculadora-btn.igual:hover,
+body.active .calculadora-sng .calculadora-btn.igual:hover,
+body.active .calculadora-drenajes .calculadora-btn.igual:hover,
+body.active .calculadora-vomitos .calculadora-btn.igual:hover{
+    background-color: var(--dark-1);
+    color: var(--texto-1);
+    transform: scale(.9);
+}
+
+
+
+
+/* Botón limpiar */
+.calculadora-btn.limpiar {
+    background-color: #FFF3E0;
+}
+
+body.active .calculadora-btn.limpiar {
+    background-color: var(--fondo-2);
+}
+
+/* Overlay */
+.calculadora-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Media queries para móviles */
+@media (max-width: 480px) {
+    .calculadora-container {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .calculadora-display {
+        font-size: 1.3rem;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .calculadora-btn {
+        padding: 10px 0;
+        font-size: 1rem;
+    }
+
+    .calculadora-icon {
+        font-size: 1rem;
+        margin-left: 5px;
+    }
+}
+
+/* X DE LA CALCULADORA ESTILOS */
+/* Estilos para el header de la calculadora */
+.calculadora-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--borde);
+    margin-bottom: 4px;
+}
+
+.calculadora-header span {
+    font-weight: bold;
+    color: var(--texto-1);
+
+}
+
+.calculadora-cerrar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--texto-1);
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.calculadora-cerrar:hover {
+    color: #ff4757;
+    transform: scale(1.1);
+}
+
+.calculadora-cerrar i {
+    display: block;
+}
+
+/* Modo oscuro */
+body.active .calculadora-cerrar {
+    color: var(--dark-1);
+}
+
+body.active .calculadora-cerrar:hover {
+    color: var(--texto-1);
+}
+
+/* Layout de calculadora sin decimales - 5 filas */
+.calculadora-botones {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+    padding: 0 10px;
+    height: auto;
+}
+
+/* Botón 0 ocupa 2 columnas en la fila 4 */
+.calculadora-btn.cero {
+    grid-column: span 2;
+}
+
+/* Layout específico:
+   Fila 1: 7 8 9 +
+   Fila 2: 4 5 6 -  
+   Fila 3: 1 2 3 *
+   Fila 4: C 0 0 /
+   Fila 5:     =
+*/
+
+.calculadora-btn.igual {
+    grid-column: span 4;
+    margin-top: 5px;
+}
+
+/* =============================== */
+/*         BOX NAVIGATION          */
+/* =============================== */
+
+/* Configuración para #box-navigation */
+#box-navigation {
+    /*--CAJA NAVIGATION  --*/
+    background-color: var(--body);
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    /* Espacio adicional después del título */
+    max-width: 1705px;
+    /* Limita el tamaño máximo */
+}
+
+.container__nav ul {
+    /*--gap de los boxes  --*/
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 10px;
+}
+
+.container__nav ul li {
+    flex: 1 1 calc(8.33% - 10px);
+    /* Ajuste dinámico para mantener filas */
+    text-align: center;
+}
+
+.container__nav ul li a {
+    /*--boxes--*/
+    display: block;
+    padding: 10px;
+    background-color: var(--body);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--texto-1);
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px var(--light-shadow);
+    /* Sombra suave */
+}
+
+.container__nav ul li a:hover {
+    background-color: var(--light-hover);
+    color: var(--texto-2);
+    box-shadow: 0 2px 4px var(--light-shadow);
+    /* Sombra visible */
+    transform: scale(1.1);
+    /* Pequeño efecto de zoom */
+    transition: all 0.3s ease;
+    /* Animación suave */
+}
+/* ———————————————————————————— */
+/* BOX NAVIGATION: enlace activo */
+/* ———————————————————————————— */
+
+/* cuando el <a> tenga .active */
+#box-navigation .container__nav ul li a.active {
+  background-color: var(--borde) !important;
+  color:            var(--dark-1) !important;
+  border-color:     var(--borde) !important;
+  box-shadow:       0 0 8px var(--dark-shadow) !important;
+  transform:        scale(1.05) !important;
+}
+
+/* si prefieres resaltar al <li> en lugar del <a>, usa también esta regla */
+#box-navigation .container__nav ul li.active a {
+  background-color: var(--borde) !important;
+  color:            var(--dark-1) !important;
+}
+
+/* =============================== */
+/* ======icono_balance============ */
+/* =============================== */
+.icono-container {
+    position: relative;
+    display: inline-block;
+    width: 25px !important;
+    height: 25px !important;
+}
+
+.icono {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease-in-out;
+    /* Transición suave */
+}
+
+/* Mostrar el icono azul por defecto */
+.icono.azul {
+    opacity: 1;
+}
+
+/* Ocultar el icono verde por defecto */
+.icono.verde {
+    opacity: 0;
+}
+
+/* Cuando se hace hover, el azul desaparece y el verde aparece */
+.icono-container:hover .azul {
+    opacity: 0;
+}
+
+.icono-container:hover .verde {
+    opacity: 1;
+}
+
+/* ESTILOS PARA MODO OSCURO */
+body.active .icono.azul {
+    opacity: 0;
+}
+
+body.active .icono.verde {
+    opacity: 0;
+}
+
+
+/* En modo oscuro mostrar evolucion_negro.png */
+body.active .icono-container {
+    width: 25px !important;
+    height: 25px !important;
+}
+
+body.active img {
+    width: 25px !important;
+    height: 25px !important;
+}
+
+body.active .icono-container img {
+    display: none;
+}
+
+body.active .icono-container {
+    background-image: url('evolucion_negro.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+body.active .icono-container:hover {
+    background-image: url('evolucion_blanco.png');
+}
+
+
+/* Fin icono_balance */
+
+/* =============================== */
+/*             DATOS              */
+/* =============================== */
+
+#box-data {
+    /*--  CAJA DATA  --*/
+    display: flex;
+    background-color: var(--body);
+    color: var(--texto-2);
+    flex-direction: column;
+    width: 100%;
+    max-width: 1705px;
+    margin: 0;
+    padding: 10px;
+    gap: 15px;
+    align-items: center;
+    align-self: center;
+    margin-bottom: 20px;
+}
+
+
+#selected-box {
+    font-weight: bold;
+    color: var(--texto-2);
+    text-align: center;
+    margin: 0 auto;
+    ;
+
+}
+
+.input-container {
+    /*--  peso y horas desde ingreso y sus input--*/
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.input-group {
+    /*--  peso y horas desde ingreso y sus input--*/
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.input-group .label {
+    /*--  peso y horas desde ingreso--*/
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+/* =============================== */
+/*-----OPACIDAD CAJAS---*/
+/* =============================== */
+
+.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* =============================== */
+/*   ROW INGRESOS Y PERDIDAS       */
+/* =============================== */
+
+.row {
+    /*--separación entre perdidas, ingresos y summary--*/
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0 auto;
+}
+
+.row>section {
+    /*--Titulos perdidas e ingresos, las dos cajas sin inputs  --*/
+    flex: 1;
+    min-width: 300px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* =============================== */
+/*             PERDIDAS           */
+/* =============================== */
+#box-losses {
+    /*--TODA LA CAJA PERDIDAS MENOS READONLY, Concepto,Valor y Total Perdidas  --*/
+    background-color: var(--losses-bc);
+    box-shadow: 0 2px 4px var(--light-shadow);
+    padding-bottom: 20px;
+    border-radius: 10px;
+    margin-bottom: 180px;
+    color: var(--texto-2);
+
+}
+
+.container-perdidas-item {
+    margin: 0 auto;
+    max-width: 800px;
+    text-align: center;
+    animation: aparecer both;
+    animation-timeline: view();
+    animation-range: cover 10% contain 20%;
+    margin-bottom: 85px;
+}
+
+.table__perdidas {
+    width: 100%;
+    height: 102.5%;
+    border-collapse: collapse;
+    margin: 0;
+    table-layout: fixed;
+    padding: 0;
+    box-shadow: 0 4px 12px var(--light-shadow);
+
+}
+
+.table__perdidas td {
+    /*--TABLA PERDIDAS  MENOS READONLY, CO, VA Y TI--*/
+    background-color: var(--losses-bc);
+    border: 1px solid var(--losses-borde);
+    box-shadow: 0 4px 6px var(--light-shadow);
+    text-align: center;
+    padding: 10px 20px;
+    vertical-align: center;
+    font-weight: bold;
+    color: var(--texto-2)
+}
+
+.table__perdidas th {
+    background-color: var(--losses-cabecera-2);
+    border: 1px solid var(--losses-borde);
+    box-shadow: 0 4px 6px var(--light-shadow);
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    border-collapse: collapse;
+}
+
+.table__perdidas tfoot th,
+.table__perdidas tfoot td {
+    background-color: var(--losses-cabecera-2);
+    border: 1px solid var(--losses-borde);
+    color: var(--texto-2)
+}
+
+
+.table__perdidas tfoot th:hover,
+.table__perdidas tfoot td:hover {
+    opacity: 0.6;
+}
+
+.table__perdidas td .input {
+    background-color: var(--losses-bc);
+    color: var(--texto-2);
+    border: 1px solid var(--losses-borde);
+    width: 90%;
+    margin: 0 auto;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    font-weight: bold;
+
+}
+
+.table__perdidas td .input+.input {
+    background-color: var(--losses-bc);
+    border: 1px solid var(--losses-borde);
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+.table__perdidas .input {
+    background-color: var(--losses-bc);
+    border: 1px solid var(--losses-borde);
+    width: 95%;
+    margin: 0 auto;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+}
+
+/* Alinear las columnas de concepto y valor */
+.table__perdidas th:first-child,
+.table__perdidas td:first-child {
+    /*--desde concepto a TP--*/
+    text-align: left;
+    box-shadow: 0 4px 6px var(--light-shadow);
+}
+
+.table__perdidas th:last-child,
+.table__perdidas td:last-child {
+    /*input pérdidas menos readonly--*/
+    text-align: right;
+    box-shadow: 0 4px 6px var(--light-shadow);
+}
+
+#table__perdidas-concepto,
+#table__perdidas-valor {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/*--  input perdidas --*/
+.table__perdidas td input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.table__perdidas td input:last-child {
+    /*--afecta a la parte inferior de cada celda en pérdidas  --*/
+    margin-bottom: 0;
+}
+
+.table__perdidas tbody tr:hover td {
+    background-color: var(--light-hover);
+    box-shadow: 0 1px 3px var(--light-shadow);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--label);
+}
+
+/* FINAL DE BOX-LOSSES */
+
+/* =============================== */
+/*             INGRESOS           */
+/* =============================== */
+
+
+#box-earings {
+    /*--TODA LA CAJA INGRESOS MENOS READONLY, Concepto,Valor y Total Ingresos  --*/
+    background-color: var(--earings-bc);
+    box-shadow: 0 2px 4px var(--light-shadow);
+    padding-bottom: 20px;
+    border-radius: 10px;
+    margin-bottom: 175px;
+    color: var(--texto-2);
+}
+
+.container-ingresos-item {
+    margin: 0 auto;
+    max-width: 800px;
+    text-align: center;
+    animation: aparecer both;
+    animation-timeline: view();
+    animation-range: cover 10% contain 20%;
+    margin-bottom: 85px;
+}
+
+.table__ingresos {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    table-layout: fixed;
+    padding: 0;
+    box-shadow: 0 4px 12px var(--light-shadow);
+}
+
+.table__ingresos td {
+    /*--TABLA INGRESOS MENOS READONLY, CO, VA Y TI  fff9c4--*/
+    background-color: var(--earings-bc);
+    border: 1px solid var(--earings-borde);
+    box-shadow: 0 4px 6px var(--light-shadow);
+    text-align: center;
+    padding: 10px 20px;
+    vertical-align: center;
+    font-weight: bold;
+    color: var(--texto-2);
+    position: relative;
+    /* Necesario para posicionar el icono absolutamente */
+}
+
+
+
+.table__ingresos th {
+    background-color: var(--earings-cabecera-2);
+    border: 1px solid var(--earings-borde);
+    box-shadow: 0 4px 6px var(--light-shadow);
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    border-collapse: collapse;
+}
+
+.table__ingresos tfoot th,
+.table__ingresos tfoot td {
+    background-color: var(--earings-cabecera-2);
+    border: 1px solid var(--earings-borde);
+    color: var(--texto-2)
+}
+
+.table__ingresos tfoot th:hover,
+.table__ingresos tfoot td:hover {
+    opacity: 0.6;
+}
+
+.table__ingresos td .input {
+    background-color: var(--earings-bc);
+    color: var(--texto-2);
+    border: 1px solid var(--earings-borde);
+    width: 90%;
+    margin: 0 auto;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    font-weight: bold;
+}
+
+.table__ingresos td .input+.input {
+    background-color: var(--earings-bc);
+    border: 1px solid var(--earings-borde);
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+.table__ingresos .input {
+    background-color: var(--earings-bc);
+    border: 1px solid var(--earings-borde);
+    width: 95%;
+    margin: 0 auto;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+}
+
+/* Alinear las columnas de concepto y valor */
+.table__ingresos th:first-child,
+.table__ingresos td:first-child {
+    /**--desde concepto a TI--*/
+    text-align: left;
+    box-shadow: 0 4px 6px var(--light-shadow);
+}
+
+.table__ingresos th:last-child,
+.table__ingresos td:last-child {
+    /*--desde valor a TI menos read only--*/
+    text-align: right;
+    box-shadow: 0 4px 6px var(--light-shadow);
+}
+
+#table__ingresos-concepto,
+#table__ingresos-valor {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/*--  input ingresos --*/
+.table__ingresos td input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.table__ingresos td input:last-child {
+    /*--afecta a la parte inferior de cada celda en ingresos  --*/
+    margin-bottom: 0;
+}
+
+.table__ingresos tbody tr:hover td {
+    background-color: var(--earings-hover);
+    box-shadow: 0 1px 3px var(--light-shadow);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--label);
+}
+
+/* FINAL DE BOX-EARINGS */
+
+/* =============================== */
+/*       TOTALES Y BALANCES       */
+/* =============================== */
+
+
+#box-summary {
+    background-color: var(--body);
+    border-top: 2px solid var(--losses-borde);
+    box-shadow: 0 -4px 6px var(--light-shadow);
+    position: fixed;
+    bottom: 0;
+    margin-top: 20px;
+    align-self: center;
+    margin: 5px auto;
+    padding: 5px 20px;
+    width: 100%;
+    max-width: 1705px;
+    opacity: 0.6;
+    text-align: center;
+}
+
+.container__totales-item {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding-bottom: 20px;
+
+}
+
+.table-summary th,
+.table-summary td {
+    padding: 5px;
+    text-align: left;
+
+}
+
+/* Inputs readonly de  box summary*/
+.input.readonly {
+    background-color: var(--summary-bc);
+    color: var(--texto2);
+    border-color: var(--losses-borde);
+}
+
+#balance-total-box {
+    background-color: inherit;
+    /* Color de fondo definido por JavaScript */
+    color: var(--texto-1);
+    /* Asegura que el texto sea visible */
+    text-align: center;
+    /* Centra el texto si es necesario */
+    font-weight: bold;
+    /* Resalta el texto */
+    font-size: 1.2rem !important;
+}
+
+/* =============================== */
+/* ==========FOOTER=============== */
+/* =============================== */
+
+footer {
+    color: var(--dark-2);
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 5px;
+    margin: 0 auto;
+    font-size: 8px;
+    font-weight: bold;
+    width: 100%;
+    z-index: 50;
+}
+
+
+/* =============================== */
+/*       AJUSTES PARA INPUTS       */
+/* =============================== */
+/* Estilo base de inputs */
+
+/* Estilo base de inputs */
+.input,
+.input perdida,
+.input ingreso {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 10px;
+    border: 1px solid var(--borde);
+    font-size: 1rem;
+    background-color: transparent;
+    color: var(--texto-2);
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px var(--light-shadow);
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Al enfocar el input */
+
+.input:focus {
+    outline: none;
+    border: 1px solid var(--borde);
+    box-shadow: 0 0 10px var(--light-shadow);
+    transition: all 0.3s;
+}
+
+
+
+
+/* =============================== */
+/*             BUTTON             */
+/* =============================== */
+
+
+/*--Botón Datos--*/
+
+#borrar-datos-principal {
+    background-color: #cadbee;
+    /* Azul */
+    color: var(--texto-2);
+    border: none;
+    border-radius: 10px;
+    padding: 7px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#borrar-datos-principal:hover {
+    background-color: var(--body);
+    border: 1px solid var(--texto-2)
+}
+
+/*--Botones perdidas e ingresos--*/
+
+.button {
+    text-align: center;
+    margin: 10px 0 30px 0;
+}
+
+.button button {
+    padding: 10px 20px;
+    background-color: #eaeaea88;
+    color: var(--texto-2);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.button button:hover {
+    background-color: transparent;
+    color: var(--texto-2);
+    border: 1px solid var(--texto-2);
+}
+
+/* =============================== */
+/*         CAMPOS READONLY         */
+/* =============================== */
+
+/* Estilo para campos readonly */
+input[readonly] {
+    pointer-events: none;
+    text-align: center;
+    outline: none;
+
+}
+
+input[type="number"] {
+    font-size: .8rem;
+    width: 90%;
+    padding: 5px;
+    color: var(--texto-1);
+}
+
+input[type="number"]:invalid {
+    border-color: #ff0000;
+    background-color: #ff0000;
+    color: #fff;
+}
+
+input:invalid {
+    border-color: #ff0000;
+    background-color: #ff0000;
+    color: #fff;
+
+}
+
+/*==============================*/
+/*     ANIMACIONES BALANCE      */
+/*==============================*/
+
+
+/*  ------ANIMACIONES SECTION------*/
+/*--Usa una animación que deslice las secciones hacia arriba cuando carguen por primera vez.--*/
+
+section {
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/*  ------ANIMACIONES INPUT READONLY------*/
+/*--Agrega un efecto pulsante a los valores totales para destacar cambios.--*/
+
+.input.readonly.balance {
+    animation: pulse 2s 1;
+    /*--ease por infinite--*/
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 5px rgba(23, 24, 23, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(23, 24, 23, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(23, 24, 23, 0.5);
+    }
+}
+
+
+/*  ------ANIMACIONES PERDIDAS------*/
+/*--Agrega un efecto de sombreado suave a las filas cuando el usuario las pase.--*/
+
+/*---Aplica un efecto para que las tablas aparezcan gradualmente.--*/
+.table__perdidas,
+.table__ingresos {
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/*  ------ANIMACIONES INGRESOS------*/
+/*--Agrega un efecto de sombreado suave a las filas cuando el usuario las pase.--*/
+/* Pérdidas */
+
+
+/* Ingresos */
+
+
+/* Sombrea la última fila en "Total Ingresos" */
+#box-earings .table__ingresos tfoot tr:hover td,
+#box-earings .table__ingresos tfoot tr:hover th {
+    background-color: var(--earings-hover);
+    color: var(--texto-1);
+    transition: background-color 0.3s ease;
+    /* Transición suave */
+}
+
+/* Sombrea la última fila en "Total Pérdidas" */
+#box-losses .table__perdidas tfoot tr:hover td,
+#box-losses .table__perdidas tfoot tr:hover th {
+    background-color: var(--light-hover);
+    /* Fondo suave azul */
+    color: var(--texto-1);
+    transition: background-color 0.3s ease;
+    /* Transición suave */
+}
+
+#box-data:hover {
+    background-color: var(--light-hover);
+    box-shadow: 0 4px 10px var(--light-shadow);
+    /* Sombra adicional */
+    transform: scale(1.02);
+    /* Pequeño zoom */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Cambia el color de fondo al pasar el cursor sobre los inputs de peso y horas */
+.input-container .input:hover {
+    background-color: #d2e6f7b3;
+    /*--background-color: #e3f2ff;--*/
+
+    border: 1px solid #ccc;
+    /* Cambia el borde */
+    transition: background-color 0.3s ease, border 0.3s ease;
+    /* Transiciones suaves */
+}
+
+#box-earings:hover {
+    background-color: #feffde98;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* Sombra adicional */
+    transform: scale(1.02);
+    /* Pequeño zoom */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+#box-losses:hover {
+    background-color: #d7eef8;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* Sombra adicional */
+    transform: scale(1.02);
+    /* Pequeño zoom */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Define la animación básica para la entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+        /* Aparece desde abajo */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        /* Llega a su posición final */
+    }
+}
+
+/* Configura la línea de tiempo de desplazamiento para cada contenedor */
+#box-navigation,
+#box-data,
+#box-losses,
+#box-earings,
+#box-summary {
+    scroll-timeline-name: fadeTimeline;
+    /* Línea de tiempo común */
+    scroll-timeline-axis: block;
+    /* Basado en desplazamiento vertical */
+    /* Removed scroll-timeline-scope as it is not a valid property */
+    opacity: 0;
+    /* Empiezan ocultos */
+    animation: fadeInUp 1s linear both;
+    /* Animación aplicada */
+    animation-timeline: fadeTimeline;
+    /* Se activa al entrar en viewport */
+    animation-range: auto;
+    /* Determina cuándo se activa la animación */
+}
+
+/*----ANIMACIONES-----*/
+
+@keyframes header-movement {
+    from {
+        padding: 20px 0;
+        background-color: #fff;
+    }
+
+    to {
+        padding: 0;
+        background-color: #10163266;
+        color: #fff;
+
+    }
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/*--------ADAPTACION PANTALLAS-------*/
+/* Media Query para dispositivos móviles */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        /* Apilar las cajas verticalmente */
+        gap: 5px;
+        /* Reducir el espacio entre las cajas */
+    }
+
+    .row>section {
+        margin: 0;
+        padding: 0;
+    }
+
+    #box-losses,
+    #box-earings {
+        margin: 0;
+    }
+
+    #box-earings {
+        margin-bottom: 190px;
+    }
+
+    #box-data {
+        margin: 0 auto;
+        width: 100%;
+        max-width: none;
+    }
+
+    .table-summary th,
+    .table-summary td,
+    .input.readonly,
+    #balance-total-box {
+        font-size: 12px;
+    }
+
+
+}
+
+/* =============================== */
+/*           MODO OSCURO           */
+/* =============================== */
+
+/*ESTILOS DE SWITCH*/
+.switch {
+    width: 40px;
+    height: 15px;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    border-radius: 100px;
+    border: none;
+    background-color: var(--losses-cabecera-2);
+    top: 55px;
+    margin: 0 auto;
+    margin-top: 10px;
+    z-index: 100;
+    border: 2px solid var(--dark-shadow);
+}
+
+.switch i {
+    font-size: .6rem;
+    color: var(--texto-1);
+}
+
+
+#switch::before {
+    content: '';
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: var(--earings-cabecera-2);
+    border: none;
+    left: 0;
+    right: unset;
+}
+
+#switch.active::before {
+    right: 0;
+    left: unset;
+    border: none;
+}
+
+#switch.active i:first-child {
+    color: var(--texto-1);
+}
+
+#switch:last-child.active {
+    background-color: var(--texto-1);
+    border: none;
+}
+
+body.active .switch {
+    background-color: var(--dark-shadow);
+}
+
+body.active #switch::before {
+    background-color: var(--texto-1);
+}
+
+body.active #switch.active i:first-child {
+    color: var(--earings-cabecera-2);
+}
+
+
+body.active {
+    background-color: var(--fondo-1);
+}
+
+body.active h1 {
+    color: var(--texto-1);
+    color: var(--dark-1);
+
+}
+
+body.active section {
+    background-color: var(--fondo-1);
+    border: 1px solid var(--borde);
+
+}
+
+body.active section h2 {
+    color: var(--dark-2);
+
+}
+
+/* =============================== */
+/*       BOX NAVIGATION DARK       */
+/* =============================== */
+body.active #box-navigation {
+    background-color: var(--fondo-1);
+}
+
+body.active .container__nav ul {
+    background-color: var(--fondo-1);
+}
+
+body.active .container__nav ul li {
+    background-color: var(--fondo-1);
+}
+
+body.active .container__nav ul li a {
+    background-color: var(--fondo-1);
+    border: 1px solid var(--borde);
+    color: var(--dark-2);
+}
+
+
+body.active .container__nav ul li a:hover {
+    background-color: var(--dark-2);
+    color: var(--dark-1);
+}
+
+/* =============================== */
+/*           DATOS DARK           */
+/* =============================== */
+body.active #box-data {
+    background-color: var(--fondo-1);
+    border: 1px solid var(--borde);
+}
+
+body.active #box-data:hover {
+    background-color: var(--hover);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* Sombra adicional */
+    transform: scale(1.02);
+    /* Pequeño zoom */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+body.active #selected-box {
+    background-color: var(--fondo-1);
+    color: var(--dark-2);
+}
+
+body.active .input-container {
+    background-color: var(--fondo-1);
+}
+
+body.active .input-group {
+    background-color: var(--fondo-1);
+}
+
+body.active .input-group .label {
+    color: var(--dark-1);
+}
+
+/* Cambia el color de fondo al pasar el cursor sobre los inputs de peso y horas */
+body.active .input-container .input:hover {
+    background-color: var(--hover-input);
+    /* Fondo suave azul */
+    border: 1px solid var(--borde);
+    /* Cambia el borde */
+}
+
+/* =============================== */
+/*-----OPACIDAD CAJAS dark         */
+/* =============================== */
+body.active .disabled {
+    background-color: var(--summary-dark);
+    color: #fff;
+}
+
+/* =============================== */
+/*   ROW INGRESOS Y PERDIDAS DARK      */
+/* =============================== */
+body.active .row {
+    background-color: var(--fondo-1);
+    color: #fff;
+}
+
+/* =============================== */
+/*             PERDIDAS           */
+/* =============================== */
+
+body.active #box-losses {
+    background-color: var(--fondo-2);
+    box-shadow: 0 2px 4px var(--dark-shadow);
+}
+
+body.active #box-losses:hover {
+    background-color: var(--fondo-1);
+    box-shadow: 0 4px 10px var(--dark-shadow);
+}
+
+body.active .container-perdidas-item {
+    background-color: var(--fondo-2);
+}
+
+body.active .table__perdidas {
+    background-color: var(--fondo-2);
+    box-shadow: 0 4px 12px var(--dark-shadow);
+}
+
+body.active .table__perdidas td {
+    background-color: var(--fondo-2);
+    color: var(--dark-2);
+    border: 1px solid var(--borde);
+    box-shadow: 0 4px 6px var(--dark-shadow);
+}
+
+body.active .table__perdidas th {
+    background-color: var(--fondo-2);
+    color: var(--dark-1);
+    border: 1px solid var(--borde);
+    box-shadow: 0 4px 6px var(--dark-shadow);
+}
+
+body.active .table__perdidas tbody tr:hover td {
+    background-color: var(--hover-input);
+    color: var(--dark-1);
+    box-shadow: 0 1px 3px var(--sombra);
+    /* Sombra ligera */
+}
+
+body.active .table__perdidas tfoot th,
+body.active .table__perdidas tfoot td {
+    background-color: var(--fondo-2);
+    border: 1px solid var(--borde);
+    color: var(--dark-1)
+}
+
+body.active .table__perdidas tfoot th:hover,
+body.active .table__perdidas tfoot td:hover {
+    opacity: 0.6;
+}
+
+/* Sombrea la última fila en "Total Pérdidas" dark*/
+body.active #box-losses .table__perdidas tfoot tr:hover td,
+body.active #box-losses .table__perdidas tfoot tr:hover th {
+    background-color: var(--total-hover);
+    color: var(--dark-1);
+}
+
+body.active .table__perdidas td .input {
+    background-color: var(--fondo-1);
+    color: var(--dark-1);
+}
+
+body.active .table__perdidas td .input:hover {
+    background-color: var(--hover-input);
+    color: var(--dark-2);
+}
+
+body.active .table__perdidas td .input+.input {
+    background-color: var(--fondo-1);
+    border: 1px solid var(--borde);
+}
+
+body.active .table__perdidas td:hover {
+    background-color: var(--hover);
+}
+
+body.active .table__perdidas th:hover {
+    background-color: var(--hover);
+    color: var(--dark-2);
+}
+
+body.active .table__perdidas tfoot tr:hover td {
+    background-color: var(--hover);
+    color: var(--dark-1);
+}
+
+/* =============================== */
+/*             INGRESOS           */
+/* =============================== */
+
+body.active #box-earings {
+    background-color: var(--fondo-2);
+    box-shadow: 0 2px 4px var(--dark-shadow);
+}
+
+body.active #box-earings:hover {
+    background-color: var(--fondo-1);
+    box-shadow: 0 4px 10px var(--dark-shadow);
+}
+
+body.active .container-ingresos-item {
+    background-color: var(--fondo-2);
+}
+
+body.active .table__ingresos {
+    background-color: var(--fondo-2);
+    box-shadow: 0 4px 12px var(--dark-shadow);
+}
+
+body.active .table__ingresos td {
+    background-color: var(--fondo-2);
+    color: var(--dark-2);
+    border: 1px solid var(--borde);
+    box-shadow: 0 4px 6px var(--dark-shadow);
+}
+
+body.active .table__ingresos th {
+    background-color: var(--fondo-2);
+    color: var(--dark-1);
+    border: 1px solid var(--borde);
+    box-shadow: 0 4px 6px var(--dark-shadow);
+}
+
+body.active .table__ingresos tbody tr:hover td {
+    background-color: var(--hover-input);
+    color: var(--dark-2);
+    box-shadow: 0 1px 3px var(--dark-shadow);
+}
+
+body.active .table__ingresos tfoot th,
+body.active .table__ingresos tfoot td {
+    background-color: var(--fondo-2);
+    border: 1px solid var(--borde);
+    color: var(--dark-1)
+}
+
+body.active .table__ingresos tfoot th:hover,
+body.active .table__ingresos tfoot td:hover {
+    opacity: 0.6;
+}
+
+/* Sombrea la última fila en "Total Ingresos" */
+body.active #box-earings .table__ingresos tfoot tr:hover td,
+body.active #box-earings .table__ingresos tfoot tr:hover th {
+    background-color: var(--total-hover);
+    color: var(--dark-1);
+}
+
+body.active .table__ingresos td .input {
+    background-color: var(--fondo-1);
+    color: var(--dark-1);
+}
+
+body.active .table__ingresos td .input:hover {
+    background-color: var(--hover-input);
+    color: var(--dark-2);
+}
+
+body.active .table__ingresos td .input+.input {
+    background-color: var(--fondo-1);
+    border: 1px solid var(--borde);
+}
+
+body.active .table__ingresos td:hover {
+    background-color: var(--hover);
+}
+
+body.active .table__ingresos th:hover {
+    background-color: var(--hover-input);
+    color: var(--label);
+}
+
+body.active .table__ingresos tfoot tr:hover td {
+    background-color: var(--hover-input);
+    color: var(--dark-1);
+}
+
+body.active .table__ingresos .input {
+    border: 1px solid var(--borde);
+    background-color: var(--fondo-1);
+}
+
+body.active .table__ingresos th:first-child,
+.table__ingresos td:first-child {
+    box-shadow: 0 4px 6px var(--dark-shadow);
+    color: var(--dark-2);
+}
+
+body.active .table__ingresos th:last-child,
+.table__ingresos td:last-child {
+    box-shadow: 0 4px 6px var(--dark-shadow);
+    color: var(--dark-2);
+}
+
+body.active #table__ingresos-concepto,
+body.active #table__ingresos-valor {
+    color: var(--dark-1);
+}
+
+
+/* =============================== */
+/*      TOTALES Y BALANCES DARK    */
+/* =============================== */
+
+body.active #box-summary {
+    background-color: var(--summary-dark);
+    box-shadow: 0 -4px 6px var(--dark-shadow);
+    border-top: 2px solid var(--borde);
+    /* Línea superior decorativa */
+
+}
+
+body.active .table-summary th,
+.table-summary td {
+    background-color: transparent;
+}
+
+body.active .input.readonly {
+    background-color: var(--summary-dark);
+    color: var(--dark-1);
+}
+
+body.active #balance-total-box {
+    background-color: var(--summary-dark);
+    color: var(--dark-1);
+    text-align: center;
+    font-weight: bold;
+}
+
+body.active #balance-total-box:hover {
+    background-color: var(--summary-dark);
+    border: 1px solid var(--dark-2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+
+}
+
+/* =============================== */
+/*       AJUSTES PARA INPUTS       */
+/* =============================== */
+
+body.active .input {
+    /*--input peso y horas de   --*/
+    border: 1px solid var(--borde);
+    background-color: var(--fondo-1);
+}
+
+body.active .input:focus {
+    border: 2px solid var(--dark-2);
+    box-shadow: 0 0 10px var(--dark-shadow);
+    transition: all 0.3s;
+}
+
+
+/* =============================== */
+/*             BUTTON             */
+/* =============================== */
+body.active #borrar-datos-principal {
+    background-color: var(--button);
+    color: var(--dark-2);
+    border: 1px solid var(--dark-1);
+
+
+}
+
+body.active #borrar-datos-principal:hover {
+    background-color: var(--fondo-1);
+    color: var(--dark-1);
+    border: 1px solid var(--dark-2);
+}
+
+/*--Botones perdidas e ingresos- dark-*/
+
+body.active .button button {
+    background-color: var(--button);
+    color: var(--dark-2);
+
+}
+
+body.active .button button:hover {
+    background-color: var(--fondo-1);
+    color: var(--dark-1);
+    border: 1px solid var(--dark-2);
+}
+
+/* =============================== */
+/*       CAMPOS READONLY DARK      */
+/* =============================== */
+
+body.active input[readonly] {
+    background-color: var(--summary-dark);
+    color: var(--dark-2);
+    border: 1px solid var(--borde);
+    text-align: center;
+}
+
+body.active input[readonly]:focus {
+    outline: none;
+    border: 1px solid var(--borde);
+}
+
+body.active input[type="number"] {
+    background-color: var(--fondo);
+    color: var(--dark-1);
+    border: 1px solid var(--borde);
+}
+
+body.active input[type="number"]:invalid {
+    background-color: var(--fondo);
+}
+
+body.active input:invalid {
+    background-color: var(--fondo);
+    border: 1px solid var(--borde);
+}
+
+
+/*==============================*/
+/*     ANIMACIONES BALANCE      */
+/*==============================*/
+
+
+/*  ------ANIMACIONES INPUT READONLY------*/
+/*--Agrega un efecto pulsante a los valores totales para destacar cambios.--*/
+
+body.active .input.readonly.balance {
+    animation: pulse-dark 2s 1;
+    /*--ease por infinite--*/
+}
+
+@keyframes pulse-dark {
+    0% {
+        box-shadow: 0 0 5px rgba(238, 238, 238, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(238, 238, 238, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(238, 238, 238, 0.5);
+    }
+}
+
+
+
+
+/* ocultando las flechas */
+/* Oculta las flechas en navegadores modernos */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    appearance: textfield;
+    /* Standard */
+    -moz-appearance: textfield;
+    /* Firefox */
+}
+
+
+/* =============================== */
+/*          LOGOUT BUTTON          */
+/* =============================== */
+
+/* 1 · Contenedor (opcional)  */
+.logout-form{
+    display:inline-flex;          /* se integra en la misma línea que el switch */
+    align-items:center;
+    margin-left:auto;             /* empuja el botón a la derecha si lo metes en una barra */
+}
+
+/* 2 · Botón */
+.btn-logout{
+    background:transparent;
+    border:none;
+    color:var(--texto-2);
+    font:600 .9rem/1 "Montserrat",sans-serif;
+    display:flex;
+    align-items:center;
+    gap:.35rem;
+    cursor:pointer;
+    transition:opacity .2s ease;
+}
+
+/* 3 · Icono */
+.btn-logout i{
+    font-size:1rem;
+    line-height:1;
+}
+
+/* 4 · Hover / focus */
+.btn-logout:hover,
+.btn-logout:focus-visible{
+    opacity:.7;
+    outline:none;
+}
+
+/* 5 · Responsive — oculta la palabra “Salir” en pantallas pequeñas */
+@media (max-width:480px){
+    .btn-logout .logout-text{display:none;}
+}
+
+/* ====== MODO OSCURO ====== */
+body.active .btn-logout{
+    color:var(--dark-1);
+}
+
+body.active .btn-logout:hover,
+body.active .btn-logout:focus-visible{
+    color:var(--dark-2);
+    opacity:.8;
+}
+/* ================================= */
+/*         BOTÓN FIJO (TOP-RIGHT)    */
+/* ================================= */
+
+.logout-fixed{
+    position:fixed;
+    top:16px;            /* distancia al borde superior   */
+    right:20px;          /* pegado al borde derecho        */
+    left:auto !important;/* ← cancela posibles “left:0”    */
+    transform:none !important; /* ← por si algún flex/animación lo centró */
+    z-index:1200;
+    margin:0;
+}
+/* Ajusta la palabra “Salir” según tamaño de pantalla */
+@media(max-width:480px){
+    .btn-logout .logout-text{display:none;}
+}
+
+/* —— modo oscuro —— */
+body.active .btn-logout{
+    color:var(--dark-1);
+}
+body.active .btn-logout:hover,
+body.active .btn-logout:focus-visible{
+    color:var(--dark-2);
+}
+

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antiinfecciosos</title>
+	<link rel="icon" href="imagenes/00_A_icono.png" type="image/png"> 
+	<link rel="stylesheet" href="fonts.css">
+	<link rel="stylesheet" href="styles.css">
+	<meta name="description" content="Dedicada a la obtención rápida de información a cerca de los antiinfecciosos más usado en nuestra uci.">
+    <meta name="keywords" content="antiinfecciosos, medicamentos, uci">
+    <meta name="autor" content="José Antonio Márquez García"> 
+    
+    <!-- Font Awesome para el icono del botón home -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+    <div id="app">
+        <!-- Botón de vuelta a Evolución UCI -->
+        <a href="https://jolejuma.es/evolucion-uci/" class="home-button" title="Volver a Evolución UCI">
+            <i class="fas fa-home"></i>
+        </a>
+
+        <header>
+            <h1>Antiinfecciosos</h1>
+        </header>
+        <main>
+            <!--zona-iniciales-->
+            <div class="zona-iniciales">
+                <h2>Selecciona una inicial</h2>
+                <div id="iniciales"></div>
+            </div>
+            
+            <!--zona-busqueda-->
+            <div class="zona-busqueda">
+                <h2>Buscar antiinfeccioso</h2>
+                <input type="text" id="buscar-input" placeholder="Escribe el nombre..." />
+            </div>
+            
+            <!--main-button-container-->
+            <div id="main-button-container">
+                <a href="javascript:void(0)" id="main-button">
+                    <img src="imagenes/09_inicio.png" title="Ir al principio" alt="Volver a Inicio" class="home-icon">
+                </a>
+            </div>		
+            
+            <!--lista y detalles-->
+            <div id="lista-antiinfecciosos"></div>
+            <div id="detalle-antiinfeccioso"></div>
+        </main>
+        
+        <footer>
+            <p> 2025 Antiinfecciosos </p>
+            <p>C.G.Francisco Manuel,M.G.José Antonio,M.M. Francisco Javier</p>	
+        </footer>
+    </div>
+    
+	<script src="script.js" defer></script>
+</body>
+</html>

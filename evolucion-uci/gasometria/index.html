@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- link favicon -->
+     <link rel="icon" type="image/x-icon" href="g-cuadrado.png">
+
+    <!-- Meta etiquetas para control de caché -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Valores Normales de Gasometría</title>
+    <!-- Parámetro de versión en la hoja de estilos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=1.0">
+    <style>
+        :root {
+            /* Nueva paleta de colores basada en el sitio de referencia */
+            --color-primary: #2c5530;
+            --color-primary-light: #4a7c59;
+            --color-primary-very-light: #8fbc8f;
+
+            /* Colores de fondo */
+            --bg-gradient-start: #2c5530;
+            --bg-gradient-end: #4a7c59;
+            --bg-white: #f5f5dc;
+
+            /* Colores de tarjetas */
+            --card-bg-start: #e8f5e8;
+            --card-bg-end: #d0e8d0;
+            --card-border: #4a7c59;
+
+            /* Colores de texto */
+            --text-dark: #2c5530;
+            --text-medium: #4a7c59;
+            --text-light: #f5f5dc;
+
+            /* Colores de alteraciones */
+            --acidosis-resp: #8b4513;
+            --acidosis-meta: #a0522d;
+            --alcalosis-resp: #2c5530;
+            --alcalosis-meta: #4a7c59;
+            --hipoxemia: #6b8e23;
+            --hipercapnia: #8fbc8f;
+            --hiperlactatemia: #cd5c5c;
+            --hiperglucemia: #b8860b;
+            --hipopotasemia: #4682b4;
+            --hiperpotasemia: #dc143c;
+
+            /* Colores de estado */
+            --status-low: #4682b4;
+            --status-high: #dc143c;
+            --status-normal: #4a7c59;
+
+            /* Colores de nota */
+            --note-bg: #fff8dc;
+            --note-border: #b8860b;
+            --note-text: #8b4513;
+
+            /* Colores de tooltip */
+            --tooltip-bg: #2c5530;
+            --tooltip-text: #f5f5dc;
+            --tooltip-param: #8fbc8f;
+
+            /* Sombras */
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+            /*TAMAÑO FUENTE*/
+            --font-grande: clamp(1.8rem, 4vw, 2.5rem);
+            --font-mediano: clamp(1rem, 2.5vw, 1.4rem);
+            --font-pequeño: clamp(0.8rem, 1.5vw, 1.1rem);
+
+            /*COLORES ACTUALIZADOS - ESTILO EVOLUCIÓN UCI*/
+            --color-fondo: #f4f7fa;
+            --color-primario: #2d6b3a;
+            --color-secundario: #368f3f;
+            --color-hover: #489950;
+            --color-texto: #2e2925;
+            --color-blanco: #fff;
+            --radio: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Icono de enlace a la página principal - ANIMADO */
+        .home-link {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--bg-white);
+            color: var(--color-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            overflow: hidden;
+
+            /* Animación de pulso sutil */
+            animation: pulse-gentle 4s infinite;
+        }
+
+        /* Efecto hover con animación moderna */
+        .home-link:hover {
+            transform: scale(1.15) rotate(5deg);
+            background: var(--color-primary);
+            color: var(--bg-white);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+            /* Animación de brillo */
+            animation: shine 0.8s ease-out;
+        }
+
+        /* Animación de pulso sutil */
+        @keyframes pulse-gentle {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        /* Animación de brillo al hacer hover */
+        @keyframes shine {
+            0% {
+                box-shadow: 0 0 0 0 rgba(44, 85, 48, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(44, 85, 48, 0);
+            }
+
+            100% {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        /* Efecto de onda al hacer clic */
+        .home-link:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
+
+        .home-link i {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .home-link:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Efecto de partículas flotantes alrededor del botón */
+        .home-link::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+            filter: blur(5px);
+        }
+
+        .home-link:hover::before {
+            opacity: 0.3;
+            animation: glowing 20s linear infinite;
+        }
+
+        @keyframes glowing {
+            0% {
+                background-position: 0 0;
+            }
+
+            50% {
+                background-position: 400% 0;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            background: rgba(245, 245, 220, 0.2);
+            border: 2px solid var(--bg-white);
+            color: var(--bg-white);
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            background: rgba(245, 245, 220, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: var(--bg-white);
+            color: var(--color-primary);
+        }
+
+        .content {
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--color-primary-light);
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .value-card {
+            background: linear-gradient(135deg, var(--card-bg-start) 0%, var(--card-bg-end) 100%);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--card-border);
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: var(--shadow-light);
+        }
+
+        .value-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .parameter-name {
+            font-weight: bold;
+            color: var(--text-dark);
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .parameter-value {
+            color: var(--color-primary);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .parameter-description {
+            color: var(--text-medium);
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        .note {
+            background: var(--note-bg);
+            border-left: 5px solid var(--note-border);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .note strong {
+            color: var(--note-text);
+        }
+
+        /* Estilos para alteraciones */
+        .alterations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .alteration-card {
+            background: var(--bg-white);
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            box-shadow: var(--shadow-light);
+        }
+
+        .alteration-card:hover {
+            border-color: var(--color-primary-light);
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-3px);
+            z-index: 100;
+        }
+
+        .alteration-card:focus {
+            outline: 2px solid var(--color-primary);
+            z-index: 1000;
+        }
+
+        .alteration-card.acidosis-resp {
+            border-left: 5px solid var(--acidosis-resp);
+        }
+
+        .alteration-card.acidosis-meta {
+            border-left: 5px solid var(--acidosis-meta);
+        }
+
+        .alteration-card.alcalosis-resp {
+            border-left: 5px solid var(--alcalosis-resp);
+        }
+
+        .alteration-card.alcalosis-meta {
+            border-left: 5px solid var(--alcalosis-meta);
+        }
+
+        .alteration-card.hipoxemia {
+            border-left: 5px solid var(--hipoxemia);
+        }
+
+        .alteration-card.hipercapnia {
+            border-left: 5px solid var(--hipercapnia);
+        }
+
+        .alteration-card.hiperlactatemia {
+            border-left: 5px solid var(--hiperlactatemia);
+        }
+
+        .alteration-card.hiperglucemia {
+            border-left: 5px solid var(--hiperglucemia);
+        }
+
+        .alteration-card.hipopotasemia {
+            border-left: 5px solid var(--hipopotasemia);
+        }
+
+        .alteration-card.hiperpotasemia {
+            border-left: 5px solid var(--hiperpotasemia);
+        }
+
+        .alteration-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .alteration-type {
+            font-size: 0.9em;
+            color: var(--text-medium);
+            margin-bottom: 15px;
+        }
+
+        /* Tooltips responsivos */
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-heavy);
+            z-index: 10000;
+            width: 350px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Tooltips hacia abajo para ácido-base y respiratorias */
+        .alteration-card.acidosis-resp .tooltip,
+        .alteration-card.acidosis-meta .tooltip,
+        .alteration-card.alcalosis-resp .tooltip,
+        .alteration-card.alcalosis-meta .tooltip,
+        .alteration-card.hipoxemia .tooltip,
+        .alteration-card.hipercapnia .tooltip {
+            top: 100%;
+            margin-top: 10px;
+        }
+
+        .alteration-card.acidosis-resp .tooltip::before,
+        .alteration-card.acidosis-meta .tooltip::before,
+        .alteration-card.alcalosis-resp .tooltip::before,
+        .alteration-card.alcalosis-meta .tooltip::before,
+        .alteration-card.hipoxemia .tooltip::before,
+        .alteration-card.hipercapnia .tooltip::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid var(--tooltip-bg);
+        }
+
+        /* Tooltips hacia arriba para metabólicas */
+        .alteration-card.hiperlactatemia .tooltip,
+        .alteration-card.hiperglucemia .tooltip,
+        .alteration-card.hipopotasemia .tooltip,
+        .alteration-card.hiperpotasemia .tooltip {
+            bottom: 100%;
+            margin-bottom: 10px;
+        }
+
+        .alteration-card.hiperlactatemia .tooltip::before,
+        .alteration-card.hiperglucemia .tooltip::before,
+        .alteration-card.hipopotasemia .tooltip::before,
+        .alteration-card.hiperpotasemia .tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid var(--tooltip-bg);
+        }
+
+        /* Mostrar tooltip cuando la tarjeta tiene focus */
+        .alteration-card:focus .tooltip {
+            display: block;
+        }
+
+        .tooltip-header {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            border-bottom: 2px solid var(--text-light);
+            padding-bottom: 8px;
+        }
+
+        .tooltip-param {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .tooltip-param-name {
+            font-weight: bold;
+            color: var(--tooltip-param);
+        }
+
+        .tooltip-param-value {
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-low {
+            background: var(--status-low);
+        }
+
+        .status-high {
+            background: var(--status-high);
+        }
+
+        .status-normal {
+            background: var(--status-normal);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .quick-action-btn {
+            padding: 10px 20px;
+            background: var(--color-primary-light);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+            }
+
+            .values-grid,
+            .alterations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* SOLUCIÓN MEJORADA PARA MÓVILES */
+            .tooltip {
+                width: 280px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--tooltip-bg) !important;
+                opacity: 1 !important;
+                position: fixed !important;
+                z-index: 10000;
+                bottom: 20px !important;
+                top: auto !important;
+                margin: 0 !important;
+            }
+
+            .alteration-card .tooltip::before {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-top: 10px solid var(--tooltip-bg);
+                border-bottom: none;
+            }
+
+            /* Asegurar que el tooltip tenga el z-index más alto en móviles */
+            .alteration-card:focus {
+                z-index: 10001;
+            }
+
+            /* Ajuste para el icono de inicio en móviles */
+            .home-link {
+                width: 45px;
+                height: 45px;
+                top: -10px;
+                right: -5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .tab-button {
+                padding: 12px 20px;
+            }
+
+            .tooltip {
+                width: 90vw;
+                max-width: 300px;
+                left: 5vw;
+                transform: none;
+                background: var(--tooltip-bg) !important;
+                opacity: 1 !important;
+            }
+
+            .home-link {
+                width: 40px;
+                height: 40px;
+                top: -15px;
+                right: -10px;
+            }
+
+            .home-link i {
+                font-size: 1.2em;
+            }
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            max-width: 1000px;
+            margin: 40px auto 20px;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            font-size: var(--font-pequeño);
+            border-radius: var(--radio);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Icono de enlace a la página principal - ANIMADO -->
+        <a href="https://jolejuma.es/evolucion-uci/index.html" class="home-link" title="Volver a la página principal">
+            <i class="fas fa-home"></i>
+        </a>
+
+        <header>
+            <h1><i class="fas fa-heartbeat"></i> Valores Normales de Gasometría</h1>
+            <p class="subtitle">Referencia rápida para gasometría arterial y venosa</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="arterial">
+                <i class="fas fa-heart"></i> Gasometría Arterial
+            </button>
+            <button class="tab-button" data-tab="venosa">
+                <i class="fas fa-vial"></i> Gasometría Venosa
+            </button>
+            <button class="tab-button" data-tab="alteraciones">
+                <i class="fas fa-exclamation-triangle"></i> Alteraciones Comunes
+            </button>
+        </div>
+
+        <div class="content">
+            <!-- Contenido de gasometría arterial y venosa -->
+            <div id="arterial-content" class="tab-content active">
+                <div class="section">
+                    <h2><i class="fas fa-list"></i> Parámetros Básicos</h2>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="parameter-name">pH</div>
+                            <div class="parameter-value">7.35 - 7.45</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">PaO₂</div>
+                            <div class="parameter-value">80 - 100 mmHg</div>
+                            <div class="parameter-description">Presión parcial de oxígeno</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">PaCO₂</div>
+                            <div class="parameter-value">35 - 45 mmHg</div>
+                            <div class="parameter-description">Presión parcial de CO₂</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">HCO₃⁻</div>
+                            <div class="parameter-value">22 - 26 mEq/L</div>
+                            <div class="parameter-description">Bicarbonato</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">SaO₂</div>
+                            <div class="parameter-value">95 - 100%</div>
+                            <div class="parameter-description">Saturación de oxígeno</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">BE</div>
+                            <div class="parameter-value">-2 a +2 mEq/L</div>
+                            <div class="parameter-description">Exceso de base</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2><i class="fas fa-flask"></i> Electrolitos</h2>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="parameter-name">Na⁺</div>
+                            <div class="parameter-value">135 - 145 mEq/L</div>
+                            <div class="parameter-description">Sodio</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">K⁺</div>
+                            <div class="parameter-value">3.5 - 5.0 mEq/L</div>
+                            <div class="parameter-description">Potasio</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">Cl⁻</div>
+                            <div class="parameter-value">98 - 106 mEq/L</div>
+                            <div class="parameter-description">Cloro</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2><i class="fas fa-chart-line"></i> Otros Parámetros</h2>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="parameter-name">Hematocrito</div>
+                            <div class="parameter-value">♂ 40-54% | ♀ 37-47%</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">Glucosa</div>
+                            <div class="parameter-value">70 - 100 mg/dL</div>
+                            <div class="parameter-description">En ayunas</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">Lactato</div>
+                            <div class="parameter-value">0.5 - 2.0 mEq/L</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2><i class="fas fa-tint"></i> CO-oximetría</h2>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="parameter-name">tHb</div>
+                            <div class="parameter-value">♂ 13.5-17.5 | ♀ 12.0-16.0 g/dL</div>
+                            <div class="parameter-description">Hemoglobina total</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">O₂Hb</div>
+                            <div class="parameter-value">94 - 98%</div>
+                            <div class="parameter-description">Oxihemoglobina</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">COHb</div>
+                            <div class="parameter-value">&lt; 1.5% (no fumadores)</div>
+                            <div class="parameter-description">Carboxihemoglobina</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">MetHb</div>
+                            <div class="parameter-value">&lt; 1.5%</div>
+                            <div class="parameter-description">Metahemoglobina</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">HHb</div>
+                            <div class="parameter-value">2 - 6%</div>
+                            <div class="parameter-description">Desoxihemoglobina</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">sO₂</div>
+                            <div class="parameter-value">95 - 100%</div>
+                            <div class="parameter-description">Saturación funcional</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="venosa-content" class="tab-content">
+                <div class="section">
+                    <h2><i class="fas fa-list"></i> Parámetros Básicos</h2>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="parameter-name">pH</div>
+                            <div class="parameter-value">7.32 - 7.42</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">PvO₂</div>
+                            <div class="parameter-value">35 - 45 mmHg</div>
+                            <div class="parameter-description">Presión parcial de oxígeno</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">PvCO₂</div>
+                            <div class="parameter-value">41 - 51 mmHg</div>
+                            <div class="parameter-description">Presión parcial de CO₂</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">HCO₃⁻</div>
+                            <div class="parameter-value">22 - 26 mEq/L</div>
+                            <div class="parameter-description">Bicarbonato</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">SvO₂</div>
+                            <div class="parameter-value">60 - 80%</div>
+                            <div class="parameter-description">Saturación venosa mixta</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="parameter-name">BE</div>
+                            <div class="parameter-value">-2 a +2 mEq/L</div>
+                            <div class="parameter-description">Exceso de base</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="alteraciones-content" class="tab-content">
+                <div class="section">
+                    <h2><i class="fas fa-exclamation-circle"></i> Alteraciones Ácido-Base</h2>
+                    <div class="alterations-grid">
+                        <div class="alteration-card acidosis-resp" tabindex="0">
+                            <div class="alteration-title">Acidosis Respiratoria</div>
+                            <div class="alteration-type">Trastorno primario respiratorio</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Acidosis Respiratoria</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH
+                                    </div>
+                                    <div class="tooltip-param-value">&lt; 7.35</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>PaCO₂</div>
+                                    <div class="tooltip-param-value">&gt; 45 mmHg</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-value">Normal o ligeramente elevado (compensación)</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">EPOC, depresión respiratoria, obstrucción vía aérea
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card acidosis-meta" tabindex="0">
+                            <div class="alteration-title">Acidosis Metabólica</div>
+                            <div class="alteration-type">Trastorno primario metabólico</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Acidosis Metabólica</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH
+                                    </div>
+                                    <div class="tooltip-param-value">&lt; 7.35</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-value">&lt; 22 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>BE
+                                    </div>
+                                    <div class="tooltip-param-value">&lt; -2 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>PaCO₂</div>
+                                    <div class="tooltip-param-value">Normal o disminuido (compensación)</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Cetoacidosis, insuficiencia renal, diarrea, shock
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card alcalosis-resp" tabindex="0">
+                            <div class="alteration-title">Alcalosis Respiratoria</div>
+                            <div class="alteration-type">Trastorno primario respiratorio</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Alcalosis Respiratoria</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>pH
+                                    </div>
+                                    <div class="tooltip-param-value">&gt; 7.45</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>PaCO₂</div>
+                                    <div class="tooltip-param-value">&lt; 35 mmHg</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-value">Normal o ligeramente disminuido (compensación)
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Hiperventilación, ansiedad, dolor, hipoxemia</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card alcalosis-meta" tabindex="0">
+                            <div class="alteration-title">Alcalosis Metabólica</div>
+                            <div class="alteration-type">Trastorno primario metabólico</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Alcalosis Metabólica</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>pH
+                                    </div>
+                                    <div class="tooltip-param-value">&gt; 7.45</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>HCO₃⁻(c)</div>
+                                    <div class="tooltip-param-value">&gt; 26 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>BE
+                                    </div>
+                                    <div class="tooltip-param-value">&gt; +2 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-normal"></span>PaCO₂</div>
+                                    <div class="tooltip-param-value">Normal o aumentado (compensación)</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Vómitos, diuréticos, pérdida de H⁺ gástrico</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2><i class="fas fa-lungs"></i> Alteraciones de Oxigenación</h2>
+                    <div class="alterations-grid">
+                        <div class="alteration-card hipoxemia" tabindex="0">
+                            <div class="alteration-title">Hipoxemia</div>
+                            <div class="alteration-type">Déficit de oxigenación</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Hipoxemia</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>PaO₂</div>
+                                    <div class="tooltip-param-value">&lt; 80 mmHg</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-low"></span>SaO₂</div>
+                                    <div class="tooltip-param-value">&lt; 95%</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Clasificación:</div>
+                                    <div class="tooltip-param-value">
+                                        Leve: 60-79 mmHg<br>
+                                        Moderada: 40-59 mmHg<br>
+                                        Severa: &lt; 40 mmHg
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Neumonía, EPOC, edema pulmonar, embolia</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card hipercapnia" tabindex="0">
+                            <div class="alteration-title">Hipercapnia</div>
+                            <div class="alteration-type">Exceso de CO₂</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Hipercapnia</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>PaCO₂</div>
+                                    <div class="tooltip-param-value">&gt; 45 mmHg</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Clasificación:</div>
+                                    <div class="tooltip-param-value">
+                                        Leve: 45-55 mmHg<br>
+                                        Moderada: 55-70 mmHg<br>
+                                        Severa: &gt; 70 mmHg
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Hipoventilación, EPOC avanzado, fallo respiratorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2><i class="fas fa-chart-bar"></i> Alteraciones Metabólicas</h2>
+                    <div class="alterations-grid">
+                        <div class="alteration-card hiperlactatemia" tabindex="0">
+                            <div class="alteration-title">Hiperlactatemia</div>
+                            <div class="alteration-type">Elevación de lactato</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Hiperlactatemia</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>Lactato</div>
+                                    <div class="tooltip-param-value">&gt; 2.0 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Clasificación:</div>
+                                    <div class="tooltip-param-value">
+                                        Leve: 2-4 mEq/L<br>
+                                        Moderada: 4-8 mEq/L<br>
+                                        Severa: &gt; 8 mEq/L
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>pH
+                                    </div>
+                                    <div class="tooltip-param-value">Puede estar disminuido (acidosis láctica)</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Shock, sepsis, isquemia tisular, ejercicio intenso
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card hiperglucemia" tabindex="0">
+                            <div class="alteration-title">Hiperglucemia</div>
+                            <div class="alteration-type">Elevación de glucosa</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Hiperglucemia</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span
+                                          class="status-indicator status-high"></span>Glucosa</div>
+                                    <div class="tooltip-param-value">&gt; 100 mg/dL (ayunas)</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Clasificación:</div>
+                                    <div class="tooltip-param-value">
+                                        Leve: 100-140 mg/dL<br>
+                                        Moderada: 140-200 mg/dL<br>
+                                        Severa: &gt; 200 mg/dL
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Asociación:</div>
+                                    <div class="tooltip-param-value">Puede asociarse con acidosis metabólica en
+                                        cetoacidosis diabética</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Diabetes, estrés, sepsis, corticoides</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card hipopotasemia" tabindex="0">
+                            <div class="alteration-title">Hipopotasemia</div>
+                            <div class="alteration-type">Déficit de potasio</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Hipopotasemia</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-low"></span>K⁺
+                                    </div>
+                                    <div class="tooltip-param-value">&lt; 3.5 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Clasificación:</div>
+                                    <div class="tooltip-param-value">
+                                        Leve: 3.0-3.5 mEq/L<br>
+                                        Moderada: 2.5-3.0 mEq/L<br>
+                                        Severa: &lt; 2.5 mEq/L
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Asociación:</div>
+                                    <div class="tooltip-param-value">Frecuente en alcalosis metabólica</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Diuréticos, vómitos, diarrea, alcalosis</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alteration-card hiperpotasemia" tabindex="0">
+                            <div class="alteration-title">Hiperpotasemia</div>
+                            <div class="alteration-type">Exceso de potasio</div>
+                            <div class="tooltip">
+                                <div class="tooltip-header">Hiperpotasemia</div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name"><span class="status-indicator status-high"></span>K⁺
+                                    </div>
+                                    <div class="tooltip-param-value">&gt; 5.0 mEq/L</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Clasificación:</div>
+                                    <div class="tooltip-param-value">
+                                        Leve: 5.0-6.0 mEq/L<br>
+                                        Moderada: 6.0-7.0 mEq/L<br>
+                                        Severa: &gt; 7.0 mEq/L
+                                    </div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Asociación:</div>
+                                    <div class="tooltip-param-value">Frecuente en acidosis metabólica</div>
+                                </div>
+                                <div class="tooltip-param">
+                                    <div class="tooltip-param-name">Causas comunes:</div>
+                                    <div class="tooltip-param-value">Insuficiencia renal, acidosis, hemólisis,
+                                        rabdomiólisis</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>💡 Nota:</strong> Haz clic en cada alteración para ver los valores específicos y las causas
+                    comunes. Para cerrar el tooltip, haz clic fuera de él o en otra alteración. Recuerda que pueden
+                    existir trastornos mixtos donde se combinan varias alteraciones simultáneamente. La interpretación
+                    clínica siempre debe considerar el contexto del paciente.
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>Nota importante:</strong> Los valores pueden variar ligeramente según el laboratorio y el
+                analizador utilizado. Siempre consulte los rangos de referencia específicos de su institución.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p> 2025 Valores Normales Gasometría </p>
+        <p>C.G.Francisco Manuel,M.G.José Antonio,M.M. Francisco Javier</p>
+    </footer>
+
+    <script>
+        // Función para cambiar entre pestañas
+        document.querySelectorAll('.tab-button, .quick-action-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const tabName = this.getAttribute('data-tab');
+
+                // Remover clase active de todos los botones
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Ocultar todo el contenido
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Activar el botón clickeado
+                document.querySelector(`.tab-button[data-tab="${tabName}"]`).classList.add('active');
+
+                // Mostrar el contenido correspondiente
+                document.getElementById(tabName + '-content').classList.add('active');
+            });
+        });
+
+        // Mejorar la experiencia táctil en dispositivos móviles
+        document.addEventListener('touchstart', function (e) {
+            const clickedCard = e.target.closest('.alteration-card');
+
+            // Cerrar todos los tooltips primero
+            document.querySelectorAll('.alteration-card').forEach(card => {
+                if (card !== clickedCard) {
+                    card.blur();
+                }
+            });
+
+            // Si se hizo clic en una tarjeta, alternar su estado
+            if (clickedCard) {
+                // Prevenir el comportamiento por defecto para evitar doble activación
+                e.preventDefault();
+
+                // Si ya está enfocada, quitamos el foco
+                if (clickedCard === document.activeElement) {
+                    clickedCard.blur();
+                } else {
+                    // Si no está enfocada, le damos foco
+                    clickedCard.focus();
+                }
+            }
+        });
+
+        // Cerrar tooltips al hacer clic fuera de ellos
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.alteration-card')) {
+                document.querySelectorAll('.alteration-card').forEach(card => {
+                    card.blur();
+                });
+            }
+        });
+
+        // Función para forzar recarga sin caché cuando sea necesario
+        function forceReload() {
+            // Verificar si la página se está cargando desde caché
+            if (performance.navigation.type === 2 || 
+                (performance.getEntriesByType('navigation')[0] && 
+                 performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                // Recargar la página sin caché
+                window.location.reload(true);
+            }
+        }
+
+        // Ejecutar al cargar la página
+        window.addEventListener('load', forceReload);
+
+        // También ejecutar cuando se detecte navegación hacia atrás/adelante
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                forceReload();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="description" content="Información relacionada con la hoja Evolución UCI.">
+  <meta name="author" content="Equipo de Desarrollo - Evolución UCI">
+    <link rel="icon" href="../img/info.png?v=3" type="image/png" />
+
+  <title>Info – Evolución de Enfermería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #f4f7fa;
+      --primary: #2d6b3a;
+      --secondary: #368f3f;
+      --text: #2e2925;
+      --white: #fff;
+      --radius: 8px;
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:"Montserrat",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
+      line-height:1.5;
+    }
+    h1 {
+      text-align:center;
+      margin-bottom:10px;
+      font-size:2rem;
+      color:var(--primary);
+    }
+    .subtitle {
+      text-align:center;
+      color:#666;
+      margin-bottom:30px;
+    }
+    .features {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+      max-width:900px;
+      margin:0 auto 40px;
+    }
+    .feature {
+      background:var(--white);
+      border-radius:var(--radius);
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      padding:20px;
+      transition:transform .2s;
+    }
+    .feature:hover { transform:translateY(-5px); }
+    .feature i {
+      font-size:2rem;
+      color:var(--secondary);
+      margin-bottom:10px;
+    }
+    .feature h3 {
+      font-size:1.1rem;
+      margin-bottom:8px;
+      color:var(--primary);
+    }
+    .feature p { font-size:.95rem; color:#444; }
+    footer {
+      text-align:center;
+      margin-top:40px;
+      font-size:.8rem;
+      color:#999;
+    }
+    /* Botón Volver */
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 8px 15px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  font-family: "Montserrat", sans-serif;
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+}
+
+/* Ajuste para el título principal */
+body {
+  padding-top: 60px;
+}
+
+@media (max-width: 600px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+<body>
+    <!-- Botón Volver -->
+  <a href="https://jolejuma.es/evolucion-uci/index.html" class="back-button">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+
+  <h1>Evolución de Enfermería</h1>
+  <p class="subtitle">Funcionalidades disponibles en este módulo</p>
+
+  <div class="features">
+    <div class="feature">
+      <i class="fas fa-file-circle-plus"></i>
+      <h3>Crear Informe</h3>
+      <p>Genera un nuevo informe para el box seleccionado con fecha, hora y contenido.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-pen-to-square"></i>
+      <h3>Modificar Informe</h3>
+      <p>Edición en tiempo real de informes existentes. Guarda cambios con un nuevo ID o actualiza el actual.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-list-ul"></i>
+      <h3>Listar Informes</h3>
+      <p>Visualiza en un desplegable todos los informes guardados, filtrados por usuario y box.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-file-export"></i>
+      <h3>Rescatar Contenido</h3>
+      <p>Carga los datos de un informe en los textarea para revisarlo o continuar editando.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-trash-can"></i>
+      <h3>Eliminar Informe Aislado</h3>
+      <p>Borra un único informe seleccionado de la base de datos.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-broom"></i>
+      <h3>Eliminar Varios Informes</h3>
+      <p>Vacía todos los informes pertenecientes a un box de forma masiva.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-save"></i>
+      <h3>Autosave / Borrador</h3>
+      <p>Guarda automáticamente el contenido en borradores locales o en servidor mientras editas.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-copy"></i>
+      <h3>Copiar Informe</h3>
+      <p>Copia al portapapeles el informe completo (con formato HTML o texto plano).</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-print"></i>
+      <h3>Imprimir Informe</h3>
+      <p>Genera vista de impresión adaptada a turno diurno/nocturno y turno alternativo, el del turno contrario y lanza diálogo de impresión.</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Zonas Especiales</h3>
+        <p>
+          Añade o elimina secciones especializadas para situaciones críticas:
+          ingresos, eventos adversos, vigilancia intensiva y observaciones
+          especiales según las necesidades del momento.
+        </p>
+      </div>
+    <div class="feature">
+  <i class="fas fa-mobile-alt"></i>
+  <h3>Acceso Multiplataforma</h3>
+  <p>Accede y gestiona los informes desde cualquier dispositivo (ordenador, tablet o móvil) manteniendo los datos sincronizados en tiempo real.</p>
+</div>
+<div class="feature">
+    <i class="fas fa-shield-alt"></i>
+    <h3>Privacidad Garantizada</h3>
+     <p>No se almacenan datos identificables de los pacientes, protegiendo su privacidad y cumpliendo con las normativas vigentes.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      &copy; 2025 Informe Evolución Enfermería. Todos los derechos
+      reservados.
+      <br>C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br>
+    </p>
+  </footer>
+
+</body>
+</html>

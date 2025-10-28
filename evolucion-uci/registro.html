@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="description" content="Formulario de registro de usuarios para el sistema de Evolución UCI.">
+  <meta name="author" content="Equipo de Desarrollo - Evolución UCI">
+  <link rel="icon" href="img/registrado.png?v=3" type="image/png" />
+
+  <title>Registro de Usuarios</title>
+
+  <!-- Fuentes y estilos externos -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root {
+      --bg: #f4f7fa;   
+      --primary: #2d6b3a;
+      --secondary: #368f3f;
+      --text: #2e2925;
+      --white: #fff;
+      --radius: 8px;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:"Montserrat",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
+      text-align:center;
+    }
+
+    .form-card {
+      background: var(--white);
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+
+    .form-card h2 {
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    .form-card label {
+      display: block;
+      text-align: left;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .form-card input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .form-card button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: var(--primary);
+      border: none;
+      border-radius: 5px;
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-card button:hover { background: var(--secondary); }
+
+    /* Botón Volver */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 8px 15px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: bold;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .back-button:hover { transform: translateX(-3px); }
+
+    @media (max-width: 600px) { .form-card { width: 90%; } }
+    #clave {
+  background-color: #f9ffe0;
+  border: 1px solid #d5d594;
+}
+  </style>
+</head>
+<body>
+
+  <!-- Botón Volver -->
+  <a href="https://jolejuma.es/evolucion-uci/index.html"  class="back-button">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+
+  <!-- Tarjeta del formulario -->
+  <div class="form-card">
+    <h2>Registro de Usuarios</h2>
+    <form id="registroForm">
+      <label for="nombre">Nombre Completo</label>
+      <input type="text" id="nombre" name="nombre" required>
+
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" pattern="[0-9\s\-\+\(\)]+" required>
+
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" name="usuario" required>
+
+      <label for="clave">Contraseña (máx. 8 caracteres)</label>
+        <input type="text" id="clave" name="clave" maxlength="8" required>
+      <button type="submit">Enviar Solicitud</button>
+    </form>
+  </div>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>   
+  <script>
+    // ⚠️ Sustituye los valores entre comillas por los tuyos
+    const PUBLIC_KEY   = "TNO4skEHmYXo-pE6D";   // p.ej. "qEm0A1BCD..."
+    const SERVICE_ID   = "service_lkgoh5p"; // el que aparece en tu panel
+const TEMPLATE_ID = "template_1yf6t7h";
+    emailjs.init(PUBLIC_KEY);
+
+    document.getElementById("registroForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const datos = {
+        nombre:   this.nombre.value.trim(),
+        telefono: this.telefono.value.trim(),
+        usuario:  this.usuario.value.trim(),
+        clave:    this.clave.value.trim()
+      };
+
+      emailjs.send(SERVICE_ID, TEMPLATE_ID, datos)
+        .then(() => {
+          alert("¡Solicitud enviada correctamente!");
+          window.location.href = "https://jolejuma.es/evolucion-uci/index.html";   
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error al enviar la solicitud. Inténtalo más tarde.");
+        });
+    });
+
+    // Validación en tiempo real para el campo de teléfono
+    function validatePhoneInput(event) {
+      const allowedKeys = /[0-9\s\-\+\(\)]/; // Caracteres permitidos: números, espacio, -, +, (
+      const key = event.key;
+
+      // Permitir navegación básica (teclas de flecha, retroceso, etc.)
+      if (
+        event.key === "Backspace" ||
+        event.key === "Delete" ||
+        event.key === "ArrowLeft" ||
+        event.key === "ArrowRight"
+      ) {
+        return true;
+      }
+
+      // Validar si el carácter ingresado es uno de los permitidos
+      if (!allowedKeys.test(key)) {
+        event.preventDefault(); // Bloquear la entrada del carácter no permitido
+      }
+    }
+
+    // Asignar evento al campo de teléfono
+    document.getElementById("telefono").addEventListener("keydown", validatePhoneInput);
+  </script>
+</body>
+</html>

@@ -1,0 +1,2907 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <meta
+      name="description"
+      content="Registro de informes  de Evolución UCI."
+    />
+    <meta name="author" content="Equipo de Desarrollo - Evolución UCI" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link rel="icon" href="evolucion.png?v=3" type="image/png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <title>Evolución/Informes</title>
+
+    <style>
+      :root {
+        /* colores comunes */
+        --fuente-active: #2e2925;
+        --text-area: #ffffff;
+        --color-primario: #2d6b3a;
+        --color-secundario: #368f3f;
+        --color-hover: #489950;
+        --radio: 10px;
+
+        /* uci */
+        --fuente: #368f3f;
+        --hover: #d9ebd8;
+        --borde: #4fa66a;
+        --fuente15: #79b47f;
+        --btn: #489950;
+        --color-fondo: #f4f7fa;
+
+        /* OBSERVACION */
+
+        /* --fuente: #b62329;
+        --hover: #d9ebd8;
+        --borde: #d00000;
+        --fuente15: #b84549;
+        --btn: #d0000067;
+        --color-fondo: #f2efef; */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        outline: none;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 20px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: var(--color-fondo);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: var(--fuente);
+      }
+
+      .box-selector {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .box-selector button {
+        flex: 0 0 auto;
+        margin: 4px;
+      }
+
+      .box-selector button {
+        padding: 10px 15px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--fuente15);
+        color: var(--text-area);
+        min-width: 80px;
+      }
+
+      .box-selector button:hover {
+        background-color: var(--text-area);
+        color: var(--fuente);
+        transition: all 0.5s ease;
+      }
+
+      .box-selector button.active {
+        background-color: var(--fuente);
+        color: var(--fuente-active);
+        box-shadow: 0 0 5px #0000004d;
+        transition: all 0.5s ease;
+      }
+
+      .formulario {
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 20px;
+      }
+
+      .campo {
+        margin-bottom: 15px;
+        text-align: center;
+        position: relative;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .campo label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: var(--fuente);
+      }
+
+      .campo textarea {
+        width: 95%;
+        min-height: 80px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid var(--borde);
+        border-radius: 5px;
+        resize: vertical;
+        background-color: var(--text-area);
+        color: var(--fuente);
+        outline: none;
+        overflow: auto;
+        overflow-y: hidden;
+      }
+
+      .campo textarea.habilitado {
+        background-color: var(--text-area) !important;
+        color: var(--fuente) !important;
+        cursor: text !important;
+        pointer-events: auto !important;
+      }
+
+      .campo textarea:not(:disabled) {
+        background-color: var(--text-area) !important;
+        color: var(--fuente) !important;
+        cursor: text !important;
+      }
+
+      .campo textarea:disabled {
+        background-color: var(--color-fondo) !important;
+        border: 1px solid var(--borde) !important;
+        color: #6c757d !important;
+        cursor: not-allowed;
+      }
+
+      .contador-global {
+        text-align: right;
+        font-weight: 400;
+        font-size: 10px;
+        color: var(--fuente);
+        margin-top: -10px;
+        margin-bottom: 10px;
+      }
+
+      .main-actions-container,
+      .print-actions-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      .main-actions-container button,
+      .print-actions-container button,
+      .print-actions-container .btn-alternativo,
+      .copiar-informe-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--btn);
+        color: var(--fuente-active);
+        flex: 1;
+        min-width: 120px;
+        font-weight: bold;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      .main-actions-container button:hover,
+      .print-actions-container button:hover,
+      .print-actions-container .btn-alternativo:hover,
+      .copiar-informe-btn:hover {
+        background-color: var(--fuente);
+        color: var(--text-area);
+      }
+
+      .print-actions-container .btn-alternativo {
+        background-color: var(--fuente);
+        color: var(--fuente-active);
+      }
+      .print-actions-container .btn-alternativo:hover {
+        background-color: var(--fuente-active);
+      }
+
+      .main-actions-container button i,
+      .eliminar-buttons-row .eliminarInforme i,
+      .copiar-informe-btn i {
+        color: var(--text-area) !important; /* Forzar color blanco/claro */
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      .main-actions-container button i,
+      .print-actions-container button i,
+      .print-actions-container .btn-alternativo i,
+      .copiar-informe-btn i {
+        color: var(--text-area) !important;
+      }
+      .resultado {
+        margin-top: 20px;
+        padding: 20px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 12px;
+        line-height: 1.2;
+        display: none;
+        background-color: #f5f5f5;
+        width: 100%;
+        max-width: 700px;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        border-radius: 10px;
+        box-shadow: none !important;
+      }
+
+      .resultado .cabecera {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 4px;
+      }
+
+      .resultado .label-strong {
+        font-weight: 700;
+      }
+
+      .resultado p {
+        margin: 2px 0 !important;
+        line-height: 1.2;
+      }
+
+      .imprimir-cabecera {
+        margin: 0;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.3;
+        margin-bottom: 4px;
+      }
+
+      .imprimir-label-strong {
+        font-weight: 700;
+      }
+
+      .imprimir-texto-normal {
+        font-weight: normal;
+      }
+
+      .resultado .imprimir-texto-normal {
+        font-weight: normal;
+      }
+
+      .no-especificado {
+        font-style: italic;
+        color: #666;
+      }
+
+      .imprimir-parrafo {
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      #mensaje-box-seleccionado {
+        text-align: center;
+        font-weight: bold;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        color: var(--fuente);
+        background-color: var(--text-area);
+        border: 1px solid var(--fuente);
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 16px;
+        display: none;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: none !important;
+      }
+
+      #box-indicador-flotante {
+        position: fixed;
+        left: 10px;
+        top: 10px;
+        z-index: 1000;
+        display: none;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: normal;
+        color: var(--fuente);
+        background-color: transparent;
+        border-radius: 4px;
+        text-align: center;
+        line-height: 1.3;
+        backdrop-filter: blur(2px);
+        border: 1px solid var(--fuente);
+        max-width: 100px;
+      }
+
+      @media (max-width: 768px) {
+        #box-indicador-flotante {
+          font-size: 11px;
+          padding: 3px 6px;
+          max-width: 80px;
+          left: 5px;
+          top: 5px;
+        }
+      }
+
+      #usuario-indicador-flotante {
+        font-size: 10px;
+        font-weight: normal;
+        opacity: 0.8;
+        margin-top: 1px;
+        display: block;
+      }
+
+      @media (max-width: 480px) {
+        #usuario-indicador-flotante {
+          font-size: 9px;
+        }
+      }
+
+      #mensaje-turno {
+        text-align: center;
+        font-weight: bold;
+        margin-top: 10px;
+        color: var(--fuente);
+        display: none;
+        font-size: 14px;
+      }
+
+      #mensajeConfirmacion {
+        text-align: center;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 5px;
+        font-weight: bold;
+        display: none;
+        width: 100%;
+        max-width: 600px;
+        box-sizing: border-box;
+      }
+
+      .fecha-container {
+        font-weight: bold;
+        margin-top: 20px;
+        color: var(--fuente);
+        position: relative;
+        overflow: visible !important;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      .select-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        gap: 8px;
+      }
+
+      .eliminar-buttons-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 600px;
+        flex-wrap: wrap;
+      }
+
+      #informesGuardados,
+      .eliminar-buttons-row .eliminarInforme {
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--fuente15);
+        color: var(--fuente-active);
+        flex: 1;
+        min-width: 140px;
+        font-weight: bold;
+        transition: background-color 0.3s ease-in-out;
+        margin: 0;
+      }
+
+      #informesGuardados:hover,
+      .eliminar-buttons-row .eliminarInforme:hover {
+        background-color: var(--btn);
+        color: var(--text-area);
+      }
+
+      #aviso-1200 {
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        background-color: #ffefc1;
+        color: #b35900;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-left: 5px solid #ffcc00;
+        border-radius: 4px;
+        font-size: 13px;
+        text-align: center;
+        max-width: 90%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+        display: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .contador-aviso {
+        color: var(--fuente) !important;
+      }
+
+      .contador-alerta {
+        color: red !important;
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .main-actions-container button i,
+        .eliminar-buttons-row .eliminarInforme i,
+        .copiar-informe-btn i {
+          color: var(--text-area) !important;
+
+          font-size: 20px;
+          margin-right: 0;
+          text-indent: 0;
+        }
+      }
+
+      #informesGuardados optgroup {
+        font-weight: bold;
+        line-height: 1.6;
+        color: var(--text-area);
+        background-color: var(--fuente15);
+        padding: 4px 12px;
+      }
+
+      #informesGuardados option {
+        padding: 6px 12px;
+        white-space: nowrap;
+      }
+
+      .no-especificado {
+        font-style: italic;
+        color: #666;
+      }
+
+      #informesGuardados {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%232e2925%22%20d%3D%22M287%20197.9c-3.6%203.6-7.8%205.4-12.1%205.4s-8.5-1.8-12.1-5.4L146.2%2091.2%2029.6%20197.9c-3.6%203.6-7.8%205.4-12.1%205.4s-8.5-1.8-12.1-5.4c-7.2-7.2-7.2-18.4%200-25.6L134.1%206.5c7.2-7.2%2018.4-7.2%2025.6%200l108.7%20108.7c7.2%207.2%207.2%2018.4%200%2025.6z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+        padding-right: 30px;
+        text-align: center;
+        text-align-last: center;
+        padding-left: 30px;
+      }
+
+      #informesGuardados:focus::-webkit-scrollbar,
+      #informesGuardados:active::-webkit-scrollbar,
+      #informesGuardados:hover::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+      }
+
+      #informesGuardados {
+        scrollbar-width: none;
+      }
+
+      #informesGuardados option {
+        white-space: normal;
+      }
+
+      .select-icon {
+        font-size: 18px;
+        color: var(--fuente);
+        display: none;
+      }
+
+      .icono-container {
+        position: relative;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        margin-bottom: 10px;
+      }
+
+      .icono {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      .icono.verde {
+        opacity: 1;
+      }
+
+      .icono.azul {
+        opacity: 0;
+      }
+
+      .icono-container:hover .verde {
+        opacity: 0;
+      }
+
+      .icono-container:hover .azul {
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .print-actions-container {
+          display: none;
+        }
+
+        .main-actions-container {
+          flex-direction: row;
+          justify-content: space-evenly;
+          width: 100%;
+          max-width: 90%;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .eliminar-buttons-row {
+          flex-direction: row;
+          justify-content: space-evenly;
+          width: 100%;
+          max-width: 90%;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .main-actions-container button,
+        .eliminar-buttons-row .eliminarInforme,
+        .copiar-informe-btn {
+          font-size: 0 !important; /* ← SOLUCIÓN: oculta texto pero no iconos */
+          overflow: visible;
+          white-space: nowrap;
+          padding: 10px;
+          min-width: 50px;
+          max-width: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .main-actions-container button i,
+        .eliminar-buttons-row .eliminarInforme i,
+        .copiar-informe-btn i {
+          color: var(--text-area) !important;
+          font-size: 20px !important; /* ← Asegurar que el icono tenga tamaño */
+          margin-right: 0;
+          text-indent: 0;
+        }
+
+        .print-actions-container .btn-alternativo i:first-child {
+          margin-right: 4px;
+        }
+
+        #informesGuardados {
+          font-size: 11px;
+        }
+
+        #informesGuardados optgroup {
+          font-size: 9px;
+        }
+
+        #informesGuardados option {
+          font-size: 9px !important;
+        }
+
+        .select-icon {
+          display: none;
+        }
+      }
+
+      /* 0000000000000000000000000000000 */
+      /* MEDIA PRINT   */
+      /* 0000000000000000000000000000000 */
+
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 0;
+        }
+
+        body {
+          visibility: hidden;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        body > * {
+          display: none !important;
+        }
+
+        .resultado {
+          visibility: visible !important;
+          display: block !important;
+          position: absolute;
+          left: 3cm;
+          right: 0.5cm;
+          font-family: "Montserrat", sans-serif;
+          font-size: 12px;
+          line-height: 1.2;
+          background: var(--text-area) !important;
+          padding: 0 !important;
+          box-sizing: border-box;
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+        }
+
+        .resultado.diurno-print {
+          top: 2cm;
+        }
+
+        .resultado.nocturno-print {
+          top: auto;
+          bottom: 2cm;
+        }
+
+        .resultado p {
+          margin: 2px 0 !important;
+          page-break-inside: avoid;
+          line-height: 1.2;
+          margin-right: 1.5cm !important;
+          box-shadow: none !important;
+        }
+
+        .resultado p:first-of-type {
+          margin-bottom: 0px !important;
+        }
+
+        .resultado .firma-alineada {
+          text-align: right !important;
+          margin-top: 4px !important;
+          margin-bottom: 0 !important;
+          font-size: 12px !important;
+          line-height: 1.2 !important;
+          page-break-before: avoid !important;
+          page-break-after: avoid !important;
+          page-break-inside: avoid !important;
+        }
+
+        .resultado .cabecera {
+          font-size: 14px !important;
+          font-weight: 700 !important;
+          line-height: 1.3 !important;
+          margin-bottom: 4px !important;
+          margin-top: 0 !important;
+          page-break-after: avoid !important;
+          page-break-inside: avoid !important;
+        }
+
+        .resultado .label-strong {
+          font-weight: 700 !important;
+          font-size: inherit !important;
+        }
+
+        .resultado .no-especificado {
+          font-style: italic !important;
+          color: #666 !important;
+          font-size: inherit !important;
+        }
+      }
+
+      /* 0000000000000000000000000000000 */
+      /* FIN MEDIA PRINT   */
+      /* 0000000000000000000000000000000 */
+
+      #logoutBtn {
+        position: fixed !important;
+        top: 16px !important;
+        right: 16px !important;
+        left: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        background: var(--text-area);
+        color: var(--fuente);
+        border: 1px solid var(--borde);
+        padding: 8px 14px;
+        font: 600 0.75rem/1.2 "Montserrat", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 1000;
+        opacity: 0.8;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      #logoutBtn i {
+        font-size: 1rem;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      #logoutBtn span {
+        white-space: nowrap;
+        transition: opacity 0.2s ease;
+      }
+
+      #logoutBtn:hover,
+      #logoutBtn:focus-visible {
+        background: var(--fuente);
+        color: var(--text-area);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        outline: none;
+        opacity: 1;
+        transform: translateY(-1px);
+      }
+
+      /* Tablet y pantallas medianas */
+      @media (max-width: 768px) {
+        #logoutBtn {
+          top: 12px !important;
+          right: 12px !important;
+          padding: 6px 10px;
+          font-size: 0.7rem;
+          opacity: 0.7;
+        }
+
+        #logoutBtn i {
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Móviles pequeños */
+      @media (max-width: 480px) {
+        #logoutBtn {
+          top: 10px !important;
+          right: 10px !important;
+          padding: 6px 8px;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          justify-content: center;
+          opacity: 0.6;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        }
+
+        #logoutBtn span {
+          display: none;
+        }
+
+        #logoutBtn i {
+          font-size: 0.85rem;
+        }
+
+        #logoutBtn:hover,
+        #logoutBtn:focus-visible {
+          opacity: 0.9;
+          transform: none;
+        }
+      }
+
+      /* Móviles muy pequeños */
+      @media (max-width: 360px) {
+        #logoutBtn {
+          top: 8px !important;
+          right: 8px !important;
+          width: 32px;
+          height: 32px;
+          padding: 4px;
+          opacity: 0.5;
+        }
+
+        #logoutBtn i {
+          font-size: 0.8rem;
+        }
+      }
+
+      /* Animación sutil para entrada */
+      @keyframes fadeInBtn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 0.8;
+          transform: translateY(0);
+        }
+      }
+
+      #logoutBtn {
+        animation: fadeInBtn 0.3s ease-out;
+      }
+
+      .campo {
+        margin-bottom: 15px;
+        text-align: center;
+        position: relative;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .label-and-clear {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+
+      .campo label {
+        font-weight: bold;
+        display: inline-block;
+        margin: 0;
+        font-size: 14px;
+        color: var(--fuente);
+      }
+
+      .clear-btn {
+        background-color: transparent;
+        border: none;
+        color: #888;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 5px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+      }
+
+      .clear-btn:hover {
+        color: var(--fuente);
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .clear-btn i {
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .label-and-clear {
+          gap: 5px;
+        }
+
+        .clear-btn {
+          width: 20px;
+          height: 20px;
+        }
+
+        .clear-btn i {
+          font-size: 12px;
+        }
+      }
+
+      #indicador-guardando {
+        position: fixed;
+        top: 30%;
+        right: 20px;
+        background: var(--fuente);
+        color: var(--text-area);
+        padding: 8px 16px;
+        border-radius: 4px;
+        display: none;
+        z-index: 1000;
+      }
+
+      .info-icon {
+        color: var(--fuente);
+        font-size: 12px;
+        margin-left: 5px;
+        cursor: help;
+        transition: color 0.3s ease;
+      }
+
+      .info-icon:hover {
+        color: var(--fuente);
+      }
+
+      .label-and-clear .fa-info-circle {
+        color: #666;
+        font-size: 12px;
+        margin-left: 5px;
+        cursor: help;
+        transition: color 0.3s ease;
+      }
+
+      .label-and-clear .fa-info-circle:hover {
+        color: var(--fuente);
+      }
+
+      @media (max-width: 480px) {
+        .label-and-clear .fa-info-circle {
+          display: none;
+        }
+      }
+
+      /*  BOTON INFORMACION */
+
+      /* Icono de información */
+      #info-panel-icon {
+        position: fixed;
+        top: 5%;
+        right: 20px;
+        width: 32px;
+        height: 32px;
+        background-color: var(--text-area);
+        color: var(--fuente);
+        border: 1px solid var(--fuente);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: help;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1001;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      #info-panel-icon:hover {
+        background-color: var(--fuente);
+        color: var(--text-area);
+        transform: scale(1.1);
+      }
+
+      /* Panel de información */
+      #info-panel {
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        width: 350px;
+        max-width: calc(100vw - 40px);
+        background: var(--text-area);
+        border: 2px solid var(--fuente);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      #info-panel.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      #info-panel h3 {
+        margin: 0 0 15px 0;
+        color: var(--fuente);
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 1px solid var(--fuente15);
+        padding-bottom: 8px;
+      }
+
+      #info-panel .info-section {
+        margin-bottom: 15px;
+      }
+
+      #info-panel .info-section:last-child {
+        margin-bottom: 0;
+      }
+
+      #info-panel .info-title {
+        font-weight: bold;
+        color: var(--fuente);
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      #info-panel .info-title i {
+        font-size: 14px;
+        color: var(--fuente15);
+      }
+
+      #info-panel .info-content {
+        color: #555;
+        margin-left: 19px;
+      }
+
+      #info-panel .warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 6px;
+        padding: 8px;
+        margin-top: 10px;
+        color: #856404;
+        font-size: 12px;
+      }
+
+      #info-panel .warning i {
+        color: #f39c12;
+        margin-right: 5px;
+      }
+
+      @media (max-width: 768px) {
+        #info-icon {
+          top: 15%;
+          right: 15px;
+          width: 20px;
+          height: 20px;
+          font-size: 12px;
+        }
+
+        #info-panel {
+          top: 50px;
+          right: 15px;
+          left: 15px;
+          width: auto;
+          max-width: none;
+          font-size: 12px;
+        }
+
+        #info-panel h3 {
+          font-size: 14px;
+        }
+      }
+
+      footer {
+        color: var(--fuente);
+        font-size: 10px;
+        font-weight: bold;
+        text-align: center;
+        padding: 5px 0px 0px;
+        margin: 20px auto 0px;
+        width: 100%;
+        z-index: 50;
+        border-top: 1px solid var(--fuente);
+      }
+
+      /* FIN BOTON INFORMACION */
+
+      /*-------------*/
+      /* COPIARINFORMEBTN */
+
+      /*---------------------------------*/
+    </style>
+  </head>
+
+  <body data-username="Usuario">
+    <!-- 🔘 Icono de Información (#info-panel-icon) -->
+
+    <div id="info-panel-icon">
+      <i class="fas fa-info"></i>
+    </div>
+
+    <!-- Panel de información -->
+    <div id="info-panel">
+      <h3><i class="fas fa-info-circle"></i> Información de la Aplicación</h3>
+
+      <div class="info-section">
+        <div class="info-title">
+          <i class="fas fa-file-medical"></i>
+          Propósito
+        </div>
+        <div class="info-content">
+          Sistema para crear y gestionar informes de evolución de enfermería en
+          Uci de forma rápida y eficiente.
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-title">
+          <i class="fas fa-save"></i>
+          Guardado Automático
+        </div>
+        <div class="info-content">
+          Los datos se guardan automáticamente mientras escribes. Los informes
+          generados se almacenan en tu navegador local.
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-title">
+          <i class="fas fa-history"></i>
+          Recuperar Informes
+        </div>
+        <div class="info-content">
+          Puedes recuperar informes anteriores usando el desplegable
+          "Seleccionar Informe Guardado". Útil para consultar o reimprimir
+          informes previos.
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-title">
+          <i class="fas fa-print"></i>
+          Impresión por Turnos
+        </div>
+        <div class="info-content">
+          • <strong>Imprimir:</strong> Imprime según tu turno actual<br />
+          • <strong>Imprimir en Turno Alternativo:</strong> Cambia el texto del
+          turno para imprimir informes del turno opuesto
+        </div>
+      </div>
+
+      <div class="warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Importante:</strong> Los datos solo están disponibles en este
+        navegador y ordenador. Si cambias de dispositivo o borras datos del
+        navegador, perderás la información guardada.
+      </div>
+    </div>
+    <h1>Evolución de Enfermería</h1>
+    <div id="contenidoApp" style="display: block"></div>
+    <div class="box-selector" id="boxSelector"></div>
+
+    <div id="mensaje-box-seleccionado">
+      Ha seleccionado el Box <span id="numero-box-seleccionado-msg"></span>
+    </div>
+
+    <div id="indicador-guardando">Guardando...</div>
+
+    <div id="box-indicador-flotante">
+      Box <span id="numero-box-seleccionado-fijo"></span>
+      <div id="usuario-indicador-flotante"></div>
+    </div>
+
+    <div id="mensajeConfirmacion"></div>
+    <form class="formulario" id="formulario">
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="ingreso">INGRESO</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('ingreso')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+          <i
+            class="fas fa-info-circle"
+            title="Si está vacío, no se imprimirá en el informe"
+            style="
+              color: var(--fuente);
+              font-size: 12px;
+              margin-left: 5px;
+              cursor: help;
+            "
+          >
+          </i>
+        </div>
+        <textarea
+          id="ingreso"
+          disabled
+          placeholder="Dejar vacío para no imprimir"
+        ></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="neurologico">1. NEUROLÓGICO</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('neurologico')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="neurologico" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="cardiovascular">2. CARDIOVASCULAR</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('cardiovascular')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="cardiovascular" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="respiratorio">3. RESPIRATORIO</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('respiratorio')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="respiratorio" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="renal">4. RENAL</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('renal')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="renal" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="gastrointestinal">5. GASTROINTESTINAL</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('gastrointestinal')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="gastrointestinal" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="nutricional">6. NUTRICIONAL/METABÓLICO</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('nutricional')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="nutricional" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="termorregulacion">7. TERMORREGULACIÓN</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('termorregulacion')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="termorregulacion" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="piel">8. PIEL</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('piel')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <textarea id="piel" disabled></textarea>
+      </div>
+
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="otros" class="centered-label">9. OTROS</label>
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('otros')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+          <i
+            class="fas fa-info-circle"
+            title="Si está vacío, no se imprimirá en el informe"
+            style="
+              color: var(--fuente);
+              font-size: 12px;
+              margin-left: 5px;
+              cursor: help;
+            "
+          >
+          </i>
+        </div>
+        <textarea
+          id="otros"
+          disabled
+          placeholder="Dejar vacío para no imprimir"
+        ></textarea>
+      </div>
+
+      <!-- ESPECIAL VIGILANCIA -->
+      <div class="campo">
+        <div class="label-and-clear">
+          <label for="especial" class="centered-label"
+            >10. ESPECIAL VIGILANCIA</label
+          >
+          <button
+            class="clear-btn"
+            onclick="limpiarCampo('especial')"
+            title="Borrar contenido"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+          <i
+            class="fas fa-info-circle"
+            title="Si está vacío, no se imprimirá en el informe"
+            style="
+              color: var(--fuente);
+              font-size: 12px;
+              margin-left: 5px;
+              cursor: help;
+            "
+          >
+          </i>
+        </div>
+        <textarea
+          id="especial"
+          disabled
+          placeholder="Dejar vacío para no imprimir"
+        ></textarea>
+      </div>
+
+      <!-- FIRMA -->
+
+      <div class="campo">
+        <label for="firma" class="centered-label">FIRMA</label>
+        <i
+            class="fas fa-info-circle"
+            title="Si está vacío, no se imprimirá en el informe"
+            style="
+              color: var(--fuente);
+              font-size: 12px;
+              margin-left: 5px;
+              cursor: help;
+            "
+          >
+          </i>
+        <textarea id="firma" disabled></textarea>
+      </div>
+
+      <!-- CONTADOR GLOBAL -->
+      <div class="contador-global">
+        <strong>Total de caracteres utilizados:</strong>
+        <span id="contador-total">0</span> /
+        <span id="total-maximo">1200</span>
+      </div>
+
+      <!-- AVISO -->
+      <div id="aviso-1200" style="display: none">
+        ¡Atención! Has superado el límite recomendado de 1200 caracteres.
+      </div>
+    </form>
+
+    <!-- GENERAR INFORME/BORRAR DATOS/COPIAR INFORME -->
+    <!-- main-actions-container -->
+    <div class="main-actions-container">
+      <button onclick="generarInforme()">
+        <i class="fas fa-file-export"></i> Generar Informe
+      </button>
+
+      <button onclick="borrarDatos()">
+        <i class="fa-solid fa-arrows-turn-right fa-flip-horizontal"></i>
+        Borrar Datos
+      </button>
+
+      <button
+        class="copiar-informe-btn"
+        onclick="copiarInforme()"
+        style="display: none"
+      >
+        <i class="fa-solid fa-paste"></i> Copiar Informe
+      </button>
+    </div>
+    <!-- IMPRIMIR AUTO/IMPRIMIR ALTERNATIVO -->
+    <!-- print-actions-container -->
+    <div class="print-actions-container">
+      <button onclick="imprimirAuto()">
+        <i class="fas fa-print"></i> Imprimir
+      </button>
+      <button class="btn-alternativo" onclick="imprimirAlternativo()">
+        <i class="fas fa-print"></i>
+        <i class="fas fa-exchange-alt"></i> Imprimir en Turno Alternativo
+      </button>
+    </div>
+
+    <!-- SELECCIONAR INFORME/ELIMINAR INFORME/ELIMINAR BOX -->
+    <!-- fecha-container -->
+    <div class="fecha-container">
+      <div class="select-row">
+        <select id="informesGuardados" onchange="cargarInformeDesdeLista(this)">
+          <option value="">-- Seleccionar Informe Guardado --</option>
+        </select>
+      </div>
+      <div class="eliminar-buttons-row">
+        <button class="eliminarInforme" onclick="eliminarInforme()">
+          <i class="fas fa-trash-can"></i> Eliminar Informe
+        </button>
+        <button class="eliminarInforme" onclick="eliminarInformesDeBox()">
+          <i class="fas fa-broom"></i> Eliminar Informes del Box
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="resultado" id="resultado"></div>
+    <div id="printArea" style="display: none"></div>
+    <div id="mensaje-turno"></div>
+
+    <!-- CERRAR SESIÓN -->
+    <button id="logoutBtn" onclick="cerrarSesion()">
+      <i class="fa-solid fa-lock"></i>
+      <span>CERRAR SESIÓN</span>
+    </button>
+
+    <footer>
+      <p>
+        &copy; 2025 Informe Evolución Enfermería. Todos los derechos reservados.
+        <br />C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br />
+      </p>
+    </footer>
+
+    <script>
+      // Variables globales
+      let selectedBox = null;
+      let currentUserId = "user_local"; // Usuario fijo para localStorage
+      let currentInformeId = null;
+      let currentInformeBox = null;
+      let debounceTimer;
+      let firmaCompartida = "";
+
+      const DEBOUNCE_MS = 300; // Reducido para localStorage
+      const todosLosCampos = [
+        "ingreso",
+        "neurologico",
+        "cardiovascular",
+        "respiratorio",
+        "renal",
+        "gastrointestinal",
+        "nutricional",
+        "termorregulacion",
+        "piel",
+        "otros",
+        "especial",
+        "firma",
+      ];
+
+      const camposCondicionales = ["ingreso", "otros", "especial"];
+      const camposBorrables = todosLosCampos.filter((c) => c !== "firma");
+
+      // Funciones principales
+      function cargarFirmaDesdeLocalStorage() {
+        if (!currentUserId) return;
+
+        try {
+          const firmaGuardada = localStorage.getItem(`firma_${currentUserId}`);
+          if (firmaGuardada) {
+            firmaCompartida = firmaGuardada;
+            const campoFirma = document.getElementById("firma");
+            if (campoFirma) {
+              campoFirma.value = firmaCompartida;
+            }
+          }
+        } catch (error) {
+          console.error("Error al cargar firma del localStorage:", error);
+        }
+      }
+
+      function setupAutosaveListeners() {
+        todosLosCampos.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.addEventListener("input", () => {
+              clearTimeout(debounceTimer);
+              debounceTimer = setTimeout(() => {
+                if (selectedBox) saveDraft();
+              }, DEBOUNCE_MS);
+            });
+          }
+        });
+      }
+
+      function limpiarCampo(id) {
+        if (id === "firma") return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const campo = document.getElementById(id);
+        if (!campo) return;
+
+        const estadoOriginal = {
+          disabled: campo.disabled,
+          value: campo.value,
+          backgroundColor: campo.style.backgroundColor,
+          color: campo.style.color,
+        };
+
+        campo.value = "";
+        actualizarContadorTotal();
+
+        campo.disabled = estadoOriginal.disabled;
+        if (!campo.disabled) {
+          campo.style.backgroundColor =
+            estadoOriginal.backgroundColor || "var(--text-area)";
+          campo.style.color = estadoOriginal.color || "var(--fuente)";
+        }
+
+        guardarDraftSinDeshabilitar();
+      }
+
+      function guardarDraftSinDeshabilitar() {
+        if (!selectedBox || !currentUserId) return;
+
+        try {
+          const datos = {};
+          todosLosCampos.forEach((id) => {
+            const el = document.getElementById(id);
+            if (id === "firma") {
+              datos[id] = firmaCompartida || "";
+            } else {
+              datos[id] = el ? el.value.trim() : "";
+            }
+          });
+
+          // Guardar en localStorage
+          localStorage.setItem(
+            `draft_${currentUserId}_box${selectedBox}`,
+            JSON.stringify({
+              box: selectedBox,
+              datos: datos,
+              timestamp: Date.now(),
+            })
+          );
+        } catch (error) {
+          console.error("Error al guardar draft:", error);
+        }
+      }
+
+      function limpiarCampos(soloDeshabilitar = false) {
+        if (!soloDeshabilitar) {
+          camposBorrables.forEach((id) => {
+            const campo = document.getElementById(id);
+            if (campo) campo.value = "";
+          });
+        }
+        deshabilitarCampos();
+      }
+
+      function eliminarDraft(boxNumber) {
+        try {
+          localStorage.removeItem(`draft_${currentUserId}_box${boxNumber}`);
+          console.log(`Draft eliminado para Box ${boxNumber}`);
+        } catch (error) {
+          console.error("Error al eliminar draft:", error);
+        }
+      }
+
+      function deshabilitarCampos() {
+        todosLosCampos.forEach((campoId) => {
+          const textarea = document.getElementById(campoId);
+          if (textarea) {
+            textarea.disabled = true;
+            textarea.placeholder = "Seleccione un Box o informe guardado";
+          }
+        });
+      }
+
+      function limpiarDatosIniciales() {
+        if (!currentUserId) return;
+
+        for (let i = 1; i <= 12; i++) {
+          localStorage.removeItem(`draft_${currentUserId}_box${i}`);
+        }
+      }
+
+      // DOMContentLoaded
+      document.addEventListener("DOMContentLoaded", () => {
+        const boxSelector = document.getElementById("boxSelector");
+        if (!boxSelector) {
+          console.error("Elemento #boxSelector no encontrado.");
+          return;
+        }
+
+        setupAutosaveListeners();
+
+        for (let i = 1; i <= 12; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = `Box ${i}`;
+          btn.onclick = async () => {
+            console.log(`Clic en Box ${i}`);
+            await selectBox(i);
+          };
+          boxSelector.appendChild(btn);
+        }
+
+        todosLosCampos.forEach((campoId) => {
+          const textarea = document.getElementById(campoId);
+          if (textarea) {
+            textarea.disabled = true;
+            textarea.placeholder = "Seleccione un Box o informe guardado";
+            textarea.addEventListener("input", actualizarContadorTotal);
+          }
+        });
+
+        // Simular autenticación exitosa para localStorage
+        currentUserId = "user_local";
+        cargarFirmaDesdeLocalStorage();
+
+        const firmaGuardada = localStorage.getItem(`firma_${currentUserId}`);
+        if (firmaGuardada) {
+          firmaCompartida = firmaGuardada;
+          const campoFirma = document.getElementById("firma");
+          if (campoFirma) {
+            campoFirma.value = firmaCompartida;
+          }
+        }
+
+        const lastBox = localStorage.getItem("lastSelectedBox");
+        if (lastBox) {
+          console.log(`Cargando último Box seleccionado: ${lastBox}`);
+          selectBox(parseInt(lastBox, 10));
+        } else {
+          deshabilitarCampos();
+        }
+
+        document.getElementById("contenidoApp").style.display = "block";
+        cargarListadoInformesGuardados();
+
+        const campoFirma = document.getElementById("firma");
+        if (campoFirma) {
+          firmaCompartida = campoFirma.value;
+          campoFirma.addEventListener("input", function () {
+            firmaCompartida = this.value;
+            actualizarContadorTotal();
+          });
+        }
+
+        document.querySelectorAll(".clear-btn").forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            e.stopImmediatePropagation();
+          });
+        });
+      });
+
+      function cerrarSesion() {
+        if (selectedBox) saveDraft();
+        if (currentUserId) {
+          // Limpiar datos de sesión pero mantener informes guardados
+          localStorage.removeItem("lastSelectedBox");
+          for (let i = 1; i <= 12; i++) {
+            localStorage.removeItem(`draft_${currentUserId}_box${i}`);
+          }
+        }
+        // En una app real, aquí redirigiríamos al login
+        location.reload();
+      }
+
+      function saveLocal(boxNumber) {
+        if (!boxNumber || !currentUserId) return;
+        const datos = {};
+        todosLosCampos.forEach((id) => {
+          const campo = document.getElementById(id);
+          if (id === "firma") {
+            datos[id] = firmaCompartida || "";
+          } else {
+            datos[id] = campo ? campo.value.trim() : "";
+          }
+        });
+        localStorage.setItem(
+          `draft_${currentUserId}_box${boxNumber}`,
+          JSON.stringify({
+            box: boxNumber,
+            datos: datos,
+            timestamp: Date.now(),
+          })
+        );
+      }
+
+      function actualizarContadorTotal() {
+        let total = 0;
+        todosLosCampos.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && el.value) {
+            total += el.value.trim().length;
+          }
+        });
+
+        const contador = document.getElementById("contador-total");
+        const aviso = document.getElementById("aviso-1200");
+
+        if (contador) {
+          contador.textContent = total;
+
+          const LIMITE = 1200;
+          if (total > LIMITE) {
+            contador.classList.add("contador-alerta");
+            if (aviso) {
+              aviso.style.display = "block";
+              const exceso = total - LIMITE;
+              aviso.textContent = `⚠️ Has superado el límite recomendado en ${exceso} caracteres (${total}/${LIMITE}).`;
+            }
+          } else {
+            contador.classList.remove("contador-alerta");
+            if (aviso) {
+              aviso.style.display = "none";
+            }
+          }
+        }
+      }
+
+      function habilitarCampos() {
+        console.log("Habilitando campos...");
+
+        todosLosCampos.forEach((campoId) => {
+          const textarea = document.getElementById(campoId);
+          if (textarea) {
+            textarea.disabled = false;
+            textarea.style.backgroundColor = "var(--text-area)";
+            textarea.style.color = "var(--fuente)";
+            textarea.style.cursor = "text";
+            textarea.removeAttribute("placeholder");
+
+            if (campoId === "firma") {
+              textarea.removeEventListener("input", firmaInputHandler);
+              textarea.addEventListener("input", firmaInputHandler);
+            }
+          }
+        });
+      }
+
+      function firmaInputHandler() {
+        const nuevaFirma = this.value;
+        firmaCompartida = nuevaFirma;
+        actualizarContadorTotal();
+
+        if (currentUserId) {
+          localStorage.setItem(`firma_${currentUserId}`, firmaCompartida);
+        }
+      }
+
+      function borrarDatos() {
+        if (
+          !confirm(
+            "¿Realmente quieres borrar todo el contenido (excepto la firma)?"
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const firmaActual = document.getElementById("firma").value;
+
+          camposBorrables.forEach((campoId) => {
+            const campo = document.getElementById(campoId);
+            if (campo) {
+              campo.value = "";
+            }
+          });
+
+          const campoFirma = document.getElementById("firma");
+          if (campoFirma) {
+            campoFirma.value = firmaActual;
+          }
+
+          if (selectedBox) {
+            saveDraft();
+          }
+
+          actualizarContadorTotal();
+
+          const resultado = document.getElementById("resultado");
+          if (resultado) {
+            resultado.style.display = "none";
+          }
+
+          // Cambiar estas líneas en tu JavaScript:
+          const botonCopiar = document.querySelector(".copiar-informe-btn");
+          if (botonCopiar) {
+            botonCopiar.style.display = "none";
+          }
+
+          console.log("Datos borrados correctamente, firma mantenida");
+        } catch (error) {
+          console.error("Error al borrar datos:", error);
+          alert("Error al borrar los datos. Inténtalo de nuevo.");
+        }
+      }
+
+      function copiarInforme() {
+        const el = document.getElementById("resultado");
+        if (!el || el.style.display === "none") {
+          alert("No hay informe generado para copiar.");
+          return;
+        }
+
+        const html = el.innerHTML;
+        const txt = el.innerText;
+
+        function tryRichCopy() {
+          try {
+            const item = new ClipboardItem({
+              "text/html": new Blob([html], { type: "text/html" }),
+              "text/plain": new Blob([txt], { type: "text/plain" }),
+            });
+
+            return navigator.clipboard
+              .write([item])
+              .then(() => {
+                alert("✅ Informe copiado con formato al portapapeles.");
+                return true;
+              })
+              .catch(() => false);
+          } catch (e) {
+            return Promise.resolve(false);
+          }
+        }
+
+        function fallbackCopy() {
+          try {
+            const ta = document.createElement("textarea");
+            ta.value = txt;
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            ta.setSelectionRange(0, 99999);
+
+            const success = document.execCommand("copy");
+            document.body.removeChild(ta);
+
+            if (success) {
+              alert("📋 Informe copiado al portapapeles (texto plano).");
+            } else {
+              throw new Error("execCommand falló");
+            }
+          } catch (e) {
+            alert(
+              "❌ No se pudo copiar el informe. Selecciona manualmente el texto."
+            );
+          }
+        }
+
+        if (navigator.clipboard && navigator.clipboard.write) {
+          tryRichCopy().then((success) => {
+            if (!success) {
+              fallbackCopy();
+            }
+          });
+        } else {
+          fallbackCopy();
+        }
+      }
+
+      function generarInforme() {
+        // Guardar draft antes de generar informe
+        if (selectedBox) {
+          saveDraft();
+        }
+
+        // Verificar que hay box seleccionado
+        if (!selectedBox || !currentUserId) {
+          alert("Selecciona un Box.");
+          return;
+        }
+
+        try {
+          // Recoger datos de todos los campos
+          const datos = {};
+          todosLosCampos.forEach((campoId) => {
+            const campo = document.getElementById(campoId);
+            if (campoId === "firma") {
+              datos[campoId] = firmaCompartida || "";
+            } else {
+              datos[campoId] = campo ? campo.value.trim() : "";
+            }
+          });
+
+          // Generar y mostrar el HTML inmediatamente
+          const html = generarHTMLDesdeDatos(datos);
+          const divResultado = document.getElementById("resultado");
+          divResultado.innerHTML = html;
+          divResultado.style.display = "block";
+
+          // Mostrar botón de copiar
+          const botonCopiar = document.querySelector(".copiar-informe-btn");
+          if (botonCopiar) {
+            botonCopiar.style.display = "inline-block";
+          }
+
+          // Lógica mejorada: NO crear nuevo informe si es un rescatado sin cambios
+          let debeCrearNuevoInforme = true;
+          let informeIdFinal = currentInformeId;
+
+          if (currentInformeId) {
+            console.log(
+              `🔍 Verificando cambios en informe existente: ${currentInformeId}`
+            );
+
+            try {
+              const informeOriginal =
+                cargarInformeDesdeLocalStorage(currentInformeId);
+              if (informeOriginal) {
+                // Verificar si ha sido modificado
+                const hayCambios = informeHaSidoModificado(
+                  informeOriginal.datos
+                );
+
+                if (!hayCambios) {
+                  console.log("✅ No hay cambios - mantener informe original");
+                  alert(
+                    "Informe generado. No se han detectado cambios respecto al informe original."
+                  );
+                  debeCrearNuevoInforme = false;
+                } else {
+                  console.log("📝 Se detectaron cambios - crear nuevo informe");
+                  informeIdFinal = generateId(); // Solo generar nuevo ID si hay cambios
+                }
+              }
+            } catch (error) {
+              console.log(
+                "⚠️ No se pudo verificar informe original, creando nuevo..."
+              );
+              informeIdFinal = generateId();
+            }
+          } else {
+            // No hay informe previo, crear nuevo
+            informeIdFinal = generateId();
+            console.log("🆕 Creando nuevo informe desde cero");
+          }
+
+          // Solo guardar en localStorage si necesitamos crear nuevo informe
+          if (debeCrearNuevoInforme) {
+            const now = new Date();
+            const informe = {
+              id: informeIdFinal,
+              user_id: currentUserId,
+              box: selectedBox,
+              datos: datos,
+              fecha: now.toLocaleDateString("es-ES"),
+              hora: now.toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              timestamp: now.getTime(),
+            };
+
+            console.log("💾 Guardando informe en localStorage:", informe);
+
+            // Guardar el informe individual
+            localStorage.setItem(
+              `informe_${informeIdFinal}`,
+              JSON.stringify(informe)
+            );
+
+            // Actualizar lista de informes
+            actualizarListaInformes(informe);
+
+            currentInformeId = informeIdFinal;
+            alert("Nuevo informe generado con éxito.");
+            cargarListadoInformesGuardados();
+          }
+        } catch (error) {
+          console.error("Error en generarInforme():", error);
+          alert("Error al generar el informe: " + error.message);
+        }
+
+        verificarEstadoBotones();
+      }
+
+      function generateId() {
+        return (
+          "informe_" +
+          Date.now() +
+          "_" +
+          Math.random().toString(36).substr(2, 9)
+        );
+      }
+
+      function actualizarListaInformes(nuevoInforme) {
+        try {
+          let informes = JSON.parse(
+            localStorage.getItem("lista_informes") || "[]"
+          );
+
+          // Agregar nuevo informe al inicio
+          informes.unshift({
+            id: nuevoInforme.id,
+            box: nuevoInforme.box,
+            fecha: nuevoInforme.fecha,
+            hora: nuevoInforme.hora,
+            timestamp: nuevoInforme.timestamp,
+          });
+
+          // Mantener solo los últimos 50 informes
+          informes = informes.slice(0, 50);
+
+          localStorage.setItem("lista_informes", JSON.stringify(informes));
+        } catch (error) {
+          console.error("Error al actualizar lista de informes:", error);
+        }
+      }
+
+      function saveDraft() {
+        if (!selectedBox || !currentUserId) {
+          console.error("No se puede guardar: box o user_id no definidos");
+          return false;
+        }
+
+        try {
+          const datos = {};
+          todosLosCampos.forEach((id) => {
+            const campo = document.getElementById(id);
+            if (id === "firma") {
+              datos[id] = firmaCompartida || "";
+            } else {
+              datos[id] = campo ? campo.value.trim() : "";
+            }
+          });
+
+          const draft = {
+            box: selectedBox,
+            datos: datos,
+            user_id: currentUserId,
+            timestamp: Date.now(),
+          };
+
+          localStorage.setItem(
+            `draft_${currentUserId}_box${selectedBox}`,
+            JSON.stringify(draft)
+          );
+
+          return true;
+        } catch (error) {
+          console.error("Error al guardar draft:", error);
+          return false;
+        }
+      }
+
+      function selectBox(boxNumber) {
+        try {
+          if (!boxNumber || isNaN(boxNumber)) {
+            throw new Error("Número de box inválido");
+          }
+
+          if (!currentUserId) {
+            const errorMsg =
+              "Usuario no autenticado. ID de usuario no disponible.";
+            console.error(errorMsg);
+            alert(errorMsg);
+            return;
+          }
+
+          console.log(`Seleccionando Box ${boxNumber}`);
+
+          if (selectedBox && selectedBox !== boxNumber) {
+            console.log(
+              `Guardando draft del Box ${selectedBox} antes de cambiar`
+            );
+            saveDraft();
+          }
+
+          const indicador = document.getElementById("indicador-guardando");
+          if (indicador) {
+            indicador.style.display = "block";
+            indicador.textContent = "Cargando...";
+          }
+
+          document.querySelectorAll(".box-selector button").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+
+          const botonSeleccionado = document.querySelector(
+            `.box-selector button:nth-child(${boxNumber})`
+          );
+          if (botonSeleccionado) {
+            botonSeleccionado.classList.add("active");
+          }
+
+          selectedBox = boxNumber;
+          localStorage.setItem("lastSelectedBox", boxNumber);
+
+          mostrarIndicadorFlotante(boxNumber);
+          const boxMsg = document.getElementById("mensaje-box-seleccionado");
+          if (boxMsg) {
+            document.getElementById("numero-box-seleccionado-msg").textContent =
+              boxNumber;
+            boxMsg.style.display = "block";
+          }
+
+          habilitarCampos();
+
+          console.log(`Cargando datos para Box ${boxNumber}`);
+          const localDraft = cargarDraftLocalStorage(boxNumber);
+
+          if (localDraft) {
+            console.log("Datos cargados desde localStorage:", localDraft);
+            actualizarCamposConDatos(localDraft, true);
+          } else {
+            console.log("No hay datos guardados, limpiando campos...");
+            camposBorrables.forEach((id) => {
+              const campo = document.getElementById(id);
+              if (campo) campo.value = "";
+            });
+          }
+
+          const campoFirma = document.getElementById("firma");
+          if (campoFirma && firmaCompartida) {
+            campoFirma.value = firmaCompartida;
+          }
+
+          if (indicador) {
+            indicador.style.display = "none";
+          }
+
+          actualizarContadorTotal();
+        } catch (error) {
+          console.error("Error al cambiar de box:", error);
+          alert(`Error: ${error.message}`);
+
+          const indicador = document.getElementById("indicador-guardando");
+          if (indicador) {
+            indicador.style.display = "none";
+          }
+        }
+      }
+
+      function cargarDraftLocalStorage(boxNumber) {
+        try {
+          const draftKey = `draft_${currentUserId}_box${boxNumber}`;
+          const draftData = localStorage.getItem(draftKey);
+
+          if (!draftData) {
+            return null;
+          }
+
+          const draft = JSON.parse(draftData);
+          return draft.datos;
+        } catch (e) {
+          console.error("[ERROR] Al cargar draft del localStorage:", e);
+          return null;
+        }
+      }
+
+      function cargarInformeDesdeLocalStorage(informeId) {
+        try {
+          const informeData = localStorage.getItem(`informe_${informeId}`);
+          if (!informeData) {
+            return null;
+          }
+          return JSON.parse(informeData);
+        } catch (e) {
+          console.error("Error al cargar informe desde localStorage:", e);
+          return null;
+        }
+      }
+
+      function hasDatosSinGuardar() {
+        return todosLosCampos.some((id) => {
+          const el = document.getElementById(id);
+          return el && el.value.trim() !== "";
+        });
+      }
+
+      function getCurrentFormData() {
+        const datos = {};
+        todosLosCampos.forEach((id) => {
+          const el = document.getElementById(id);
+          datos[id] = el ? el.value.trim() : "";
+        });
+        return datos;
+      }
+
+      function actualizarCamposConDatos(datos, mantenerFirma = false) {
+        if (!datos || typeof datos !== "object") {
+          console.error("Datos inválidos recibidos:", datos);
+          return;
+        }
+
+        todosLosCampos.forEach((id) => {
+          const campo = document.getElementById(id);
+          if (campo) {
+            if (id === "firma" && mantenerFirma) {
+              campo.value = firmaCompartida || "";
+            } else if (id !== "firma") {
+              const valor = datos[id] || "";
+              campo.value = id !== "nutricional" && valor === "6" ? "" : valor;
+            }
+          }
+        });
+        actualizarContadorTotal();
+      }
+
+      function cargarListadoInformesGuardados() {
+        try {
+          const informes = JSON.parse(
+            localStorage.getItem("lista_informes") || "[]"
+          );
+
+          const select = document.getElementById("informesGuardados");
+          select.innerHTML =
+            '<option value="">Seleccione un informe...</option>';
+
+          informes.forEach((informe) => {
+            const option = document.createElement("option");
+            option.value = informe.id;
+
+            if (
+              !informe.fecha ||
+              !informe.hora ||
+              informe.fecha.includes("Sin")
+            ) {
+              option.textContent = `Box ${informe.box} - Recién guardado`;
+            } else {
+              option.textContent = `Box ${informe.box} - ${informe.fecha} ${informe.hora}`;
+            }
+
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error al cargar listado:", error);
+        }
+      }
+
+      function cargarInformeDesdeLista(sel) {
+        if (selectedBox) {
+          saveDraft();
+        }
+
+        const id = sel.value;
+        if (!id) return;
+
+        try {
+          const informeData = localStorage.getItem(`informe_${id}`);
+          if (!informeData) {
+            alert("Informe no encontrado");
+            return;
+          }
+
+          const data = JSON.parse(informeData);
+
+          habilitarCampos();
+
+          // Cargar datos en los campos
+          todosLosCampos.forEach((campoId) => {
+            const textarea = document.getElementById(campoId);
+            if (textarea && data.datos[campoId]) {
+              if (campoId === "firma") {
+                firmaCompartida = data.datos[campoId];
+                textarea.value = firmaCompartida;
+                if (currentUserId) {
+                  localStorage.setItem(
+                    `firma_${currentUserId}`,
+                    firmaCompartida
+                  );
+                }
+              } else {
+                textarea.value = data.datos[campoId];
+              }
+            }
+          });
+
+          // MANTENER EL ID ORIGINAL DEL INFORME - NO GENERAR NUEVO
+          selectedBox = data.box;
+          currentInformeId = data.id; // Usar el ID original del informe rescatado
+          currentInformeBox = data.box;
+
+          // Actualizar interfaz visual
+          document
+            .querySelectorAll(".box-selector button")
+            .forEach((btn) => btn.classList.remove("active"));
+          document
+            .querySelector(`.box-selector button:nth-child(${data.box})`)
+            ?.classList.add("active");
+
+          // Generar y mostrar el informe
+          const html = generarHTMLDesdeDatos(data.datos);
+          const resultadoDiv = document.getElementById("resultado");
+          resultadoDiv.innerHTML = html;
+          resultadoDiv.style.display = "block";
+
+          // Mostrar botones de acción
+          const botonCopiar = document.querySelector(".copiar-informe-btn");
+          if (botonCopiar) {
+            botonCopiar.style.display = "inline-block";
+          }
+
+          mostrarIndicadorFlotante(data.box);
+          document.getElementById("numero-box-seleccionado-msg").textContent =
+            data.box;
+          document.getElementById("mensaje-box-seleccionado").style.display =
+            "block";
+
+          actualizarContadorTotal();
+          verificarEstadoBotones();
+
+          // Mensaje informativo
+          console.log(
+            `Informe ${data.id} rescatado del Box ${data.box}. Listo para copiar/imprimir.`
+          );
+        } catch (error) {
+          console.error("Error al cargar informe:", error);
+          alert("No se pudo cargar el informe. Por favor, inténtalo de nuevo.");
+        }
+      }
+
+      // MEJORAR la función para detectar cambios (más precisa):
+      function informeHaSidoModificado(datosOriginales) {
+        const datosActuales = {};
+        todosLosCampos.forEach((id) => {
+          const campo = document.getElementById(id);
+          if (id === "firma") {
+            datosActuales[id] = firmaCompartida || "";
+          } else {
+            datosActuales[id] = campo ? campo.value.trim() : "";
+          }
+        });
+
+        // Comparar cada campo con normalización
+        for (let campo of todosLosCampos) {
+          const original = (datosOriginales[campo] || "").trim();
+          const actual = (datosActuales[campo] || "").trim();
+
+          if (original !== actual) {
+            console.log(`🔍 Cambio detectado en campo '${campo}':`);
+            console.log(`   Original: "${original}"`);
+            console.log(`   Actual: "${actual}"`);
+            return true;
+          }
+        }
+
+        console.log("✅ No se detectaron cambios en ningún campo");
+        return false;
+      }
+
+      // FUNCIONES DE IMPRESIÓN SIMPLIFICADAS
+      async function imprimirAuto() {
+        if (selectedBox) saveDraft();
+
+        const resultado = document.getElementById("resultado");
+        if (!resultado || resultado.style.display === "none") {
+          alert("No hay informe generado para imprimir.");
+          return;
+        }
+
+        // Determinar turno actual
+        const horaActual = new Date().getHours();
+        const esTurnoDiurnoActual = horaActual >= 8 && horaActual < 20;
+
+        // Limpiar clases previas y aplicar clase según turno actual
+        resultado.classList.remove("diurno-print", "nocturno-print");
+
+        if (esTurnoDiurnoActual) {
+          resultado.classList.add("diurno-print");
+        } else {
+          resultado.classList.add("nocturno-print");
+        }
+
+        // Pequeña pausa para asegurar que las clases se apliquen
+        setTimeout(() => {
+          window.print();
+        }, 100);
+      }
+
+      // Función para imprimir en turno alternativo
+      async function imprimirAlternativo() {
+        if (selectedBox) saveDraft();
+
+        const resultado = document.getElementById("resultado");
+        if (!resultado || resultado.style.display === "none") {
+          alert("No hay informe generado para imprimir.");
+          return;
+        }
+
+        // Determinar turno actual
+        const horaActual = new Date().getHours();
+        const esTurnoDiurnoActual = horaActual >= 8 && horaActual < 20;
+
+        // Guardar contenido original
+        const contenidoOriginal = resultado.innerHTML;
+        const clasesOriginales = resultado.className;
+
+        // Cambiar el texto del turno y aplicar clase correspondiente
+        let nuevoContenido = contenidoOriginal;
+
+        resultado.classList.remove("diurno-print", "nocturno-print");
+
+        if (esTurnoDiurnoActual) {
+          // Estamos en turno diurno → imprimir como nocturno
+          nuevoContenido = nuevoContenido.replace(
+            "Turno de 8 a 20 horas",
+            "Turno de 20 a 8 horas"
+          );
+          resultado.classList.add("nocturno-print");
+        } else {
+          // Estamos en turno nocturno → imprimir como diurno
+          nuevoContenido = nuevoContenido.replace(
+            "Turno de 20 a 8 horas",
+            "Turno de 8 a 20 horas"
+          );
+          resultado.classList.add("diurno-print");
+        }
+
+        // Aplicar el nuevo contenido
+        resultado.innerHTML = nuevoContenido;
+
+        // Pequeña pausa antes de imprimir
+        setTimeout(() => {
+          window.print();
+
+          // Restaurar contenido y clases originales
+          setTimeout(() => {
+            resultado.innerHTML = contenidoOriginal;
+            resultado.className = clasesOriginales;
+          }, 1000);
+        }, 100);
+      }
+
+      // Funciones auxiliares para compatibilidad
+      function imprimirTurnoAlternativo() {
+        imprimirAlternativo();
+      }
+
+      function imprimir(alternativo = false) {
+        if (alternativo) {
+          imprimirAlternativo();
+        } else {
+          imprimirAuto();
+        }
+      }
+
+      function generarHTMLDesdeDatos(datos, forzarTurno = null) {
+        // Si se especifica un turno forzado, usarlo; si no, usar la hora actual
+        let turnoTexto;
+        if (forzarTurno !== null) {
+          turnoTexto = forzarTurno
+            ? "Turno de 8 a 20 horas"
+            : "Turno de 20 a 8 horas";
+        } else {
+          const h = new Date().getHours();
+          turnoTexto =
+            h >= 8 && h < 20
+              ? "Turno de 8 a 20 horas"
+              : "Turno de 20 a 8 horas";
+        }
+
+        let html = `<p class="cabecera">BOX ${selectedBox} – ${turnoTexto}</p>`;
+
+        // Procesar todos los campos excepto la firma
+        todosLosCampos.forEach((campoId) => {
+          if (campoId === "firma") return; // Saltar la firma, se procesará al final
+
+          const etiqueta = document.querySelector(
+            `label[for='${campoId}']`
+          ).innerText;
+
+          if (camposCondicionales.includes(campoId)) {
+            // CAMPOS CONDICIONALES: Solo se imprimen si tienen contenido
+            const valor = datos[campoId]?.trim();
+            if (valor && valor !== "") {
+              html += `<p><span class="label-strong">${etiqueta}:</span> ${valor}</p>`;
+            }
+            // Si está vacío, no se añade nada al HTML
+          } else {
+            // CAMPOS NORMALES: Siempre se imprimen
+            const valor =
+              datos[campoId]?.trim() ||
+              '<span class="no-especificado">Sin especificar</span>';
+            html += `<p><span class="label-strong">${etiqueta}:</span> ${valor}</p>`;
+          }
+        });
+
+        // Agregar la firma al final con alineación a la derecha
+        const valorFirma =
+          firmaCompartida?.trim() ||
+          datos.firma?.trim() ||
+          '<span class="no-especificado">Sin especificar</span>';
+        html += `<p class="firma-alineada"><span class="label-strong">FIRMADO:</span> ${valorFirma}</p>`;
+
+        return html;
+      }
+
+      function debugCompleto() {
+        console.log("=== DEBUG COMPLETO ===");
+
+        // 1. Verificar informe actual
+        const resultado = document.getElementById("resultado");
+        console.log(
+          "1. Informe visible:",
+          resultado && resultado.style.display !== "none"
+        );
+        console.log("   currentInformeId:", currentInformeId);
+        console.log("   selectedBox:", selectedBox);
+
+        // 2. Verificar turno
+        const ahora = new Date();
+        const hora = ahora.getHours();
+        const esTurnoDiurno = hora >= 8 && hora < 20;
+        console.log("2. Hora actual:", `${hora}:${ahora.getMinutes()}`);
+        console.log("   Es turno diurno:", esTurnoDiurno);
+
+        // 3. Verificar clases CSS
+        if (resultado) {
+          console.log("3. Clases del resultado:", resultado.className);
+          console.log(
+            "   Tiene nocturno-print:",
+            resultado.classList.contains("nocturno-print")
+          );
+        }
+
+        // 4. Verificar datos actuales
+        const datosActuales = {};
+        todosLosCampos.forEach((id) => {
+          const campo = document.getElementById(id);
+          datosActuales[id] = campo ? campo.value.trim() : "";
+        });
+        console.log("4. Datos actuales:", datosActuales);
+
+        // 5. Verificar localStorage
+        console.log(
+          "5. Informes en localStorage:",
+          Object.keys(localStorage).filter((k) => k.startsWith("informe_"))
+            .length
+        );
+
+        console.log("=== FIN DEBUG ===");
+      }
+
+      // FUNCIONES PARA ELIMINAR INFORMES
+      function eliminarInforme() {
+        console.log("eliminarInforme: Iniciando eliminación");
+        console.log("currentInformeId:", currentInformeId);
+
+        if (!currentInformeId) {
+          alert("No hay informe seleccionado para eliminar");
+          return;
+        }
+
+        if (!confirm("¿Estás seguro de que quieres eliminar este informe?")) {
+          return;
+        }
+
+        // Guardar firma actual antes de eliminar
+        const firmaActual = document.getElementById("firma").value;
+
+        try {
+          console.log("Eliminando informe ID:", currentInformeId);
+
+          // Eliminar de localStorage
+          localStorage.removeItem(`informe_${currentInformeId}`);
+
+          // Actualizar lista de informes
+          let informes = JSON.parse(
+            localStorage.getItem("lista_informes") || "[]"
+          );
+          informes = informes.filter((inf) => inf.id !== currentInformeId);
+          localStorage.setItem("lista_informes", JSON.stringify(informes));
+
+          alert("Informe eliminado correctamente");
+
+          // Limpiar variables
+          currentInformeId = null;
+          currentInformeBox = null;
+
+          // Ocultar el informe mostrado
+          const resultadoDiv = document.getElementById("resultado");
+          if (resultadoDiv) {
+            resultadoDiv.style.display = "none";
+          }
+
+          // Ocultar botón copiar
+          const botonCopiar = document.querySelector(".copiar-informe-btn");
+          if (botonCopiar) {
+            botonCopiar.style.display = "none";
+          }
+
+          // Recargar lista de informes
+          cargarListadoInformesGuardados();
+
+          // Restaurar firma
+          document.getElementById("firma").value = firmaActual;
+        } catch (error) {
+          console.error("Error al eliminar informe:", error);
+          alert("Error al eliminar el informe: " + error.message);
+
+          // Restaurar firma incluso en caso de error
+          document.getElementById("firma").value = firmaActual;
+        }
+      }
+
+      function eliminarInformesDeBox() {
+        console.log("eliminarInformesDeBox: Iniciando eliminación");
+        console.log("selectedBox:", selectedBox);
+
+        // Guardar draft antes de eliminar
+        if (selectedBox) {
+          saveDraft();
+        }
+
+        if (!selectedBox) {
+          alert("Selecciona primero un Box.");
+          return;
+        }
+
+        if (
+          !confirm(
+            `¿Estás seguro de que quieres eliminar TODOS los informes del Box ${selectedBox}?`
+          )
+        ) {
+          return;
+        }
+
+        try {
+          console.log("Eliminando informes del Box:", selectedBox);
+
+          // Obtener lista de informes
+          let informes = JSON.parse(
+            localStorage.getItem("lista_informes") || "[]"
+          );
+          const informesAEliminar = informes.filter(
+            (inf) => inf.box == selectedBox
+          );
+
+          // Eliminar cada informe individual
+          informesAEliminar.forEach((informe) => {
+            localStorage.removeItem(`informe_${informe.id}`);
+          });
+
+          // Actualizar lista filtrada
+          informes = informes.filter((inf) => inf.box != selectedBox);
+          localStorage.setItem("lista_informes", JSON.stringify(informes));
+
+          alert(
+            `Informes del Box ${selectedBox} eliminados correctamente (${informesAEliminar.length} informes)`
+          );
+
+          // Limpiar variables
+          currentInformeId = null;
+          currentInformeBox = null;
+
+          // Borrar datos del formulario (pero mantener firma)
+          borrarDatos();
+
+          // Recargar lista de informes
+          cargarListadoInformesGuardados();
+        } catch (error) {
+          console.error("Error al eliminar informes del box:", error);
+          alert("Error al eliminar informes del box: " + error.message);
+        }
+      }
+
+      function mostrarIndicadorFlotante(boxNumber) {
+        const indicador = document.getElementById("box-indicador-flotante");
+        if (!indicador || !boxNumber) return;
+
+        const nombreUsuario = "Usuario Local";
+
+        let nombreMostrar = nombreUsuario;
+        if (window.innerWidth <= 768) {
+          nombreMostrar =
+            nombreUsuario.length > 8
+              ? nombreUsuario.substring(0, 6) + ".."
+              : nombreUsuario;
+        }
+
+        indicador.innerHTML = `
+        <span>BOX ${boxNumber}</span>
+        <span id="usuario-indicador-flotante">${nombreMostrar}</span>
+    `;
+
+        indicador.style.display = "block";
+      }
+
+      function actualizarPosicionBoxIndicador() {
+        const indicador = document.getElementById("box-indicador-flotante");
+        if (!indicador) return;
+
+        const isMobile = window.innerWidth <= 768;
+        const offset = isMobile ? 5 : 20;
+
+        indicador.style.top = isMobile
+          ? `${offset}px`
+          : `${
+              (window.scrollY || document.documentElement.scrollTop) + offset
+            }px`;
+      }
+
+      window.addEventListener("load", actualizarPosicionBoxIndicador);
+      window.addEventListener("scroll", actualizarPosicionBoxIndicador);
+      window.addEventListener("resize", function () {
+        actualizarPosicionBoxIndicador();
+        if (selectedBox) mostrarIndicadorFlotante(selectedBox);
+      });
+
+      function verificarEstadoBotones() {
+        const resultado = document.getElementById("resultado");
+        const botonCopiar = document.querySelector(".copiar-informe-btn");
+
+        if (
+          resultado &&
+          resultado.style.display !== "none" &&
+          resultado.innerHTML.trim()
+        ) {
+          if (botonCopiar) {
+            botonCopiar.style.display = "inline-block";
+          }
+        } else {
+          if (botonCopiar) {
+            botonCopiar.style.display = "none";
+          }
+        }
+      }
+
+      window.addEventListener("beforeunload", (e) => {
+        try {
+          if (selectedBox && hasDatosSinGuardar()) {
+            saveDraft();
+          }
+        } catch (error) {
+          console.error("Error al guardar antes de salir:", error);
+        }
+      });
+
+      // Funciones de debugging expuestas globalmente
+      window.debugCompleto = debugCompleto;
+      window.debugLocalStorage = function () {
+        console.log("=== DEBUG LOCALSTORAGE ===");
+        console.log("Informes guardados:");
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith("informe_"))
+          .forEach((key) => {
+            const informe = JSON.parse(localStorage.getItem(key));
+            console.log(
+              `- ${key}: Box ${informe.box}, ${informe.fecha} ${informe.hora}`
+            );
+          });
+
+        console.log("\nDrafts guardados:");
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith("draft_"))
+          .forEach((key) => {
+            console.log(`- ${key}`);
+          });
+
+        console.log("\nOtros datos:");
+        console.log(
+          "- firma_user_local:",
+          localStorage.getItem("firma_user_local")
+        );
+        console.log(
+          "- lastSelectedBox:",
+          localStorage.getItem("lastSelectedBox")
+        );
+        console.log(
+          "- lista_informes:",
+          JSON.parse(localStorage.getItem("lista_informes") || "[]").length +
+            " informes"
+        );
+        console.log("=========================");
+      };
+
+      console.log("🚀 Sistema de localStorage inicializado");
+      console.log(
+        "💡 Usa debugCompleto() o debugLocalStorage() para debugging"
+      );
+
+      // Añadir al final del DOMContentLoaded
+      const infoIcon = document.getElementById("info-panel-icon");
+      const infoPanel = document.getElementById("info-panel");
+
+      if (infoIcon && infoPanel) {
+        // Eventos para mostrar/ocultar el panel
+        infoIcon.addEventListener("mouseenter", showInfoPanel);
+        infoIcon.addEventListener("mouseleave", hideInfoPanel);
+        infoIcon.addEventListener("click", showInfoPanel);
+
+        // Eventos para mantener el panel visible cuando el mouse está sobre él
+        infoPanel.addEventListener("mouseenter", keepInfoPanel);
+        infoPanel.addEventListener("mouseleave", hideInfoPanel);
+
+        console.log("✅ Event listeners del panel de información configurados");
+      } else {
+        console.error(
+          "❌ No se encontraron elementos del panel de información"
+        );
+      }
+      // Funcionalidad del panel de información
+      let infoTimeout;
+
+      function showInfoPanel() {
+        const panel = document.getElementById("info-panel");
+        if (panel) {
+          clearTimeout(infoTimeout);
+          panel.classList.add("show");
+        }
+      }
+
+      function hideInfoPanel() {
+        const panel = document.getElementById("info-panel");
+        if (panel) {
+          infoTimeout = setTimeout(() => {
+            panel.classList.remove("show");
+          }, 500);
+        }
+      }
+
+      function keepInfoPanel() {
+        clearTimeout(infoTimeout);
+      }
+    </script>
+  </body>
+</html>

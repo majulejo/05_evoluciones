@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guía del Panel de Administración</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: #2e2925;
+      border-bottom: 2px solid #4fa66a;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      color: #368f3f;
+      margin-top: 30px;
+    }
+
+    .paso {
+      background: #fff;
+      border-left: 5px solid #4fa66a;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      border-radius: 5px;
+    }
+
+    code {
+      background-color: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Guía del Panel de Administración - Proyecto Evolución UCI</h1>
+
+  <div class="paso">
+    <h2>🔐 Paso 1 - Protección visual con clave</h2>
+    <p>Al abrir <strong>admin.html</strong>, aparece un <code>prompt()</code> que solicita la clave <strong>faroladmin2024</strong>.</p>
+    <p>Si no se introduce correctamente, se bloquea la visualización del contenido.</p>
+    <p>Esto evita que nadie acceda al formulario visual aunque conozca la URL.</p>
+  </div>
+
+  <div class="paso">
+    <h2>🧠 Paso 2 - Protección real del backend</h2>
+    <p>El archivo <strong>admin_api.php</strong> recibe todas las acciones de administración (listar, registrar, eliminar usuarios).</p>
+    <p>Este archivo está protegido con una cabecera especial <code>X-Admin-Key: faroladmin2024</code>, enviada automáticamente por <strong>admin.js</strong>.</p>
+    <p>⚠️ Si alguien intenta hacer peticiones directamente al backend sin esta cabecera, recibirá <em>"Acceso denegado"</em>.</p>
+  </div>
+
+  <div class="paso">
+    <h2>👤 Paso 3 - Crear usuarios desde el panel</h2>
+    <p>El formulario <strong>"Registrar nuevo usuario"</strong> permite crear usuarios que luego accederán desde <code>index.html</code>.</p>
+    <ul>
+      <li>Los usuarios no deben repetirse (campo <code>usuario</code> es único).</li>
+      <li>Las contraseñas se guardan cifradas con <code>password_hash()</code>.</li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2>🚫 Paso 4 - Eliminar usuarios</h2>
+    <p>Cada usuario listado incluye un botón <strong>Eliminar</strong>, que borra su registro permanentemente.</p>
+    <p>Esta acción solo puede ejecutarla un administrador con clave válida.</p>
+  </div>
+
+  <div class="paso">
+    <h2>✅ Paso 5 - Usar cuenta normal</h2>
+    <p>Los usuarios creados desde el panel pueden luego acceder a la aplicación normal desde <code>index.html</code>.</p>
+    <p>Esta sección está separada del panel de administración y no tiene acceso al backend protegido.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Usuario: <code>jamarquez</code></li>
+      <li>Contraseña: <code>loquesea</code></li>
+    </ul>
+  </div>
+
+  <div class="paso">
+    <h2>🛠 Archivos involucrados en el panel</h2>
+    <ul>
+      <li><strong>admin.html</strong> → interfaz visual del panel</li>
+      <li><strong>admin.js</strong> → lógica de comunicación y cabecera X-Admin-Key</li>
+      <li><strong>admin_api.php</strong> → backend protegido</li>
+    </ul>
+    <p>Todos deben estar en la carpeta <code>/public_html/evolucion-uci/</code>.</p>
+  </div>
+
+</body>
+</html>

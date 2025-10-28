@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Crear Usuarios en Evolución UCI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            margin-bottom: 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .step-number {
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .step-content {
+            padding: 25px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-title {
+            background: #343a40;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px 5px 0 0;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin: -20px -20px 15px -20px;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .screenshot-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #6c757d;
+        }
+        
+        .navigation {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: #0056b3;
+        }
+        
+        .important {
+            background: #ffeaa7;
+            border-left: 4px solid #fdcb6e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Crear Usuarios en Evolución UCI</h1>
+            <p>Guía paso a paso para administradores de Hostinger</p>
+        </div>
+        
+        <div class="content">
+            <div class="warning">
+                <span class="icon">⚠️</span>
+                <strong>Importante:</strong> Esta guía es solo para administradores con acceso a phpMyAdmin en Hostinger.
+            </div>
+            
+            <!-- PASO 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    Acceder a phpMyAdmin en Hostinger
+                </div>
+                <div class="step-content">
+                    <ol>
+                        <li>Inicia sesión en tu panel de <strong>Hostinger</strong></li>
+                        <li>Ve a la sección <strong>"Bases de datos"</strong> o <strong>"phpMyAdmin"</strong></li>
+                        <li>Selecciona la base de datos: <code>u724879249_evolucion_uci</code></li>
+                        <li>Haz clic en <strong>"Administrar"</strong> o <strong>"Abrir phpMyAdmin"</strong></li>
+                    </ol>
+                    
+                    <div class="screenshot-placeholder">
+                        📸 Aquí aparecería una captura del panel de Hostinger mostrando la sección de bases de datos
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PASO 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    Crear el archivo test_user.php
+                </div>
+                <div class="step-content">
+                    <p>Antes de crear el usuario, necesitamos generar un hash de contraseña válido:</p>
+                    
+                    <ol>
+                        <li>En tu administrador de archivos de Hostinger, ve a la carpeta <code>public_html/evolucion-uci/</code></li>
+                        <li>Crea un nuevo archivo llamado <code>test_user.php</code></li>
+                        <li>Pega el siguiente código:</li>
+                    </ol>
+                    
+                    <div class="code-block">
+                        <div class="code-title">test_user.php</div>
+                        <button class="copy-btn" onclick="copyCode('code1')">📋 Copiar</button>
+                        <pre id="code1">&lt;?php
+// Generar hash para nueva contraseña
+$nueva_contraseña = 'AQUI_TU_CONTRASEÑA';  // Cambia esto por la contraseña deseada
+$hash = password_hash($nueva_contraseña, PASSWORD_DEFAULT);
+
+echo "&lt;h1&gt;Generador de Hash para Usuario&lt;/h1&gt;";
+echo "&lt;p&gt;&lt;strong&gt;Contraseña:&lt;/strong&gt; " . htmlspecialchars($nueva_contraseña) . "&lt;/p&gt;";
+echo "&lt;p&gt;&lt;strong&gt;Hash generado:&lt;/strong&gt;&lt;/p&gt;";
+echo "&lt;code style='background:#f0f0f0; padding:10px; display:block; word-break:break-all;'&gt;" . $hash . "&lt;/code&gt;";
+echo "&lt;p&gt;&lt;strong&gt;Verificación:&lt;/strong&gt; " . (password_verify($nueva_contraseña, $hash) ? '✅ OK' : '❌ Error') . "&lt;/p&gt;";
+?&gt;</pre>
+                    </div>
+                    
+                    <div class="important">
+                        <strong>📝 Importante:</strong> Cambia <code>'AQUI_TU_CONTRASEÑA'</code> por la contraseña real que quieres usar.
+                    </div>
+                    
+                    <ol start="4">
+                        <li>Guarda el archivo</li>
+                        <li>Accede a: <code>https://tudominio.com/evolucion-uci/test_user.php</code></li>
+                        <li><strong>Copia el hash generado</strong> (la línea larga que empieza con <code>$2y$10$...</code>)</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- PASO 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    Insertar el usuario en la base de datos
+                </div>
+                <div class="step-content">
+                    <ol>
+                        <li>En phpMyAdmin, busca la tabla <strong>"usuarios"</strong> en el panel izquierdo</li>
+                        <li>Haz clic en la pestaña <strong>"SQL"</strong> (arriba)</li>
+                        <li>Pega la siguiente consulta:</li>
+                    </ol>
+                    
+                    <div class="code-block">
+                        <div class="code-title">Consulta SQL</div>
+                        <button class="copy-btn" onclick="copyCode('code2')">📋 Copiar</button>
+                        <pre id="code2">-- Insertar nuevo usuario
+INSERT INTO usuarios (usuario, clave) 
+VALUES ('NOMBRE_USUARIO', 'HASH_GENERADO_EN_PASO_2');
+
+-- Verificar que se insertó correctamente
+SELECT id, usuario, LENGTH(clave) as longitud_hash 
+FROM usuarios 
+WHERE usuario = 'NOMBRE_USUARIO';</pre>
+                    </div>
+                    
+                    <div class="important">
+                        <strong>📝 Reemplaza:</strong>
+                        <ul>
+                            <li><code>NOMBRE_USUARIO</code> → El nombre de usuario deseado (ej: 'Juan.Perez')</li>
+                            <li><code>HASH_GENERADO_EN_PASO_2</code> → El hash que copiaste del paso anterior</li>
+                        </ul>
+                    </div>
+                    
+                    <ol start="4">
+                        <li>Haz clic en <strong>"Continuar"</strong> o <strong>"Ejecutar"</strong></li>
+                        <li>Deberías ver: <span style="color:green;">"1 fila insertada"</span></li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- PASO 4 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    Verificar que el usuario funciona
+                </div>
+                <div class="step-content">
+                    <p>Vamos a crear un script de verificación para asegurarnos de que todo funciona:</p>
+                    
+                    <ol>
+                        <li>Crea un archivo <code>verificar_usuario.php</code></li>
+                        <li>Pega este código:</li>
+                    </ol>
+                    
+                    <div class="code-block">
+                        <div class="code-title">verificar_usuario.php</div>
+                        <button class="copy-btn" onclick="copyCode('code3')">📋 Copiar</button>
+                        <pre id="code3">&lt;?php
+date_default_timezone_set('Europe/Madrid');
+
+$usuario_test = 'NOMBRE_USUARIO';    // Cambia por tu usuario
+$clave_test = 'TU_CONTRASEÑA';       // Cambia por tu contraseña
+
+echo "&lt;h1&gt;Verificación de Usuario&lt;/h1&gt;";
+
+try {
+    $pdo = new PDO("mysql:host=localhost;dbname=u724879249_evolucion_uci;charset=utf8mb4", 
+                  'u724879249_jamarquez06', 'Farolill01.');
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    $stmt = $pdo-&gt;prepare("SELECT id, usuario, clave FROM usuarios WHERE usuario = ?");
+    $stmt-&gt;execute([$usuario_test]);
+    $datos = $stmt-&gt;fetch(PDO::FETCH_ASSOC);
+    
+    if ($datos) {
+        echo "&lt;p style='color:green;'&gt;✅ Usuario encontrado en BD&lt;/p&gt;";
+        echo "&lt;p&gt;&lt;strong&gt;ID:&lt;/strong&gt; " . $datos['id'] . "&lt;/p&gt;";
+        echo "&lt;p&gt;&lt;strong&gt;Usuario:&lt;/strong&gt; " . $datos['usuario'] . "&lt;/p&gt;";
+        
+        if (password_verify($clave_test, $datos['clave'])) {
+            echo "&lt;p style='color:green; font-size:1.2em;'&gt;🎉 ¡CONTRASEÑA CORRECTA! El usuario puede hacer login.&lt;/p&gt;";
+        } else {
+            echo "&lt;p style='color:red;'&gt;❌ Contraseña incorrecta&lt;/p&gt;";
+        }
+    } else {
+        echo "&lt;p style='color:red;'&gt;❌ Usuario no encontrado&lt;/p&gt;";
+    }
+} catch (Exception $e) {
+    echo "&lt;p style='color:red;'&gt;Error: " . $e-&gt;getMessage() . "&lt;/p&gt;";
+}
+?&gt;</pre>
+                    </div>
+                    
+                    <ol start="3">
+                        <li>Reemplaza <code>NOMBRE_USUARIO</code> y <code>TU_CONTRASEÑA</code> con los valores reales</li>
+                        <li>Accede al archivo en el navegador</li>
+                        <li>Deberías ver: <span style="color:green;">🎉 ¡CONTRASEÑA CORRECTA! El usuario puede hacer login.</span></li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- PASO 5 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    Probar el login en la aplicación
+                </div>
+                <div class="step-content">
+                    <ol>
+                        <li>Ve a la página principal: <code>https://tudominio.com/evolucion-uci/</code></li>
+                        <li>Usa las credenciales del nuevo usuario</li>
+                        <li>Si todo está correcto, deberías acceder a <code>app.php</code></li>
+                    </ol>
+                    
+                    <div class="success">
+                        <span class="icon">✅</span>
+                        <strong>¡Éxito!</strong> Si llegaste hasta aquí, el usuario se creó correctamente.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PASO 6 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    Limpiar archivos de prueba (Opcional)
+                </div>
+                <div class="step-content">
+                    <p>Por seguridad, puedes eliminar los archivos de prueba:</p>
+                    <ul>
+                        <li><code>test_user.php</code></li>
+                        <li><code>verificar_usuario.php</code></li>
+                    </ul>
+                    
+                    <div class="warning">
+                        <span class="icon">🔒</span>
+                        <strong>Recomendación:</strong> Elimina estos archivos después de crear el usuario para evitar riesgos de seguridad.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TROUBLESHOOTING -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">🔧</div>
+                    Solución de problemas comunes
+                </div>
+                <div class="step-content">
+                    <h3>❌ Error: "Usuario o contraseña incorrectos"</h3>
+                    <ul>
+                        <li>Verifica que el hash se copió completo (debe tener ~60 caracteres)</li>
+                        <li>Asegúrate de que no hay espacios extra al inicio o final</li>
+                        <li>Regenera el hash con <code>test_user.php</code></li>
+                    </ul>
+                    
+                    <h3>❌ Error: "Error de conexión BD"</h3>
+                    <ul>
+                        <li>Verifica que la base de datos esté activa en Hostinger</li>
+                        <li>Comprueba los datos de conexión en <code>login2.php</code></li>
+                    </ul>
+                    
+                    <h3>❌ Error: "Sesión no válida"</h3>
+                    <ul>
+                        <li>Ve a <code>logout.php</code> para limpiar sesiones</li>
+                        <li>Prueba en una ventana de incógnito</li>
+                        <li>Limpia las cookies del navegador</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <h3>Enlaces útiles</h3>
+            <a href="#" class="nav-link">🏠 Volver a Evolución UCI</a>
+            <a href="#" class="nav-link">📧 Contactar Soporte</a>
+            <a href="#" class="nav-link">📚 Documentación</a>
+        </div>
+    </div>
+    
+    <script>
+        function copyCode(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                // Cambiar temporalmente el texto del botón
+                const button = element.parentElement.querySelector('.copy-btn');
+                const originalText = button.textContent;
+                button.textContent = '✅ Copiado';
+                button.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#007bff';
+                }, 2000);
+            }).catch(function(err) {
+                alert('Error al copiar: ' + err);
+            });
+        }
+        
+        // Scroll suave para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía rápida · Alta de usuario en Evolución‑UCI</title>
+  <style>
+    :root{
+      --verde:#2d6b3a;--gris:#4f4f4f;--bg:#f4f7fa;--card:#fff;--radio:10px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Montserrat",sans-serif}
+    body{background:var(--bg);color:var(--gris);display:flex;justify-content:center;padding:40px}
+    main{max-width:860px;width:100%}
+    h1{color:var(--verde);margin-bottom:1rem;font-size:1.8rem}
+    ol{counter-reset:step;list-style:none;margin-left:1rem}
+    li{background:var(--card);border-radius:var(--radio);padding:20px 25px;margin-bottom:22px;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+    li::before{counter-increment:step;content:counters(step,".")".";font-weight:700;color:var(--verde);margin-right:8px}
+    code{background:#eef2f6;border-radius:6px;padding:2px 6px;color:#c7254e;font-size:.95rem}
+    pre{background:#eef2f6;border-radius:6px;padding:16px;overflow:auto;margin-top:12px;font-size:.9rem}
+    .tip{font-size:.85rem;color:#666;margin-top:6px}
+    a{color:var(--verde);text-decoration:none;font-weight:600}
+  </style>
+</head>
+<body>
+<main>
+<h1>Cómo dar de alta un usuario en <em>Evolución‑UCI</em></h1>
+<ol>
+  <li>
+    <strong>Generar el <em>hash</em> de la contraseña</strong>
+    <pre><code>&lt;?php
+echo password_hash('CONTRASEÑA_AQUI', PASSWORD_BCRYPT);
+?></code></pre>
+    <p class="tip">⬆ Guarda el archivo (<code>generar_hash.php</code>), ejecútalo en el navegador, copia la cadena que devuelve y borra el archivo.</p>
+  </li>
+  <li>
+    <strong>Insertar el usuario en la base de datos</strong>
+    <pre><code>INSERT INTO usuarios (usuario, clave, user_id)
+VALUES ('NUEVO_USUARIO',
+        'HASH_COPIADO_AQUI',
+        'NUEVO_USUARIO');</code></pre>
+    <p class="tip">Ejecuta la consulta en la pestaña <b>SQL</b> de phpMyAdmin &nbsp;→&nbsp; debería aparecer “1 fila insertada”.</p>
+  </li>
+  <li>
+    <strong>Comprobar que no existen duplicados</strong>
+    <pre><code>SELECT usuario, COUNT(*) AS veces
+FROM usuarios
+GROUP BY usuario
+HAVING veces &gt; 1;</code></pre>
+    <p class="tip">Si la consulta devuelve cero filas, todo está correcto.</p>
+  </li>
+  <li>
+    <strong>Probar el inicio de sesión</strong>
+    <p>Ve a <code>/evolucion-uci/</code>, introduce <code>usuario</code> y <code>contraseña</code>. Si entras en <code>app.php</code>, el alta está operativo.</p>
+  </li>
+  <li>
+    <strong>(Opcional) Verificar en <code>admin.php</code></strong>
+    <p>Accede con un usuario administrador y confirma que el nuevo registro aparece en la tabla.</p>
+  </li>
+</ol>
+</main>
+</body>
+</html>

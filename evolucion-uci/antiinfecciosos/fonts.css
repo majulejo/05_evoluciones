@@ -1,0 +1,36 @@
+
+@font-face {
+    font-family: 'Noto Sans HK';
+    src: url('/Noto-Sans-HK/NotoSansHK-Thin.otf') format('opentype');
+    font-weight: 100; /* Thin */
+}
+
+@font-face {
+    font-family: 'Noto Sans HK';
+    src: url('/Noto-Sans-HK/NotoSansHK-Light.otf') format('opentype');
+    font-weight: 300; /* Light */
+}
+
+@font-face {
+    font-family: 'Noto Sans HK';
+    src: url('/Noto-Sans-HK/NotoSansHK-Regular.otf') format('opentype');
+    font-weight: 400; /* Regular */
+}
+
+@font-face {
+    font-family: 'Noto Sans HK';
+    src: url('/Noto-Sans-HK/NotoSansHK-Medium.otf') format('opentype');
+    font-weight: 500; /* Medium */
+}
+
+@font-face {
+    font-family: 'Noto Sans HK';
+    src: url('/Noto-Sans-HK/NotoSansHK-Bold.otf') format('opentype');
+    font-weight: 700; /* Bold */
+}
+
+@font-face {
+    font-family: 'Noto Sans HK';
+    src: url('/Noto-Sans-HK/NotoSansHK-Black.otf') format('opentype');
+    font-weight: 900; /* Black */
+}

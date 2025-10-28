@@ -1,0 +1,202 @@
+[27-May-2025 08:57:54 UTC] login.php: Datos de email o password no recibidos correctamente.
+[27-May-2025 09:01:40 UTC] login.php: Datos de email o password no recibidos correctamente.
+[27-May-2025 09:02:37 UTC] login.php: Email recibido: perro@perro.es
+[27-May-2025 09:02:37 UTC] login.php: Contraseña en texto plano recibida (bin2hex): 706572726f
+[27-May-2025 09:02:37 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:38
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(38): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 38
+[27-May-2025 09:02:48 UTC] login.php: Email recibido: perro@perro.es
+[27-May-2025 09:02:48 UTC] login.php: Contraseña en texto plano recibida (bin2hex): 706572726f
+[27-May-2025 09:02:48 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:38
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(38): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 38
+[27-May-2025 09:02:48 UTC] login.php: Email recibido: perro@perro.es
+[27-May-2025 09:02:48 UTC] login.php: Contraseña en texto plano recibida (bin2hex): 706572726f
+[27-May-2025 09:02:48 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:38
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(38): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 38
+[27-May-2025 09:10:58 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:37
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 37
+[27-May-2025 09:10:59 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:37
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 37
+[27-May-2025 09:11:04 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:37
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 37
+[27-May-2025 09:11:17 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:37
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 37
+[27-May-2025 09:11:19 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:37
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 37
+[27-May-2025 09:11:19 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'password' in 'SELECT' in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:37
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 37
+[27-May-2025 16:29:08 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:29:08 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:29:08 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:29:08 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:29:08 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:30:59 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:30:59 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:30:59 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:30:59 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:30:59 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:31:32 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:31:32 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:31:32 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:31:32 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:31:32 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:09 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:09 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:09 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:09 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:09 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:41 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:41 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:41 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:41 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:41 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:42 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:42 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:42 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:42 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:35:42 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:36:11 UTC] PHP Warning:  Undefined variable $host in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:36:11 UTC] PHP Warning:  Undefined variable $user in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:36:11 UTC] PHP Warning:  Undefined variable $pass in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:36:11 UTC] PHP Warning:  Undefined variable $dbname in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:36:11 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:4
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(4): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 4
+[27-May-2025 16:42:13 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:42:42 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:43:11 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:47:16 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:47:20 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:50:22 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:50:44 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:51:14 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[27-May-2025 16:51:16 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u724879249_jamarquez06'@'127.0.0.1' (using password: YES) in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php:9
+Stack trace:
+#0 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php(9): mysqli->__construct()
+#1 /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php(19): require_once('/home/u72487924...')
+#2 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php on line 9
+[30-May-2025 22:10:43 UTC] PHP Warning:  require_once(/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php): Failed to open stream: No such file or directory in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:10:43 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:10:45 UTC] PHP Warning:  require_once(/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php): Failed to open stream: No such file or directory in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:10:45 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:10:50 UTC] PHP Warning:  require_once(/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php): Failed to open stream: No such file or directory in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:10:50 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:15:54 UTC] PHP Warning:  require_once(/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php): Failed to open stream: No such file or directory in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:15:54 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:19:19 UTC] PHP Warning:  require_once(/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php): Failed to open stream: No such file or directory in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19
+[30-May-2025 22:19:19 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/db_connect.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/u724879249/domains/jolejuma.es/public_html/evolucion-uci/login.php on line 19

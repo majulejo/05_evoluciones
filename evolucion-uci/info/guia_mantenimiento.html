@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Mantenimiento - Evolución UCI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d6b3a 0%, #368f3f 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #2d6b3a;
+        }
+
+        .section h2 {
+            color: #2d6b3a;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #368f3f;
+            font-size: 1.2rem;
+            margin: 20px 0 10px 0;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning strong {
+            color: #856404;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .success strong {
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .error strong {
+            color: #721c24;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .code-block .comment {
+            color: #68d391;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background: #2d6b3a;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .url-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+
+        .file-structure .folder {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .file-structure .file {
+            color: #17a2b8;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 15px;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .emergency-box {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .emergency-box h3 {
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Guía de Mantenimiento</h1>
+            <p>Sistema Evolución UCI - Instrucciones de Administración</p>
+        </div>
+
+        <div class="content">
+            <!-- ACCESO DURANTE MANTENIMIENTO -->
+            <div class="section">
+                <h2><span class="icon">🔑</span> Acceso Durante Mantenimiento</h2>
+                
+                <div class="warning">
+                    <strong>⚠️ Importante:</strong> Mientras el mantenimiento esté activo, los usuarios normales verán la página de mantenimiento. Solo los administradores pueden acceder.
+                </div>
+
+                <h3>Método 1: URL con Bypass</h3>
+                <p>Añade <code>?bypass=admin2025</code> al final de cualquier URL:</p>
+                <div class="url-box">
+                    https://jolejuma.es/evolucion-uci/index.php?bypass=admin2025
+                </div>
+
+                <h3>Método 2: Acceso Directo (si es HTML)</h3>
+                <p>Si tu página principal es HTML, no se ve afectada por el mantenimiento PHP:</p>
+                <div class="url-box">
+                    https://jolejuma.es/evolucion-uci/index.html
+                </div>
+            </div>
+
+            <!-- DESACTIVAR MANTENIMIENTO -->
+            <div class="section">
+                <h2><span class="icon">⚙️</span> Desactivar Mantenimiento</h2>
+                
+                <div class="steps">
+                    <div class="step">
+                        <h3>Localizar el archivo PHP</h3>
+                        <p>Busca el archivo principal (probablemente <code>index.php</code> o <code>admin.php</code>) en tu servidor.</p>
+                    </div>
+
+                    <div class="step">
+                        <h3>Editar el archivo</h3>
+                        <p>Abre el archivo y busca esta línea al principio:</p>
+                        <div class="code-block">
+$maintenance_mode = true; <span class="comment">// Cambia a false para desactivar</span>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>Cambiar el valor</h3>
+                        <p>Cambia <code>true</code> por <code>false</code>:</p>
+                        <div class="code-block">
+$maintenance_mode = false; <span class="comment">// Mantenimiento desactivado</span>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>Guardar y verificar</h3>
+                        <p>Guarda el archivo y verifica que el sitio funciona normalmente visitando:</p>
+                        <div class="url-box">
+                            https://jolejuma.es/evolucion-uci/index.html
+                        </div>
+                    </div>
+                </div>
+
+                <div class="success">
+                    <strong>✅ Verificación:</strong> Si puedes ver la página normal sin usar el bypass, el mantenimiento está desactivado correctamente.
+                </div>
+            </div>
+
+            <!-- ACTIVAR MANTENIMIENTO -->
+            <div class="section">
+                <h2><span class="icon">🔧</span> Activar Mantenimiento</h2>
+                
+                <p>Para activar el modo mantenimiento cuando necesites hacer actualizaciones:</p>
+                
+                <div class="steps">
+                    <div class="step">
+                        <h3>Editar configuración</h3>
+                        <p>Cambia la línea en el archivo PHP:</p>
+                        <div class="code-block">
+$maintenance_mode = true; <span class="comment">// Mantenimiento activado</span>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>Verificar funcionamiento</h3>
+                        <p>Los usuarios normales verán la página de mantenimiento. Tú podrás acceder con:</p>
+                        <div class="url-box">
+                            https://jolejuma.es/evolucion-uci/index.php?bypass=admin2025
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONFIGURACIÓN AVANZADA -->
+            <div class="section">
+                <h2><span class="icon">⚙️</span> Configuración Avanzada</h2>
+                
+                <h3>Cambiar Clave de Bypass</h3>
+                <p>Para mayor seguridad, cambia la clave por defecto:</p>
+                <div class="code-block">
+$bypass_key = 'tu_nueva_clave_secreta'; <span class="comment">// Cambia admin2025</span>
+                </div>
+
+                <h3>Permitir IP Específica</h3>
+                <p>Para acceso automático desde tu IP:</p>
+                <div class="code-block">
+$allowed_ips = [
+    '192.168.1.100', <span class="comment">// Tu IP aquí</span>
+    '::1', <span class="comment">// IPv6 localhost</span>
+];
+                </div>
+            </div>
+
+            <!-- ESTRUCTURA DE ARCHIVOS -->
+            <div class="section">
+                <h2><span class="icon">📁</span> Estructura de Archivos Recomendada</h2>
+                
+                <div class="file-structure">
+<span class="folder">📁 evolucion-uci/</span>
+├── <span class="file">index.html</span> (página principal)
+├── <span class="file">index.php</span> (con sistema de mantenimiento)
+├── <span class="file">maintenance.html</span> (página de mantenimiento)
+├── <span class="folder">📁 archivos-mantenimiento/</span>
+│   ├── <span class="file">guia-mantenimiento.html</span> (esta guía)
+│   ├── <span class="file">index-backup.php</span> (respaldo)
+│   └── <span class="file">maintenance-backup.html</span> (respaldo)
+└── <span class="folder">📁 admin/</span>
+    └── <span class="file">admin.php</span>
+                </div>
+            </div>
+
+            <!-- CHECKLIST -->
+            <div class="section">
+                <h2><span class="icon">✅</span> Checklist de Mantenimiento</h2>
+                
+                <ul class="checklist">
+                    <li>Hacer backup de archivos importantes antes de cambios</li>
+                    <li>Verificar que maintenance.html existe y funciona</li>
+                    <li>Probar el acceso con bypass antes de activar mantenimiento</li>
+                    <li>Informar al equipo sobre el mantenimiento programado</li>
+                    <li>Verificar que el sitio funciona normalmente después del mantenimiento</li>
+                    <li>Guardar esta guía en la carpeta de archivos para futuras referencias</li>
+                </ul>
+            </div>
+
+            <!-- EMERGENCIA -->
+            <div class="emergency-box">
+                <h3>🚨 En Caso de Emergencia</h3>
+                <p><strong>Si algo sale mal y no puedes acceder:</strong></p>
+                <ul>
+                    <li>Conecta por FTP/cPanel al servidor</li>
+                    <li>Renombra el archivo problemático (ej: index.php → index-temp.php)</li>
+                    <li>Sube un archivo de respaldo limpio</li>
+                    <li>Contacta al administrador del servidor si es necesario</li>
+                </ul>
+            </div>
+
+            <!-- CONTACTO -->
+            <div class="section">
+                <h2><span class="icon">📞</span> Información de Contacto</h2>
+                <p><strong>Sistema:</strong> Evolución UCI</p>
+                <p><strong>URL Principal:</strong> https://jolejuma.es/evolucion-uci/</p>
+                <p><strong>Fecha de creación de esta guía:</strong> Junio 2025</p>
+                <p><strong>Última actualización:</strong> Junio 19, 2025</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

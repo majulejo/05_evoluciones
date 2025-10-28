@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="description" content="Formulario de acceso de usuarios para el sistema de Evolución UCI.">
+  <meta name="author" content="Equipo de Desarrollo - Evolución UCI">
+  <title>Evolución UCI - Acceso</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="img/evo-uci.png?v=3" type="image/png" />
+
+  <!-- Open Graph Metadatos -->
+  <meta property="og:title" content="Evolución UCI - Acceso">
+  <meta property="og:description" content="Formulario de acceso para el sistema de Evolución UCI.">
+  <meta property="og:image" content="https://jolejuma.es/evolucion-uci/img/login-preview.png">
+  <meta property="og:url" content="https://jolejuma.es/evolucion-uci/admin/admin.php">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Evolución UCI">
+
+  <!-- Twitter Card Metadatos (opcional) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Evolución UCI - Acceso">
+  <meta name="twitter:description" content="Formulario de acceso para el sistema de Evolución UCI.">
+  <meta name="twitter:image" content="https://jolejuma.es/evolucion-uci/img/login-preview.png">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --color-fondo: #f4f7fa;
+      --color-primario: #2d6b3a;
+      --color-secundario: #368f3f;
+      --color-hover: #489950;
+      --color-texto: #2e2925;
+      --color-blanco: #fff;
+      --radio: 10px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    /* --- BANNER DE NUEVAS FUNCIONES --- */
+    .new-features-banner {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border: 2px solid var(--color-secundario);
+      border-radius: var(--radio);
+      padding: 25px 30px;
+      margin-bottom: 25px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 4px 15px rgba(54, 143, 63, 0.2);
+      position: relative;
+    }
+
+    .new-features-banner i {
+      color: var(--color-secundario);
+      margin-right: 10px;
+    }
+
+    .new-features-banner strong {
+      color: var(--color-primario);
+    }
+
+    .new-features-banner .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: 2px solid var(--color-secundario);
+      font-size: 1.2rem;
+      color: var(--color-primario);
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      padding: 2px 6px;
+      /* Ajuste para que sea circular */
+      border-radius: 50%;
+      /* Esto hace que sea circular */
+      width: 28px;
+      /* Tamaño fijo para asegurar circularidad */
+      height: 28px;
+      /* Tamaño fijo para asegurar circularidad */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .new-features-banner .close-btn:hover {
+      opacity: 1;
+      background-color: rgba(54, 143, 63, 0.1);
+      /* Efecto sutil al hover */
+    }
+
+    /* --- MAINTENANCE NOTICE (solo visible para admins) --- */
+    .maintenance-notice {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border: 1px solid #ffc107;
+      border-radius: var(--radio);
+      padding: 15px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+    }
+
+    .maintenance-notice i {
+      color: #856404;
+      margin-right: 10px;
+    }
+
+    .maintenance-notice strong {
+      color: #856404;
+    }
+
+    /* --- LOGIN FORM --- */
+    .login-card {
+      background: var(--color-blanco);
+      padding: 25px;
+      border-radius: var(--radio);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 320px;
+      margin-bottom: 30px;
+    }
+
+    .login-card h2 {
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: var(--color-primario);
+    }
+
+    .login-card label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-weight: 500;
+    }
+
+    .login-card input[type="text"],
+    .login-card input[type="password"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 0.95rem;
+    }
+
+    .login-card .show-pass {
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .login-card button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: var(--color-primario);
+      border: none;
+      border-radius: 5px;
+      color: var(--color-blanco);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-card button:hover {
+      background: var(--color-hover);
+    }
+
+    .login-card .error {
+      margin-top: 10px;
+      color: #c00;
+      font-size: 0.9rem;
+    }
+
+    .login-required {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .login-required:hover::after {
+      content: 'Click para acceder';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--color-primario);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .login-notice {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* --- CARDS NAV --- */
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 1200px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: linear-gradient(135deg, var(--color-blanco) 0%, #f8fdf9 100%);
+      border-radius: var(--radio);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 280px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(135deg, var(--color-secundario) 0%, var(--color-hover) 100%);
+      color: var(--color-blanco);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .card i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--color-secundario);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover i {
+      color: var(--color-blanco);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      transition: color 0.3s ease;
+    }
+
+    /* --- BADGE NUEVO --- */
+    .new-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+      z-index: 10;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* --- SECCIÓN DE INFORMACIÓN --- */
+    .info-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 50px auto 40px;
+      padding: 30px;
+      background: linear-gradient(135deg, #f8fdf9 0%, var(--color-blanco) 100%);
+      border-radius: var(--radio);
+      border: 2px solid rgba(54, 143, 63, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-title {
+      text-align: center;
+      color: var(--color-primario);
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .info-title i {
+      color: var(--color-secundario);
+      margin-right: 15px;
+    }
+
+    .info-subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      font-style: italic;
+    }
+
+    /* MODIFICACIÓN PRINCIPAL: Centrar las cards en móviles */
+    .info-icons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+      justify-items: center;
+      /* Añadido para centrar las cards */
+    }
+
+    .info-icon {
+      background: linear-gradient(135deg, var(--color-blanco) 0%, #f8fdf9 100%);
+      border-radius: var(--radio);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      position: relative;
+      width: 100%;
+      /* Asegura que ocupe todo el ancho disponible */
+      max-width: 280px;
+      /* Mantiene el tamaño máximo */
+    }
+
+    .info-icon:hover {
+      transform: translateY(-8px);
+      background: linear-gradient(135deg, var(--color-secundario) 0%, var(--color-hover) 100%);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--color-blanco);
+    }
+
+    .info-icon a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      text-align: center;
+    }
+
+    .info-icon a:hover {
+      text-decoration: none;
+    }
+
+    .info-icon i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--color-secundario);
+      transition: all 0.3s ease;
+      display: block;
+    }
+
+    .info-icon:hover i {
+      color: var(--color-blanco);
+      transform: scale(1.1);
+    }
+
+    .info-icon h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--color-primario);
+      transition: color 0.3s ease;
+    }
+
+    .info-icon:hover h3 {
+      color: var(--color-blanco);
+    }
+
+    .info-icon p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #555;
+      transition: color 0.3s ease;
+    }
+
+    .info-icon:hover p {
+      color: var(--color-blanco);
+    }
+
+    /* --- SECCIÓN DE ACCESO --- */
+    .access-section {
+      width: 100%;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 25px;
+      background: linear-gradient(135deg, #fff8dc 0%, var(--color-blanco) 100%);
+      border-radius: var(--radio);
+      border: 2px solid rgba(255, 193, 7, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .access-title {
+      text-align: center;
+      color: #856404;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .access-title i {
+      color: #ffc107;
+      margin-right: 10px;
+    }
+
+    .access-card {
+      background: var(--color-blanco);
+      border-radius: var(--radio);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .access-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border-color: rgba(255, 193, 7, 0.3);
+    }
+
+    .access-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      text-align: center;
+    }
+
+    .access-card i {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      color: #ffc107;
+      transition: all 0.3s ease;
+      display: block;
+    }
+
+    .access-card:hover i {
+      color: #856404;
+      transform: scale(1.1);
+    }
+
+    .access-card h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #856404;
+    }
+
+    .access-card p {
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .card-container {
+        max-width: 900px;
+      }
+
+      .info-section {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .card-container {
+        max-width: 600px;
+      }
+
+      .info-icons {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 600px) {
+
+      .card,
+      .info-icon {
+        width: 90%;
+      }
+
+      .card-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .info-section {
+        margin: 30px auto 20px;
+        padding: 15px;
+      }
+
+      .info-title {
+        font-size: 1.5rem;
+      }
+
+      .info-icons {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        justify-items: center;
+        /* Asegura que se centren en móviles */
+      }
+
+      .access-section {
+        margin: 20px auto;
+        padding: 15px;
+      }
+
+      .back-button {
+        top: 10px;
+        left: 10px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Evolución UCI</h1>
+  <p class="subtitle">Accede a las herramientas clínicas esenciales</p>
+
+
+  <!-- LOGIN -->
+  <div class="card-container">
+    <div class="login-card">
+      <h2>Acceso al Sistema</h2>
+      <form id="loginForm">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" maxlength="20" required>
+
+        <label for="clave">Contraseña</label>
+        <input type="password" id="clave" maxlength="20" required>
+
+        <div class="show-pass">
+          <input type="checkbox" id="togglePass"><label for="togglePass">Mostrar</label>
+        </div>
+
+        <button type="submit">Entrar</button>
+        <div id="errorMensaje" class="error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- BANNER DE NUEVAS FUNCIONES -->
+  <div class="new-features-banner" id="newFeaturesBanner">
+    <button class="close-btn" id="closeBannerBtn">×</button>
+    <i class="fas fa-bullhorn"></i>
+    <strong>¡Nuevas funciones disponibles!</strong> Hemos añadido herramientas para valores de gasometría, modos
+    ventilatorios y compatibilidad sanguínea ¡Explora las nuevas opciones marcadas con <span class="new-badge"
+      style="display: inline-block; position: static; font-size: 0.6rem; padding: 2px 6px; margin: 0 3px;">NUEVO</span>!
+  </div>
+
+  <!-- NAV CARDS -->
+
+  <div class="card-container">
+
+    <div class="card">
+      <i class="fas fa-stethoscope"></i>
+      <h2>Evolución de Enfermería</h2>
+      <p>Registra la evolución diaria del paciente en unidades críticas.</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-water"></i>
+      <h2>Balance Hídrico</h2>
+      <p>Controla el balance hídrico del paciente de forma precisa y rápida.</p>
+    </div>
+    <a href="https://jolejuma.es/evolucion-uci/calculadora/index.html" class="card">
+      <i class="fas fa-pills"></i>
+      <h2>Calculadora de Dosis</h2>
+      <p>Calcula dosis farmacológicas de manera precisa y segura para UCI.</p>
+    </a>
+    <a href="https://jolejuma.es/evolucion-uci/antiinfecciosos/index.html" class="card">
+      <i class="fas fa-shield-virus"></i>
+      <h2>Antiinfecciosos UCI</h2>
+      <p>Buscador de antiinfecciosos más utilizados en nuestra unidad de cuidados intensivos.</p>
+    </a>
+    <a href="https://www.sciencedirect.com/science/article/pii/S1130239925000598?dgcid=coauthor" class="card" target="_blank">
+      <div class="new-badge">NUEVO</div>
+      <i class="fa-solid fa-newspaper"></i>
+      <h5>Comparación de 2 métodos de obtención de información de fármacos antiinfecciosos de uso en la UCI: revisión humana de fichas técnicas y uso de inteligencia artificial. Estudio cualitativo</h5>
+    </a>
+    <a href="https://jolejuma.es/evolucion-uci/gasometria/index.html" class="card">
+      <div class="new-badge">NUEVO</div>
+      <i class="fas fa-lungs"></i>
+      <h2>Valores de Gasometría</h2>
+      <p>Consulta e interpreta los valores de gasometría arterial de forma rápida y precisa.</p>
+    </a>
+    <a href="https://jolejuma.es/evolucion-uci/ventilacion/index.html" class="card">
+      <div class="new-badge">NUEVO</div>
+      <i class="fa-solid fa-mask-face"></i>
+      <h2>Modos Ventilatorios</h2>
+      <p>Consulta distintos modos respiratorios en ventilación mecánica y sus parámetros.</p>
+    </a>
+    <a href="https://jolejuma.es/evolucion-uci/compatibilidad/index.html" class="card">
+      <div class="new-badge">NUEVO</div>
+      <i class="fa-solid fa-droplet"></i>
+      <h2>Compatibilidad sanguínea</h2>
+      <p>Consulta la compatibilidad sanguinea, jugando. </p>
+    </a>
+  </div>
+
+  <!-- SECCIÓN DE INFORMACIÓN Y GUÍAS -->
+  <div class="info-section">
+    <h2 class="info-title">
+      <i class="fas fa-info-circle"></i>
+      Guías de Usuario y Documentación
+    </h2>
+    <p class="info-subtitle">Aprende a usar cada herramienta con nuestras guías detalladas</p>
+
+    <div class="info-icons">
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/evolucion_info.html">
+          <i class="fas fa-book-medical"></i>
+          <h3>Guía: Evolución de Enfermería</h3>
+          <p>Manual completo sobre cómo registrar y gestionar las evoluciones de enfermería por turnos y boxes.</p>
+        </a>
+      </div>
+
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/balance_info.html">
+          <i class="fas fa-book-open"></i>
+          <h3>Guía: Balance Hídrico</h3>
+          <p>Instrucciones detalladas para el control de ingresos, egresos y balances hídricos del paciente.</p>
+        </a>
+      </div>
+
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/calculadora_info.html">
+          <i class="fas fa-book"></i>
+          <h3>Guía: Calculadora de Dosis</h3>
+          <p>Manual de uso para el cálculo preciso de dosis farmacológicas con fármacos predefinidos y manual.</p>
+        </a>
+      </div>
+
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/antiinfecciosos_info.html">
+          <i class="fas fa-book-reader"></i>
+          <h3>Guía: Antiinfecciosos UCI</h3>
+          <p>Información completa sobre el buscador de antiinfecciosos más utilizados en nuestra UCI.</p>
+        </a>
+      </div>
+
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/gasometria_info.html">
+          <div class="new-badge">NUEVO</div>
+          <i class="fa-solid fa-list-ol"></i>
+          <h3>Guía: Valores de Gasometría</h3>
+          <p>Manual completo para interpretar y utilizar los valores de gasometría arterial en pacientes críticos.</p>
+        </a>
+      </div>
+
+      <!-- NUEVA GUÍA PARA MODOS VENTILATORIOS -->
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/ventilacion_info.html">
+          <div class="new-badge">NUEVO</div>
+          <i class="fa-solid fa-swatchbook"></i>
+          <h3>Guía: Modos Ventilatorios</h3>
+          <p>Manual completo sobre los distintos modos de ventilación mecánica y sus parámetros en pacientes críticos.
+          </p>
+        </a>
+      </div>
+
+      <!-- NUEVA GUÍA PARA COMPATIBILIDAD SANGUINEA -->
+      <div class="info-icon">
+        <a href="https://jolejuma.es/evolucion-uci/info/compatibilidad_info.html">
+          <div class="new-badge">NUEVO</div>
+          <i class="fa-solid fa-puzzle-piece"></i>
+          <h3>Guía: Compatibilidad sanguínea</h3>
+          <p>Manual completo sobre los distintos modos de ventilación mecánica y sus parámetros en pacientes críticos.
+          </p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!--SOLICITUD DE ACCESO-->
+  <div class="access-section">
+    <h2 class="access-title">
+      <i class="fas fa-user-plus"></i>
+      Solicitar Acceso al Sistema
+    </h2>
+    <div class="access-card">
+      <a href="registro.html">
+        <i class="fas fa-clipboard-list"></i>
+        <h3>Formulario de Registro</h3>
+        <p>Complete el formulario para solicitar acceso al sistema Evolución UCI.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      &copy; 2025 Informe Evolución Enfermería. Todos los derechos reservados.
+      <br>C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br>
+    </p>
+    <a href="https://jolejuma.es/evolucion-uci/admin/admin.php" style="position: absolute; opacity: 0.1;">
+      <i class="fas fa-user-shield"></i>
+    </a>
+  </footer>
+
+  <!-- LOGIN SCRIPT -->
+  <script>
+    const errDiv = document.getElementById('errorMensaje');
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const usuario = document.getElementById('usuario').value.trim();
+      const clave = document.getElementById('clave').value.trim();
+
+      console.log('Intentando login con:', { usuario: usuario, clave: '***' });
+
+      if (!usuario || !clave) {
+        errDiv.textContent = 'Ambos campos son obligatorios.';
+        errDiv.style.display = 'block';
+        return;
+      }
+
+      // Limpiar errores previos
+      errDiv.textContent = '';
+      errDiv.style.display = 'none';
+
+      // Deshabilitar botón durante el proceso
+      const btnSubmit = document.querySelector('button[type="submit"]');
+      const originalText = btnSubmit.textContent;
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Conectando...';
+
+      try {
+        console.log('Enviando petición a login2.php...');
+
+        const response = await fetch('login2.php', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+          },
+          body: JSON.stringify({
+            usuario: usuario,
+            clave: clave
+          })
+        });
+
+        console.log('Respuesta recibida:', response.status, response.statusText);
+
+        if (!response.ok) {
+          throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const responseText = await response.text();
+        console.log('Texto de respuesta:', responseText);
+
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('Error al parsear JSON:', parseError);
+          console.error('Respuesta recibida:', responseText);
+          throw new Error('Respuesta del servidor no es JSON válido');
+        }
+
+        console.log('Datos parseados:', data);
+
+        if (data.success) {
+          console.log('Login exitoso, redirigiendo...');
+          errDiv.textContent = 'Login exitoso, redirigiendo...';
+          errDiv.style.color = 'green';
+          errDiv.style.display = 'block';
+
+          setTimeout(() => {
+            window.location.href = data.redirect || 'app.php';
+          }, 500);
+
+        } else {
+          console.error('Login fallido:', data.message);
+          errDiv.textContent = data.message || 'Error de autenticación';
+          errDiv.style.color = 'red';
+          errDiv.style.display = 'block';
+        }
+
+      } catch (error) {
+        console.error('Error completo:', error);
+        errDiv.textContent = 'Error de conexión: ' + error.message;
+        errDiv.style.color = 'red';
+        errDiv.style.display = 'block';
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = originalText;
+      }
+    });
+
+    // Mostrar / Ocultar contraseña
+    document.getElementById('togglePass').addEventListener('change', e => {
+      document.getElementById('clave').type = e.target.checked ? 'text' : 'password';
+    });
+
+    // Limpiar errores al escribir
+    document.getElementById('usuario').addEventListener('input', () => {
+      errDiv.style.display = 'none';
+    });
+    document.getElementById('clave').addEventListener('input', () => {
+      errDiv.style.display = 'none';
+    });
+
+    // Cerrar banner de nuevas funciones
+    document.getElementById('closeBannerBtn').addEventListener('click', () => {
+      document.getElementById('newFeaturesBanner').style.display = 'none';
+    });
+  </script>
+</body>
+
+</html>

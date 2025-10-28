@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guía para Usuarios – Evolución UCI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #f4f7fa;
+      --primary: #2d6b3a;
+      --secondary: #368f3f;
+      --text: #2e2925;
+      --white: #fff;
+      --radius: 8px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:"Montserrat",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
+      line-height:1.5;
+    }
+    .btn-back {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: var(--secondary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      z-index: 100;
+      transition: background .2s;
+    }
+    .btn-back:hover { background: var(--primary); }
+    h1 {
+      text-align:center;
+      margin: 40px 0 10px;
+      font-size:2rem;
+      color:var(--primary);
+    }
+    .subtitle {
+      text-align:center;
+      color:#666;
+      margin-bottom:30px;
+    }
+    .features {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:20px;
+      max-width:1000px;
+      margin:0 auto 40px;
+    }
+    .feature {
+      background:var(--white);
+      border-radius:var(--radius);
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      padding:20px;
+      text-align:center;
+      transition:transform .2s;
+    }
+    .feature:hover { transform:translateY(-5px); }
+    .feature i {
+      font-size:2.2rem;
+      color:var(--secondary);
+      margin-bottom:12px;
+    }
+    .feature h3 {
+      font-size:1.1rem;
+      margin-bottom:8px;
+      color:var(--primary);
+    }
+    .feature p {
+      font-size:.95rem;
+      color:#444;
+    }
+    footer {
+      text-align:center;
+      font-size:.8rem;
+      color:#999;
+      margin-top:40px;
+    }
+    @media (max-width:600px) {
+      body { padding:12px; }
+      h1 { font-size:1.6rem; }
+      .feature { padding:16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Inicio</a>
+
+  <h1>Guía para Usuarios – Evolución UCI</h1>
+  <p class="subtitle">Todas las funciones disponibles en el módulo de Evolución de Enfermería</p>
+
+  <div class="features">
+    <div class="feature">
+      <i class="fas fa-user-lock"></i>
+      <h3>Acceso al Sistema</h3>
+      <p>Inicia sesión con tu usuario y contraseña para proteger tu información clínica.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-file-medical"></i>
+      <h3>Crear Informe Nuevo</h3>
+      <p>Selecciona Box, rellena los campos y pulsa “Generar Informe” para guardar uno nuevo.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-folder-open"></i>
+      <h3>Recuperar Informes</h3>
+      <p>Elige de la lista tu Box, fecha y hora para cargar y visualizar informes anteriores.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-edit"></i>
+      <h3>Editar Informe</h3>
+      <p>Modifica los campos de un informe cargado y vuelve a “Generar Informe” para guardarlo con nuevo ID.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-trash"></i>
+      <h3>Eliminar Informes</h3>
+      <p>Elimina un informe aislado o limpia todos los informes de un Box de forma rápida.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-print"></i>
+      <h3>Imprimir Informe</h3>
+      <p>Imprime en turno actual (8–20 h o 20–8 h) o usa “Turno Alternativo” para el turno opuesto.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-copy"></i>
+      <h3>Copiar Informe</h3>
+      <p>Envía el informe al portapapeles con formato enriquecido para pegar en otros documentos.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-sign-out-alt"></i>
+      <h3>Cerrar Sesión</h3>
+      <p>Finaliza tu sesión para proteger tus datos antes de abandonar la aplicación.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      &copy; 2025 Informe Evolución Enfermería. Todos los derechos
+      reservados.
+      <br>C.G.Francisco Manuel--M.G.José Antonio--M.M. Francisco Javier<br>
+    </p>
+
+  </footer>
+
+</body>
+</html>

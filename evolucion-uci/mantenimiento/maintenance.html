@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="description" content="Evolución UCI se encuentra en mantenimiento. Volveremos pronto.">
+  <meta name="author" content="Equipo de Desarrollo - Evolución UCI">
+  <title>Mantenimiento - Evolución UCI</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="img/evo-uci.png?v=3" type="image/png" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --color-fondo: #f4f7fa;
+      --color-primario: #2d6b3a;
+      --color-secundario: #368f3f;
+      --color-hover: #489950;
+      --color-texto: #2e2925;
+      --color-blanco: #fff;
+      --color-gris: #666;
+      --radio: 15px;
+    }
+
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, var(--color-fondo) 0%, #e8f0f2 100%);
+      color: var(--color-texto);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animación de fondo */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(45, 107, 58, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: float 20s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(30px, -30px) rotate(120deg); }
+      66% { transform: translate(-20px, 20px) rotate(240deg); }
+    }
+
+    .maintenance-container {
+      background: var(--color-blanco);
+      padding: 40px;
+      border-radius: var(--radio);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .maintenance-icon {
+      font-size: 4rem;
+      color: var(--color-secundario);
+      margin-bottom: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--color-primario);
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: var(--color-gris);
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .message {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--color-texto);
+      margin-bottom: 30px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .feature {
+      padding: 20px;
+      background: linear-gradient(135deg, var(--color-fondo) 0%, #f0f4f7 100%);
+      border-radius: 10px;
+      border-left: 4px solid var(--color-secundario);
+    }
+
+    .feature i {
+      font-size: 1.5rem;
+      color: var(--color-secundario);
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--color-primario);
+    }
+
+    .feature p {
+      font-size: 0.9rem;
+      color: var(--color-gris);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-secundario) 0%, var(--color-hover) 100%);
+      border-radius: 4px;
+      animation: progress 3s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+      0% { width: 70%; }
+      50% { width: 85%; }
+      100% { width: 70%; }
+    }
+
+    .contact-info {
+      margin-top: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fffe 0%, #f0f8f5 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(45, 107, 58, 0.1);
+    }
+
+    .contact-info h3 {
+      color: var(--color-primario);
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-gris);
+      font-size: 0.95rem;
+    }
+
+    .contact-item i {
+      color: var(--color-secundario);
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      color: var(--color-gris);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .maintenance-container {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .maintenance-icon {
+        font-size: 3rem;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+      }
+      
+      .contact-details {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* Animación de entrada */
+    .maintenance-container {
+      animation: slideUp 0.8s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="maintenance-container">
+    <div class="maintenance-icon">
+      <i class="fas fa-tools"></i>
+    </div>
+    
+    <h1>Mantenimiento Programado</h1>
+    <p class="subtitle">Evolución UCI</p>
+    
+    <div class="message">
+      Estamos realizando mejoras importantes en nuestro sistema para ofrecerte una mejor experiencia. 
+      El sistema estará temporalmente fuera de servicio mientras implementamos nuevas funcionalidades 
+      y optimizaciones.
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <i class="fas fa-stethoscope"></i>
+        <h3>Evolución de Enfermería</h3>
+        <p>Mejoras en el registro y seguimiento de evoluciones clínicas</p>
+      </div>
+      
+      <div class="feature">
+        <i class="fas fa-water"></i>
+        <h3>Balance Hídrico</h3>
+        <p>Optimización del control de líquidos y nuevos gráficos</p>
+      </div>
+    </div>
+
+    <div class="contact-info">
+      <h3>¿Necesitas asistencia urgente?</h3>
+      <div class="contact-details">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>Contacta con el equipo técnico</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-clock"></i>
+          <span>Tiempo estimado: indeterminado.</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-calendar"></i>
+          <span id="currentDate"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>
+        &copy; 2025 Evolución UCI. Todos los derechos reservados.
+        <br><strong>C.G.Francisco Manuel • M.G.José Antonio • M.M. Francisco Javier</strong>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Mostrar fecha actual
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Auto-refresh cada 5 minutos
+    setTimeout(() => {
+      window.location.reload();
+    }, 300000);
+  </script>
+</body>
+</html>
